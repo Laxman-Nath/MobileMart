@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section style="margin-top: 140px; padding:12px;">
+		<div class="container p-4">
+			<h2 class="text-center">AdminDashboard</h2>
+			<div class="row">
+				<div class="col-md-4 m-6 p-2">
+					<a href="category" class="card text-center text-decoration-none">
+					 
+						<div class="card-body text-center" style="font-size:20px;">
+						<i class="fa-solid fa-list fa-3x"></i>
+							<h3>Add category</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 m-6 p-2">
+					<a href="addProduct" class="card text-center text-decoration-none">
+					 
+						<div class="card-body text-center" style="font-size:20px;">
+						<i class="fa-solid fa-square-plus fa-3x"></i>
+							<h3>Add Product</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 m-6 p-2" style="font-size:20px;">
+					<a href="viewProducts" class="card text-center text-decoration-none">
+					 
+						<div class="card-body text-center">
+						<i class="fa-solid fa-list-ul fa-3x"></i>
+							<h3>View Products</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 m-6 p-2">
+					<a href="viewCustomers" class="card text-center text-decoration-none">
+					 
+						<div class="card-body text-center" style="font-size:20px;">
+						<i class="fa-solid fa-circle-user fa-3x "></i>
+							<h3>Customers</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-4 m-6 p-2" style="font-size:20px;">
+					<a th:href="@{addAdmin}" class="card text-center text-decoration-none">
+					 
+						<div class="card-body text-center">
+						<i class="fa-solid fa-user-plus fa-3x"></i>
+							<h3>Add Admin</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				
+				<div class="col-md-4 m-6 p-2" style="font-size:20px;">
+					<a href="showorders" class="card text-center text-decoration-none">
+						<div class="card-body text-center">
+						<i class="fa-regular fa-rectangle-list fa-3x"></i>
+							<h3>Orders</h3>
+							<p class="card-text"></p>
+						</div>
+					</a>
+				</div>
+				
+			</div>
+		</div>
+
+	</section>
+</body>
+</html>

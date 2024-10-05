@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Login page</title>
+<script src="js/jquery.js"></script>
+<script src="js/script.js" type="text/javascript"></script>
+ <script>
+        $(document).ready(function() {
+            // Start countdown only if the timer should be shown
+            let countdown = 60; // Total countdown time in seconds
+            const countdownElement = $("#countdown");
+
+            // If the countdown is to be shown, initialize the countdown
+            if (countdownElement.length) {
+            	console.log("Countdownt"+countDown);
+                countdownElement.text(countdown); // Set initial countdown value
+
+                const timer = setInterval(() => {
+                    if (countdown > 0) {
+                        countdown--;
+                        countdownElement.text(countdown); // Update countdown display
+                    } else {
+                        clearInterval(timer);
+                        countdownElement.text("0"); // Final countdown value
+                        // Optionally enable the login button here or redirect the user
+                    }
+                }, 1000); // Update every second
+            }
+
+            $("#loginButton").click(function(event) {
+                event.preventDefault(); // Prevent default form submission
+                const username = $("#username").val();
+                const password = $("#password").val();
+                $.post("/login", { username: username, password: password }, function(response) {
+                    alert(response); // Display login response
+                    // Handle login success or failure
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+	<section style="margin-top: 140px;">
+
+		<div class="container ">
+			<div class="row ">
+				<div class="col md-8">
+					<div class="card" style="background-image: url('/img/bg-01.jpg')">
+						<div class="card-header  text-white text-center"
+							style="background-color: rgb(219, 15, 219);">
+							<h3>Sign in into your account</h3>
+							<th:block th:if="${param.error}">
+								<div class=" text-center">
+									<h2 th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></h2>
+								</div>
+							</th:block>
+							<th:block th:if="${param.logout}">
+								<div class="text-success text-center">
+									<h2>You have been successfully logged out!</h2>
+
+
+								</div>
+							</th:block>
+							<th:block th:if="${session.success}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.success}"></h2>
+								</div>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.error}"></h2>
+								</div>
+							</th:block>
+							<th:block th:if="${showTimer}">
+								<h1>
+									Your account will be unlocked in <span id="countdown">0</span>
+									seconds
+								</h1>
+								
+							</th:block>
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+							</th:block>
+						</div>
+
+						<div class="row">
+
+
+							<div class="col-md-6 offset-md-3">
+								<div class="card-body">
+
+									<form action="authenticate" method="post">
+
+										<div class="text-center">
+
+											<span class="h1 fw-bold mb-0 text-center"><img
+												src="img/logo.jpg"
+												class="d-inline-block align-text-top img-fluid logo"></span>
+										</div>
+
+
+
+										<div data-mdb-input-init class="form-outline mb-4">
+											<label class="form-label" for="form2Example17">Email
+												address</label> <input type="email" id="form2Example17"
+												name="username" class="form-control form-control-lg" autocomplete="name" />
+										</div>
+
+
+										<div class="form-outline mb-4">
+											<label class="form-label" for="LoginPassword">Password</label>
+											<div class="input-group">
+												<input type="password" id="LoginPassword"
+													class="form-control form-control-lg" name="password"  autocomplete="password"/> <span
+													class="input-group-text" id="PasswordIcon"
+													style="cursor: pointer; width: 3rem; text-align: center;">
+													<i class="fas fa-eye-slash"></i>
+												</span>
+
+											</div>
+
+										</div>
+
+										<div class="pt-1 mb-4">
+											<button class="btn btn-dark btn-lg btn-block w-100"
+												type="submit">Login</button>
+										</div>
+
+										<a class="small text-muted" href="/forgotPassword">Forgot
+											password?</a>
+										<p class="mb-5 pb-lg-2" style="color: #393f81;">
+											Don't have an account? <a href="register"
+												style="color: #393f81;">Register here</a>
+										</p>
+										<a href="#!" class="small text-muted">Terms of use.</a> <a
+											href="#!" class="small text-muted">Privacy policy</a>
+									</form>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+</body>
+</html>

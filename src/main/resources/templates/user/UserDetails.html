@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>User Profile</title>
+</head>
+<body>
+	<section style="margin-top: 240px;">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 offset-md-3">
+					<div class="card">
+						<div class="card-header text-center">
+							<img th:src="@{'/img/profile_img/'+${customer.file}}"
+								class="rounded-circle img-fluid" />
+
+							<th:block th:if="${session.success}">
+								<p th:text="${session.success}"></p>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<p th:text="${session.error}"></p>
+							</th:block>
+
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+							</th:block>
+						</div>
+						<hr>
+						<div class="card-body text-center " style="font-size: 20px;">
+							<p>
+								<strong>Name:</strong><span th:text="${customer.name}"></span>
+							</p>
+							<p>
+								<strong>Address:</strong> <span
+									th:utext="${customer.state} + ', ' + ${customer.district} + ', ' + ${customer.muncipility} + ', ' + ${customer.ward} + ', ' + ${customer.tole}"></span>
+							</p>
+
+							<p>
+								<strong>Number:</strong><span th:text="${customer.mnumber}"></span>
+							</p>
+							<p>
+								<strong>Email:</strong><span th:text="${customer.email}"></span>
+							</p>
+
+						</div>
+						<a th:href="@{/user/EditProfile/{id}(id=${customer.id})}"
+							class="btn btn-success" style="font-size: 20px;">Edit profile</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Edit profile</title>
+</head>
+<body class="">
+	<section
+		style="background-image: url('/img/register.png'); background-size: cover; margin-top: 140px; margin-bottom: 40px; padding: 20px;">
+		<div class="d-flex justify-content-center align-items-center"
+			style="height: 50%;">
+			<div class="container ">
+				<div class="row justify-content-center">
+					<div class="col-md-6">
+						<div class="card p-3 ">
+							<div class="card-header text-center bg-success text-white">
+								<p class="fs-4 mb-0">Update profile</p>
+							
+							</div>
+							<div class="card-body">
+								<form action="/admin/saveUpdatedProfile" method="post"
+									enctype="multipart/form-data" th:object="${customer}">
+									<input type="hidden" value="${customer.id}" th:field="*{id}">
+									<div class="mb-2">
+										<label class="form-label">Full Name</label> <input type="text"
+											name="name" class="form-control" th:value="${customer.name}"
+											th:field="*{name}">
+									</div>
+									<div class="mb-2">
+										<label class="form-label">Mobile Number</label> <input
+											type="number" name="mnumber" class="form-control"
+											th:value="${customer.mnumber}" th:field="*{mnumber}" />
+									</div>
+									<div class="mb-2">
+										<label class="form-label">Email</label> <input type="email"
+											name="email" class="form-control"
+											th:value="${customer.email}" th:field="*{email}" />
+									</div>
+									<div class="row mb-2">
+										<div class="col">
+											<div class="mb-2">
+												<label class="form-label">State</label> <input type="text"
+													name="state" class="form-control"
+													th:value="${customer.state}" th:field="*{state}" />
+											</div>
+										</div>
+										<div class="col">
+											<div class="mb-2">
+												<label class="form-label">District</label> <input
+													type="text" name="district" class="form-control"
+													th:value="${customer.district}" th:field="*{district}" />
+											</div>
+										</div>
+									</div>
+									<div class="mb-2">
+										<label class="form-label">Municipality</label> <input
+											type="text" name="muncipility" class="form-control"
+											th:value="${customer.muncipility}" th:field="*{muncipility}" />
+									</div>
+									<div class="row mb-2">
+										<div class="col">
+											<div class="mb-2">
+												<label class="form-label">Ward-no</label> <input
+													type="number" name="ward" class="form-control"
+													th:value="${customer.ward}" th:field="*{ward}" />
+											</div>
+										</div>
+										<div class="col">
+											<div class="mb-2">
+												<label class="form-label">Tole</label> <input type="text"
+													name="tole" class="form-control"
+													th:value="${customer.tole}" th:field="*{tole}" />
+											</div>
+										</div>
+									</div>
+
+									<div class="mb-2">
+										<label class="form-label">Change profile</label><input
+											type="file" name="image" class="form-control"
+											>
+									</div>
+									<input type="hidden" value="${customer.file}" th:field="*{file}">
+									<input type="hidden" value="${customer.password}" th:field="*{password}">
+									<input type="hidden" value="${customer.cpassword}" th:field="*{cpassword}">
+									<div class="mb-3 text-center">
+										<button class="btn btn-dark btn-lg btn-block" type="submit">Update</button>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

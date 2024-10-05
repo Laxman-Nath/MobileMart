@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Edit Order</title>
+
+
+<style>
+</style>
+</head>
+<body>
+	<section style="margin-top: 100px;" th:if="${order!=null || !order.isEmpty()}">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 offset-md-2">
+					<div class="card">
+						<div class="card-header text-center bg-danger text-white">
+							<h3>Edit Order</h3>
+						</div>
+						<div class="card-body text-center">
+
+							<div th:if="${message}" class="alert alert-success" role="alert">
+								<p th:text="${message}"></p>
+							</div>
+							<div th:if="${error}" class="alert alert-danger" role="alert">
+								<p th:text="${error}"></p>
+							</div>
+
+							<form th:action="@{/admin/updateOrder/{id}(id=${order.id})}"
+								method="post" th:object="${order}">
+								<input type="hidden" th:value="${order.invoiceNumber}"
+									th:field="*{invoiceNumber}">
+								<div class="mb-3">
+									<label class="form-label" for="name">Customer name</label> <input
+										type="text" th:value="${order.customer.name}" id="name"
+										autocomplete="name" th:field="*{customer.name}"
+										class="form-control">
+								</div>
+								<div class="mb-3">
+									<label class="form-label" for="address">Shipping
+										address</label> <input type="text" th:value="${order.shippingAddress}"
+										id="address" autocomplete="address" class="form-control"
+										th:field="*{shippingAddress}">
+								</div>
+								<div class="mb-3">
+									<label class="form-label" for="date">Placed Date</label> <input
+										type="text" th:value="${order.placedDate}" id="date"
+										autocomplete="date" th:field="*{placedDate}"
+										class="form-control">
+								</div>
+								<div class="mb-3">
+									<label class="form-label" for="email">Customer Email</label> <input
+										type="email" th:value="${order.customer.email}" id="email"
+										autocomplete="email" th:field="*{customer.email}"
+										class="form-control">
+								</div>
+								<div class="mb-3">
+									<label class="form-label" for="status">Status</label> <select
+										class="form-select" th:field="*{status}" id="status">
+										<option value="Shipped"
+											th:selected="${order.status=='Shipped'}">Shipped</option>
+										<option value="Delivered"
+											th:selected="${order.status=='Delivered'}">Delivered</option>
+										<option value="Submitted"
+											th:selected="${order.status=='Submitted'}">Submitted</option>
+										<option value="Cancelled"
+											th:selected="${order.status=='Cancelled'}">Submitted</option>
+
+									</select>
+
+
+								</div>
+								<div class="form-group">
+									<label for="payment">Payment Method:</label> <select
+										class="form-control" id="payment" th:field="*{paymentMethod}"
+										required>
+										<option value="esewa"
+											th:selected="${order.paymentMethod=='esewa'}">eSewa</option>
+										<option value="cod"
+											th:selected="${order.paymentMethod=='cod'}">Cash on
+											Delivery</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<h3 class="text-center ">Products</h3>
+									<table class="table table-success table-striped">
+										<thead>
+											<tr>
+												<th scope="col">S.N.</th>
+												<th scope="col">Product Name</th>
+												<th scope="col">Quantity</th>
+												<th scope="col">Price</th>
+												<th scope="col">Delete</th>
+
+
+
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="item,stat:${items}">
+
+												<td th:text="${stat.index+1}"></td>
+												<td th:text="${item.product.name}"></td>
+												<td>
+
+													<button type="button"
+														class="btn btn-danger btn-sm delete-btn"
+														th:data-item-id="${item.id}"
+														th:data-order-id="${order.id}" title="add">
+														<i class="fa fa-plus" aria-hidden="true"></i>
+													</button> <span th:text=" '['+${item.quantity}+']'"
+													style="font-size: 20px;"></span>
+													<button type="button"
+														class="btn btn-success btn-sm border-none delete-btn"
+														th:data-item-id="${item.id}"
+														th:data-order-id="${order.id}" title="subtract">
+														<i class="fa fa-minus" aria-hidden="true"></i>
+													</button> <input type="hidden"
+													th:field="*{orderItems[__${stat.index}__].id}"> <input
+													type="hidden"
+													th:field="*{orderItems[__${stat.index}__].quantity}"
+													class="form-control"> <input type="hidden"
+													th:field="*{orderItems[__${stat.index}__].product}"
+													class="form.control"> <input type="hidden"
+													th:field="*{orderItems[__${stat.index}__].order}"
+													class="form.control"> <input type="hidden"
+													th:field="*{orderItems[__${stat.index}__].price}"
+													class="form.control">
+												</td>
+
+												<td th:text="${item.price}"></td>
+
+												<td><button type="button"
+														class="btn btn-danger btn-sm delete-btn"
+														th:data-item-id="${item.id}"
+														th:data-order-id="${order.id}" title="Delete">
+														<i class="fa-solid fa-xmark"></i>
+													</button></td>
+
+
+
+
+
+											</tr>
+
+
+										</tbody>
+									</table>
+
+								</div>
+
+								<button type="submit" class="btn btn-danger">Save
+									Changes</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section th:unless="${order!=null || !order.isEmpty()}">
+		<div class="text-danger text-center">The order is no longer
+			available!</div>
+	</section>
+
+
+</body>
+
+
+
+
+
+</html>
+
+
+<!--$(document)
+			.ready(
+					function() {
+						$(document)
+								.on(
+										'click',
+										'.delete-btn',
+										function() {
+											var itemId = $(this)
+													.data('item-id');
+											var orderId = $(this).data(
+													'order-id');
+											var title = $(this).attr('title');
+											var url, method, confirmMessage;
+
+											
+											if (confirm(confirmMessage)) {
+												$
+														.ajax({
+															url : url,
+															method : method,
+															contentType : 'application/json',
+															headers : {
+																'X-CSRF-TOKEN' : $(
+																		'meta[name="csrf-token"]')
+																		.attr(
+																				'content')
+															},
+															data : JSON
+																	.stringify({
+																		orderId : orderId
+																	}),
+															success : function(
+																	response) {
+																alert('Action successfully completed: '
+																		+ response.message);
+																window.location.href = '/admin/editorder/'
+																		+ orderId; // Redirect to the order edit page
+															},
+															error : function(
+																	xhr,
+																	status,
+																	error) {
+																console
+																		.error(
+																				'Error:',
+																				error);
+																alert('An error occurred while trying to process the request.');
+															}
+														});
+											}
+										});
+					});
+	-->

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section style="margin-top: 240px;">
+		<div class="container  d-flex justify-content-center">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card text-center">
+						<div class="card-header text-center">
+							<h3>Add Product to Sale</h3>
+
+						</div>
+						<div class="card-body">
+							<form action="/admin/saveProductToSale" method="post" enctype="multipart/form-data">
+								<input type="hidden" th:value="${product.id}" name="productId">
+								<div class="mb-2">
+									<label class="form-label"> Name</label> <input type="text"
+										name="pName" class="form-control " th:value="${product.name}" />
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">Start date</label><input
+												type="date" name="saleStartDate" class="form-control">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">End date</label><input type="date"
+												name="saleEndDate" class="form-control">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">Price</label> <input type="number"
+												name="price" class="form-control" th:value="${product.price}" />
+										</div>
+
+									</div>
+
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">Discount</label> <input
+												type="number" name="discountPercent" class="form-control"
+												th:value="${product.discountPercent}" />
+										</div>
+
+									</div>
+								</div>
+
+								<img th:src="@{'/img/product_img/'+${product.file}}"
+									height="100px" width="100px">
+								<div class="mb-3 mt-2 text-center">
+									<button class="btn btn-dark btn-lg btn-block submit-form"
+										type="submit">Add to Sale</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
