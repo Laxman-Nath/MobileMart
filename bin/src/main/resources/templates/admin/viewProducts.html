@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section style="margin-top: 100px;">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header text-center">
+							<h1>Product details</h1>
+							<th:block th:if="${session.ProductEditError}">
+								<h3 class="text-danger" th:text="${session.ProductEditError}"></h3>
+							</th:block>
+							<th:block th:if="${session.ProductEditSuccess}">
+								<h3 class="text-success" th:text="${session.ProductEditSuccess}"></h3>
+							</th:block>
+							<th:block th:if="${session.deleteProductError}">
+								<h3 class="text-danger" th:text="${session.deleteProductError}"></h3>
+							</th:block>
+							<th:block th:if="${session.deleteProductSuccess}">
+								<h3 class="text-success"
+									th:text="${session.deleteProductSuccess}"></h3>
+							</th:block>
+							<th:block th:if="${session.saleSuccess}">
+								<h3 class="text-danger" th:text="${session.saleSuccess}"></h3>
+							</th:block>
+							<th:block th:if="${session.saleError}">
+								<h3 class="text-success" th:text="${session.saleError}"></h3>
+							</th:block>
+
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+						</div>
+						<div class="card-body">
+							<table class="table table-success table-striped">
+								<thead>
+									<tr>
+										<th scope="col">S.N.</th>
+										<th scope="col">Name</th>
+										<th scope="col">Description</th>
+										<th scope="col">Status</th>
+										<th scope="col">Category</th>
+										<th scope="col">Policy</th>
+										<th scope="col">Price</th>
+
+										<th scope="col">Quantity</th>
+										<th scope="col">Image</th>
+										<th scope="col">Sale</th>
+										<th scope="col">Action</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="product,stat:${products}">
+
+										<td th:text="${stat.index+1}"></td>
+										<td th:text="${product.name}"></td>
+										<td
+											th:text="${product.getDimension()} +','+ ${product.getColor()} +' ,'+
+					 ${product.getInternal()} + ',' + ${product.getSecurity()} +' ,'
+					+ ${product.getBType()}"></td>
+										<td th:text="${product.status}"></td>
+										<td th:text="${product.category}"></td>
+										<td th:text="${product.policy}"></td>
+										<td th:text="${product.price}"></td>
+
+										<td th:text="${product.quantity}"></td>
+										<td><img th:src="@{'/img/product_img/'+${product.file}}"
+											alt="product_img" width="50px" height="50px"></td>
+										<td><a
+											th:href="@{/admin/addToSale/{id}(id=${product.id})}"
+											th:if="${product.getSale() == null}" class="btn btn-success">Add
+												to Sale</a> <a
+											th:href="@{/admin/removeFromSale/{id}(id=${product.id})}"
+											th:unless="${product.getSale() == null}"
+											class="btn btn-danger">Remove from Sale</a>
+										<td><a
+											th:href="@{/admin/deleteProduct/{id}(id=${product.id})}"
+											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
+											<a th:href="@{/admin/editProductForm/{id}(id=${product.id})}"
+											class="btn btn-success"><i
+												class="fa-regular fa-pen-to-square"></i>Edit</a></td>
+
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

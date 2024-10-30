@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Search</title>
+</head>
+<body>
+<section style="margin-top:240px;">
+	<div class="col-md-10 offset-md-1">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="text-center">Products</h4>
+				<div class="row">
+					<div class="col-md-4  mb-4 " th:each="product:${products}">
+						<div class="card">
+
+							<div class="card-body text-center products">
+								<img th:src="@{'/img/product_img/'+${product.getFile()}}"
+									class="img-fluid" alt="Samsung Galaxy S10">
+								<h3 th:text="${product.getName()}"></h3>
+								<div class="rating text-warning font-size-12">
+									<span><i class="fas fa-star"></i></span> <span><i
+										class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>
+									<span><i class="fas fa-star"></i></span> <span><i
+										class="far fa-star"></i></span>
+								</div>
+								<div class="price py-2">
+									<span th:text="'Rs.'+${product.getDiscountedPrice()}"></span> <span
+										class="text-decoration-line-through"
+										th:text="'Rs.'+${product.getPrice()}"></span> <span
+										class=" bg-success"
+										th:text="${product.getDiscountPercent()+'%'}">10%off</span>
+								</div>
+								<a th:href="@{/viewDetail/{id}(id=${product.getId()})}"
+									class="btn btn-primary">View Details</a>
+
+							</div>
+						</div>
+
+
+					</div>
+
+
+
+
+
+				</div>
+
+
+
+
+			</div>
+		</div>
+	</div>
+
+	</section>
+</body>
+</html>

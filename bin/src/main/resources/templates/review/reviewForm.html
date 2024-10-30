@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section style="margin-top: 240px">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 offset-md-4">
+					<div class="card">
+						<div class="card-header">
+							<h2 class="text-center">Review Form</h2>
+						</div>
+						<div class="card-body text-center">
+							<form action="#" method="post"
+								th:action="@{/saveReview/{id}(id=${product.id})}"
+								th:object="${newReview}">
+								<div class="mb-3">
+									<label for="rating" class="form-label">Rating</label> <select
+										id="rating" class="form-select" th:field="*{rating}">
+										<option value="1">1 Star</option>
+										<option value="2">2 Stars</option>
+										<option value="3">3 Stars</option>
+										<option value="4">4 Stars</option>
+										<option value="5">5 Stars</option>
+									</select>
+								</div>
+								<div class="mb-3">
+									<label for="reviewText" class="form-label">Your Review</label>
+									<textarea id="reviewText" class="form-control" rows="3"
+										th:field="*{comment}"></textarea>
+								</div>
+								<button type="submit" class="btn btn-primary">Submit
+									Review</button>
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

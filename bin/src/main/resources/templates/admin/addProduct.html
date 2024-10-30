@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Add Product</title>
+</head>
+<body>
+	<section style="margin-top: 100px;">
+		<div class="container  d-flex justify-content-center">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card text-center" >
+						<div class="card-header text-center bg-primary text-white">
+							<h3>Add Product</h3>
+							<th:block th:if="${session.addProductSuccess}">
+								<h3 th:text="${session.addProductSuccess}"></h3>
+							</th:block>
+							<th:block th:if="${session.addProductError}">
+								<h3 th:text="${session.addProductError}"></h3>
+							</th:block>
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+						</div>
+						<div class="card-body" style="background-image: url('/img/bg-01.jpg')">
+							<form action="/admin/saveProduct" method="post"
+								enctype="multipart/form-data">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label"> Name</label> <input type="text"
+												name="name" class="form-control " />
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="mb-2">
+
+											<label class="form-label">Status:</label> <select id="status"
+												name="status" class="form-control">
+												<option value="available">Available</option>
+												<option value="sold">Sold</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<hr>
+
+								<h4>Description</h4>
+								<hr>
+								<h5>BODY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="dimension" class="form-control"
+											placeholder="Dimension">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="weight" placeholder="Weight"
+											class="form-control">
+									</div>
+								</div>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="build" class="form-control"
+											placeholder="Build">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="sim" placeholder="SIM"
+											class="form-control">
+									</div>
+								</div>
+
+								<div class="row mb-2">
+
+									<div class="col-md-12">
+
+										<input type="text" name="color" class="form-control"
+											placeholder="Colors">
+									</div>
+
+								</div>
+								<hr>
+								<h5>DISPLAY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="type" class="form-control"
+											placeholder="Type">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="size" placeholder="Size"
+											class="form-control">
+									</div>
+								</div>
+
+
+								<div class="row mb-2">
+
+									<div class="col-md-12">
+
+										<input type="text" name="resolution" class="form-control"
+											placeholder="Resolution">
+									</div>
+
+								</div>
+								<hr>
+								<h5>PERFORMANCE</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="os" class="form-control"
+											placeholder="OS">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="chipSet" placeholder="ChipSet"
+											class="form-control">
+									</div>
+								</div>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="cpu" class="form-control"
+											placeholder="CPU">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="gpu" placeholder="GPU"
+											class="form-control">
+									</div>
+								</div>
+
+								<hr>
+
+								<h5>MEMORY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="cardSlot" class="form-control"
+											placeholder="CardSlot">
+									</div>
+									<div class="col-md-6">
+
+
+										<input type="text" name="internal" placeholder="Internal"
+											class="form-control">
+									</div>
+								</div>
+								<hr>
+
+								<h5>BACK CAMERA</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="bFeatures" class="form-control"
+											placeholder="Features">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="bVideo" placeholder="Video"
+											class="form-control">
+									</div>
+								</div>
+								<hr>
+
+								<h5>FRONT CAMERA</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="fFeatures" class="form-control"
+											placeholder="Features">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="fVideo" placeholder="Video"
+											class="form-control">
+									</div>
+								</div>
+								<hr>
+
+								<h5>SOUND</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="loudSpeaker" class="form-control"
+											placeholder="LoudSpeaker">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="sFeatures" placeholder="Features"
+											class="form-control">
+									</div>
+								</div>
+								<hr>
+
+								<h5>BATTERY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-6">
+
+										<input type="text" name="bType" class="form-control"
+											placeholder="Type">
+									</div>
+									<div class="col-md-6">
+
+										<input type="text" name="charging" placeholder="Charging"
+											class="form-control">
+									</div>
+								</div>
+								<hr>
+
+								<h5>CONNECTIVITY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-12">
+
+										<input type="text" name="cFeatures" class="form-control"
+											placeholder="Features">
+									</div>
+
+								</div>
+								<hr>
+
+								<h5>SECURITY</h5>
+								<div class="row mb-2">
+
+									<div class="col-md-12">
+
+										<input type="text" name="security" class="form-control"
+											placeholder="Security">
+									</div>
+
+								</div>
+								<hr>
+
+
+								<div class="row">
+
+									<div class="col-md-12">
+										<div class="mb-2">
+											<label class="form-label">Category:</label> <select
+												id="status" name="category" class="form-control">
+												<option>--select--</option>
+												<option th:each="category:${categories}"
+													th:text="${category.name}"></option>
+
+											</select>
+										</div>
+									</div>
+								</div>
+								<hr>
+
+								<div class="mb-2">
+									<label for="policySelect">Select Policy:</label> <select
+										class="form-control" id="policySelect" name="policy">
+										<option value="" disabled selected>Select a policy</option>
+										<option value="return">Return Policy: 7-30 days,
+											original condition</option>
+										<option value="replacement">Replacement Policy: 30
+											days, defects only</option>
+										<option value="warranty">Warranty Policy: 1 year,
+											defects covered</option>
+
+									</select>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">Price</label> <input type="number"
+												name="price" class="form-control" />
+										</div>
+
+									</div>
+
+									<div class="col-md-6">
+										<div class="mb-2">
+											<label class="form-label">Discount</label> <input
+												type="number" name="discountPercent" class="form-control" />
+										</div>
+
+									</div>
+								</div>
+								<hr>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-3">
+
+											<label class="form-label">Quantity:</label> <input
+												type="number" class="form-control" name="quantity">
+
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="mb-3">
+											<!-- Image Upload -->
+											<label for="image" class="form-label">Upload Image:</label> <input
+												class="form-control" type="file" id="image" name="image"
+												accept="image/*">
+										</div>
+									</div>
+								</div>
+								<div class="mb-3 mt-10 text-center  ">
+									<button
+										class="btn bg-primary text-white btn-lg btn-block submit-form w-100"
+										type="submit">Add</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

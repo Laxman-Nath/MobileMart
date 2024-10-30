@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>View Reviews</title>
+</head>
+<body>
+	<h5 th:text="${success}"></h5>
+	<section style="margin-top: 100px;"
+		th:if="${reviews != null && !reviews.isEmpty()}">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header text-center">
+							<h1>View Reviews</h1>
+
+
+
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+						</div>
+						<div class="card-body">
+							<table class="table table-success table-striped">
+								<thead>
+									<tr>
+										<th scope="col">S.N.</th>
+										<th scope="col">Customer Name</th>
+										<th scope="col">Date</th>
+										<th scope="col">Rating</th>
+										<th scope="col">Comment</th>
+										<th scope="col">Product Name</th>
+
+										<th scope="col">Action</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="review,stat:${reviews}">
+
+										<td th:text="${stat.index+1}"></td>
+										<td th:text="${review.customer.name}"></td>
+										<td th:text="${review.date}"></td>
+										<td th:text="${review.rating}"></td>
+										<td th:text="${review.comment}"></td>
+										<td th:text="${review.product.name}"></td>
+
+
+
+										<td><a
+											th:href="@{/admin/deleteReview/{reviewId}(reviewId=${review.id})}"
+											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
+										</td>
+
+
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section style="margin-top: 100px;"
+		th:if="${reviews == null || reviews.isEmpty()}">
+		<div class="text-danger text-center bg-success">
+			<h3>There are no Reviews.</h3>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section style="margin-top: 140px;">
+		<div class="container">
+			<div class="row ">
+				<div class="col-md-4 offset-md-4">
+					<div class="card">
+						<div class="card header text-center">
+							<p class="fw-bold fs-4">Edit Category</p>
+							
+
+
+						</div>
+						<div class="card-body">
+							<form action="/admin/updateCategory" method="post"
+								enctype="multipart/form-data">
+							 <input type="hidden" name="id" th:value="${category.id}" />
+								<div class="mb-2">
+									<label class="form-label">Title</label> <input type="text"
+										name="name" th:value="${category.Name}" class="form-control " />
+								</div>
+								<div class="mb-3">
+									<label>Status</label>
+
+									<div class="form-check">
+										<input class="form-check-input" type="radio" value="true"
+											th:checked="${category.isActive==true}" name="status"
+											id="flexRadioDefault1"> <label
+											class="form-check-label" for="flexRadioDefault1">
+											Active </label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="status"
+											value="false" th:checked="${category.isActive==false}"
+											id="flexRadioDefault2"> <label
+											class="form-check-label" for="flexRadioDefault2">
+											Inactive </label>
+									</div>
+
+								</div>
+								
+								<div class="mb-3">
+									<!-- Display the current file -->
+									<label for="currentFile" class="form-label">Current
+										File:</label>
+									   <input type="text" name="oldfile" class="form-control" th:value="${category.file}">
+
+									<!-- Input for new file -->
+									<label for="file" class="form-label">Upload New File:</label> <input
+										class="form-control" type="file" id="file" name="newfile" />
+								</div>
+								<div class="mb-3 mt-2 text-center">
+									<button class="btn btn-dark btn-lg btn-block" type="submit">
+									Update</button>
+								</div>
+
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Product Details</title>
+</head>
+<body>
+	<section style="margin-top: 140px;">
+		<div class="container mx-auto">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<th:block th:if="${session.success}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.success}"></h2>
+								</div>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.error}"></h2>
+								</div>
+							</th:block>
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+							</th:block>
+						</div>
+						<div class="card-body">
+
+							
+							<div class="row">
+
+								<div class="col-md-4">
+                                   <h3 class="text-center text-primary" >Description</h3>
+                                   <hr>
+									<div class="desc">
+										<table class="table table-success table-striped">
+											<tr>
+												<th>Dimension</th>
+												<td>[[${product.dimension}]]</td>
+											</tr>
+											<tr>
+
+												<th>Weight</th>
+												<td>[[${product.weight}]]</td>
+											</tr>
+											<tr>
+												<th>Build</th>
+												<td>[[${product.build}]]</td>
+											</tr>
+											<tr>
+												<th>SIM</th>
+												<td>[[${product.sim}]]</td>
+											</tr>
+											<tr>
+												<th>Color</th>
+												<td>[[${product.color}]]</td>
+											</tr>
+
+											<tr>
+												<th>Type</th>
+												<td>[[${product.type}]]</td>
+											</tr>
+											<tr>
+												<th>Size</th>
+												<td>[[${product.size}]]</td>
+											</tr>
+											<tr>
+												<th>Resolution</th>
+												<td>[[${product.resolution}]]</td>
+											</tr>
+
+											<tr>
+
+												<th>Operating System</th>
+												<td>[[${product.os}]]</td>
+											</tr>
+											<tr>
+												<th>ChipSet</th>
+												<td>[[${product.chipSet}]]</td>
+											</tr>
+											<tr>
+												<th>CPU</th>
+												<td>[[${product.cpu}]]</td>
+											</tr>
+											<tr>
+												<th>Dimension</th>
+												<td>[[${product.gpu}]]</td>
+											</tr>
+
+											<tr>
+												<th>CardSlot</th>
+												<td>[[${product.cardSlot}]]</td>
+											</tr>
+											<tr>
+												<th>Internal</th>
+												<td>[[${product.internal}]]</td>
+											</tr>
+
+											<tr>
+												<th>Features</th>
+												<td>[[${product.bFeatures}]]</td>
+											</tr>
+
+											<tr>
+												<th>Video</th>
+												<td>[[${product.bVideo}]]</td>
+											</tr>
+
+											<tr>
+												<th>Features</th>
+												<td>[[${product.fFeatures}]]</td>
+											</tr>
+											<tr>
+												<th>Video</th>
+												<td>[[${product.fVideo}]]</td>
+											</tr>
+
+											<tr>
+												<th>LoudSpeaker</th>
+												<td>[[${product.loudSpeaker}]]</td>
+											</tr>
+											<tr>
+												<th>Features</th>
+												<td>[[${product.sFeatures}]]</td>
+											</tr>
+
+											<tr>
+
+												<th>Type</th>
+												<td>[[${product.bType}]]</td>
+											</tr>
+											<tr>
+												<th>Charging</th>
+												<td>[[${product.charging}]]</td>
+											</tr>
+
+											<tr>
+												<th>Features</th>
+												<td>[[${product.cFeatures}]]</td>
+											</tr>
+
+											<tr>
+												<th>Features</th>
+												<td>[[${product.security}]]</td>
+											</tr>
+										</table>
+
+									</div>
+								</div>
+								<div class="col-md-8 text-center">
+									<h3 class="text-primary" th:text="${product.getName()}"></h3>
+									<hr>
+									<div class=" viewDetails">
+										<img th:src="@{'/img/product_img/'+${product.getFile()}}"
+											class="image-fluid" height="500px" />
+									</div>
+									<div class="details">
+										<span style="font-weight: bold;">Details:</span><br> <span>Status:</span>
+										<span class="badge bg-success text-white"
+											th:if="${product.getStatus() == 'available'}"
+											th:text="'Available'">&nbsp;</span> <span
+											class="badge bg-danger text-white"
+											th:if="${product.getStatus() == 'sold'}" th:text="'Sold'">Sold</span><br>
+										<span>Category:</span><span th:text="${product.getCategory()}"></span><br>
+										<span>Policy:</span><span th:text="${product.getPolicy()}"></span>
+									</div>
+
+									<div class="price">
+										<span style="font-weight: bold;"
+											th:text="'Price Rs.'+${product.getDiscountedPrice()}">
+											Price: Rs.70000</span> <span
+											class="fs-6 text-decoration-line-through text-secondary"
+											th:text="'Rs.'+${product.getPrice()}"></span> <span
+											class="fs-6 text-success"
+											th:text="${product.getDiscountPercent()}+'%'+' off'">50%
+											off</span>
+
+									</div>
+
+									<div class="row">
+										<div class="col-md-4 text-success text-center">
+											<i class="fas fa-money-bill-wave fa-2x"></i>
+											<p>Cash on Delivery</p>
+										</div>
+										<div class="col-md-4 text-warning text-center">
+											<i class="fas fa-undo-alt fa-2x"></i>
+											<p>Cash on Delivery</p>
+										</div>
+										<div class="col-md-4 text-danger text-center">
+											<i class="fas fa-truck-moving fa-2x"></i>
+											<p>Cash on Delivery</p>
+										</div>
+
+									</div>
+
+									<div class="row">
+										<div class="col-md-4">
+											<a href="#" class="btn btn-primary"
+												th:href="@{ /reviews/{id}(id=${product.id} )}">View
+												Reviews</a>
+										</div>
+										<div class="col-md-8 text-center">
+											<th:block th:if="${loggedUser==null}">
+												<a href="/login" class="btn btn-danger text-center ">Add
+													to Cart</a>
+											</th:block>
+											<th:block th:unless="${loggedUser==null}">
+												<a
+													th:href="@{'/addtocart?pid='+${product.id}+'&uid='+${loggedUser.id}}"
+													class="btn btn-danger text-center ">Add to Cart</a>
+
+											</th:block>
+											<th:block
+												th:if="${loggedUser!=null && cart!=null && !isEmpty}">
+
+												<a
+													th:href="@{'/viewcart?cid='+${cart.id}+'&uid='+${loggedUser.id}}"
+													class="btn btn-success text-center  "
+													style="margin-left: 120px;">View Cart</a>
+
+											</th:block>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+	</section>
+</body>
+</html>

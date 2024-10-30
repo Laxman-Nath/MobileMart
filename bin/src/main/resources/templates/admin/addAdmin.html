@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Add admin</title>
+</head>
+<body>
+	<section class="vh-100" style="margin-top: 50px;">
+		<div class="container py-5 h-100">
+			<div class="row justify-content-center align-items-center h-100">
+				<div class="col-12 col-lg-9 col-xl-7">
+					<div class="card shadow-2-strong" style="border-radius: 15px;">
+						<div class="card-header bg-danger text-white text-center">
+							<h2>Add Admin</h2>
+							<th:block th:if="${session.registerSuccess}">
+								<p th:text="${session.registerSuccess}"></p>
+								</th:block>
+								<th:block th:if="${session.registerError}">
+								<p th:text="${session.registerError}"></p>
+								</th:block >
+								
+								<th:block th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								</th:block>
+						</div>
+						<div class="card-body p-4 p-md-5 text-center"
+							style="background-color: rgb(250, 17, 242);">
+
+							<form action="/admin/saveAdmin" method="post" enctype="multipart/form-data">
+								<div class="mb-2">
+									<label class="form-label">Full Name</label> <input type="text"
+										name="name" class="form-control">
+								</div>
+								<div class="mb-2">
+									<label class="form-label">Mobile Number</label> <input
+										type="number" name="mnumber" class="form-control" />
+								</div>
+								<div class="mb-2">
+									<label class="form-label">Email</label> <input type="email"
+										name="email" class="form-control" />
+								</div>
+								<div class="row mb-2">
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">State</label> <input type="text"
+												name="state" class="form-control" />
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">District</label> <input type="text"
+												name="district" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="mb-2">
+									<label class="form-label">Municipality</label> <input
+										type="text" name="muncipility" class="form-control" />
+								</div>
+								<div class="row mb-2">
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">Ward-no</label> <input
+												type="number" name="ward" class="form-control" />
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">Tole</label> <input type="text"
+												name="tole" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="row mb-2">
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">Password</label> <input
+												type="password" name="password" class="form-control" />
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">Confirm password</label> <input
+												type="password" name="cpassword" class="form-control" />
+										</div>
+									</div>
+								</div>
+								<div class="mb-2">
+									<label class="form-label">Profile Picture</label><input
+										type="file" name="image" class="form-control">
+								</div>
+								<div class="mb-3 text-center">
+									<button class="btn btn-dark btn-lg btn-block" type="submit">Register</button>
+								</div>
+
+
+
+
+
+
+
+
+
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

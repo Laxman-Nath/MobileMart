@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>View Unverified Orders</title>
+</head>
+<body>
+	<section style="margin-top: 140px;">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header text-center">
+							<h1>Unverified Orders</h1>
+							<th:block th:if="${session.success}">
+								<h3 class="text-success" th:text="${session.success}"></h3>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<h3 class="text-success" th:text="${session.error}"></h3>
+							</th:block>
+
+							<th:block
+								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+						</div>
+						<div class="card-body">
+							<table class="table table-success table-striped">
+								<thead>
+									<tr>
+										<th scope="col">S.N.</th>
+										<th scope="col">Order Id</th>
+										<th scope="col">Order details</th>
+										<th scope="col">Placed Date</th>
+										<th scope="col">Status</th>
+										<th scope="col">Email</th>
+										<th scope="col">Customer profile</th>
+										<th scope="col">Action</th>
+
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="o,stat:${orders}">
+
+										<td th:text="${stat.index+1}"></td>
+										<td th:text="${o.id}"></td>
+										<td><a class="btn btn-success" th:href="@{/admin/vieworderdetails/{id}(id=${o.id})}">View Details</a></td>
+										<td th:text="${o.placedDate}"></td>
+										<td th:text="${o.status}"></td>
+										<td th:text="${o.customer.email}"></td>
+										
+										<td><img th:src="@{'/img/product_img/'+${o.customer.file}}"
+											alt="product_img" width="50px" height="50px"></td>
+										
+										
+										<td><a
+											th:href="@{/admin/editorder/{id}(id=${o.id})}"
+											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Edit</a>
+											</td>
+
+
+									</tr>
+									
+									<tfoot>
+									<tr>
+									<td colspan="8" class="text-center"><a
+											th:href="@{/admin/showorders}"
+											class="btn btn-danger">Verified orders</a></td>
+									</tr>
+									</tfoot>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

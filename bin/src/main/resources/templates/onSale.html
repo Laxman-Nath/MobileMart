@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<section class="onsale" style="margin-top: 200px;">
+		<div class="card">
+			<div class="card-body">
+				<div class="owl-carousel sale-carousel owl-theme">
+					<div class="item text-center" th:each="sale:${sales}">
+						<img th:src="@{'img/product_img/'+${sale.getFile()}}"
+							height="400px" width="400px">
+						<h1 th:text="${sale.getPName()}"></h1>
+						<div class="rating text-warning font-size-16">
+							<span><i class="fas fa-star"></i></span> <span><i
+								class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>
+							<span><i class="fas fa-star"></i></span> <span><i
+								class="far fa-star"></i></span>
+						</div>
+						<div class="price py-2" style="font-size:24px">
+							<span th:text="'Rs.'+${sale.getDiscountedPrice()}"></span> <span
+								class="text-decoration-line-through"
+								th:text="'Rs.'+${sale.getPrice()}"></span> <span
+								class=" bg-success"
+								th:text="${sale.getDiscountPercent()+'%'}"></span>
+							<br>
+							<span class="text-danger">Valid Upto:</span><span class="text-danger" th:text="${sale.getSaleEndDate()}"></span>
+						</div>
+						<a th:href="@{/viewDetail/{id}(id=${sale.getProduct().getId()})}"
+							class="btn btn-primary" style="font-size:24px">View Details</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+</body>
+</html>

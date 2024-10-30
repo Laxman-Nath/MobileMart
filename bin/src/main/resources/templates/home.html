@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Home page</title>
+<style>
+</style>
+</head>
+<body>
+	<section>
+		<!-- slider -->
+		<div id="carouselExample" class="carousel slide"
+			data-bs-ride="carousel" data-bs-interval="2000">
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="/img/bg1.jpg" class="d-block w-100" alt="error">
+				</div>
+				<div class="carousel-item">
+					<img src="/img/bg2.jpg" class="d-block w-100" alt="error">
+				</div>
+				<div class="carousel-item">
+					<img src="/img/bg3.jpg" class="d-block w-100" alt="error">
+				</div>
+				<div class="carousel-item">
+					<img src="/img/bg4.jpg" class="d-block w-100" alt="error">
+				</div>
+				<div class="carousel-item">
+					<img src="/img/bg5.jpg" class="d-block w-100" alt="error">
+				</div>
+				<div class="carousel-item">
+					<img src="/img/bg6.jpg" class="d-block w-100" alt="error">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#carouselExample" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#carouselExample" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+
+
+		<!--  Category -->
+		<div id="category">
+			<div class="container py-5">
+				<h4 class="text-center">CATEGORY</h4>
+				<hr>
+
+				<div
+					class="owl-carousel category-carousel owl-theme d-flex justify-content-between">
+					<div class="item py-2 gap" th:each="c:${categories}">
+						<div class="product md-5">
+							<a href="#"><img
+								th:src="@{'/img/category_img/'+${c.getFile()}}" alt="error"
+								class="img-fluid category"></a>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+		<!--  Latest -->
+		<div id="latest">
+			<div class="container py-5">
+				<h4 class="text-center">LATEST</h4>
+				<hr>
+
+				<div
+					class="owl-carousel own-theme latest-carousel d-flex justify-content-between ">
+					<div class="item py-2" th:each="product:${latest}"
+						style="margin-right: 8px;">
+						<div class="product md-5 d-flex align-items-center"
+							style="height: 250px;">
+							<a href="#"><img
+								th:src="@{'/img/product_img/'+${product.getFile()}}" alt="error"
+								class="img-fluid "></a>
+						</div>
+						<div class="text-center">
+							<h6 th:text="${product.name}"></h6>
+							<div class="review-rating">
+								<th:block
+									th:if="${@reviewServiceImpl.calculateRating(product.id)>0}">
+									<span
+										th:each="star : ${#numbers.sequence(1, @reviewServiceImpl.calculateRating(product.id))}">
+										<i class="fas fa-star text-warning"></i>
+									</span>
+									<span
+										th:each="emptyStar : ${#numbers.sequence(@reviewServiceImpl.calculateRating(product.id)+ 1, 5)}">
+										<i class="fas fa-star text-secondary"></i>
+									</span>
+								</th:block>
+								<th:block
+									th:unless="${@reviewServiceImpl.calculateRating(product.id)>0}">
+
+									<span th:each="emptyStar : ${#numbers.sequence( 1, 5)}">
+										<i class="fas fa-star text-secondary"></i>
+									</span>
+								</th:block>
+							</div>
+							<div class="price py-2">
+								<span th:text="'Rs.'+${product.getDiscountedPrice()}"></span> <span
+									class="text-decoration-line-through"
+									th:text="'Rs.'+${product.getPrice()}"></span> <span
+									class=" bg-success"
+									th:text="${product.getDiscountPercent()+'%'}">10%off</span>
+							</div>
+							<a th:href="@{/viewDetail/{id}(id=${product.getId()})}"
+								class="btn btn-primary">View Details</a>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+	</section>
+</body>
+</html>

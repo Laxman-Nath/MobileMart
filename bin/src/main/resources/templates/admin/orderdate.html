@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Choose date</title>
+</head>
+<body>
+	<section
+		style="background-image: url('/img/register.png'); background-size: cover; margin-top: 140px; margin-bottom: 40px; padding: 20px;">
+		<div class="d-flex justify-content-center align-items-center"
+			style="height: 50%;">
+			<div class="container ">
+				<div class="row justify-content-center">
+					<div class="col-md-6">
+						<div class="card p-3 ">
+							<div class="card-header text-center bg-success text-white">
+								<p class="fs-4 mb-0">Choose Date</p>
+								<th:block th:if="${session.success}">
+									<p th:text="${session.success}"></p>
+								</th:block>
+								<th:block th:if="${session.error}">
+									<p th:text="${session.error}"></p>
+								</th:block>
+
+								<th:block
+									th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								</th:block>
+							</div>
+							<div class="card-body">
+								<form action="/admin/generateOrderReport" method="post">
+
+									<div class="mb-3">
+										<label class="form-label">Start date</label> <input
+											type="datetime-local" class="form-control" name="startdatetime">
+									</div>
+									<div class="mb-3">
+										<label class="form-label">End date</label> <input
+											type="datetime-local" class="form-control" name="enddatetime">
+									</div>
+
+
+									<div>
+										<button type="submit" class="btn btn-danger w-100">Generate
+											report</button>
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
