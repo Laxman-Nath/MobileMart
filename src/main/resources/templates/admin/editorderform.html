@@ -10,22 +10,28 @@
 </style>
 </head>
 <body>
-	<section style="margin-top: 100px;" th:if="${order!=null || !order.isEmpty()}">
+	<section style="margin-top: 100px;"
+		th:if="${order!=null || !order.isEmpty()}">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
 					<div class="card">
 						<div class="card-header text-center bg-danger text-white">
 							<h3>Edit Order</h3>
+							<th:block th:if="${session.success}">
+									<p th:text="${session.success}"></p>
+								</th:block>
+								<th:block th:if="${session.error}">
+									<p th:text="${session.error}"></p>
+								</th:block>
+
+								<th:block
+									th:text="${@removeSessionUtils.removeSessionAttribute()}">
+								</th:block>
 						</div>
 						<div class="card-body text-center">
 
-							<div th:if="${message}" class="alert alert-success" role="alert">
-								<p th:text="${message}"></p>
-							</div>
-							<div th:if="${error}" class="alert alert-danger" role="alert">
-								<p th:text="${error}"></p>
-							</div>
+							
 
 							<form th:action="@{/admin/updateOrder/{id}(id=${order.id})}"
 								method="post" th:object="${order}">
@@ -37,11 +43,47 @@
 										autocomplete="name" th:field="*{customer.name}"
 										class="form-control">
 								</div>
-								<div class="mb-3">
-									<label class="form-label" for="address">Shipping
-										address</label> <input type="text" th:value="${order.shippingAddress}"
-										id="address" autocomplete="address" class="form-control"
-										th:field="*{shippingAddress}">
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<input type="text" id="shippingCountry" name="shippingCountry"
+											class="form-control" th:value="Nepal" placeholder="Country"
+											th:field="*{shippingCountry}" readonly>
+									</div>
+									<div class="col-md-6">
+										<input type="text" id="shippingState" name="shippingState"
+											class="form-control" placeholder="State"
+											th:value="${order.customer.state}"
+											th:field="*{shippingState}" required>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<input type="text" id="shippingDistrict"
+											name="shippingDistrict" class="form-control"
+											placeholder="District" th:value="${order.customer.district}"
+											th:field="*{shippingDistrict}" required>
+									</div>
+									<div class="col-md-6">
+										<input type="text" id="shippingMuncipility"
+											name="shippingMuncipility" class="form-control"
+											th:value="${order.customer.muncipility}"
+											th:field="*{shippingMuncipility}" placeholder="Muncipility"
+											required>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<input type="number" id="shippingWard" name="shippingWard"
+											class="form-control" placeholder="Ward"
+											th:value="${order.customer.ward}" th:field="*{shippingWard}"
+											required>
+									</div>
+									<div class="col-md-6">
+										<input type="text" id="shippingTole" name="shippingTole"
+											class="form-control" placeholder="Tole"
+											th:value="${order.customer.tole}" th:field="*{shippingTole}"
+											required>
+									</div>
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="date">Placed Date</label> <input
@@ -65,7 +107,7 @@
 										<option value="Submitted"
 											th:selected="${order.status=='Submitted'}">Submitted</option>
 										<option value="Cancelled"
-											th:selected="${order.status=='Cancelled'}">Submitted</option>
+											th:selected="${order.status=='Cancelled'}">Cancelled</option>
 
 									</select>
 

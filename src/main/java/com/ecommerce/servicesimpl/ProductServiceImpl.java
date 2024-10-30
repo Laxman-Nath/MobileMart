@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ecommerce.dao.ProductDao;
@@ -41,12 +44,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getAllProducts(String category) {
-		List<Product> products = new ArrayList<>();
+	public Page<Product> getAllProducts(String category,int page,int pageNo) {
+		Page<Product> products ;
+		Pageable pageable=PageRequest.of(page, pageNo);
 		if (category == null || category.equals("")) {
-			products = this.pd.findAll();
+			
+			products= this.pd.findAll(pageable);
 		} else {
-			products = this.pd.findByCategory(category);
+			products = this.pd.findByCategory(category,pageable);
 		}
 		return products;
 	}
@@ -57,17 +62,26 @@ public class ProductServiceImpl implements ProductService {
 		return this.pd.findById(id).orElse(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Set<Product> searchProduct(String keyword) {
+	public Page<Product> searchProduct(String keyword,int page,int size) {
 //	   System.out.println(keyword);
 		String searchedKeywordString = keyword.trim();
-		Set<Product> products = new HashSet<>();
+		Set<Product> productsSet = new HashSet<>();
 		String[] keywords = searchedKeywordString.split("\\s+");
 		for (String str : keywords) {
-			products.addAll(this.pd.searchProducts(str));
+			productsSet.addAll(this.pd.searchProducts(str));
 		}
+		
+		List<Product> productsList=new ArrayList<>(productsSet);
+		int totalProducts=productsList.size();
+		
+		int startIndex=Math.min(page*size, totalProducts);
+		int endIndex=Math.min(startIndex+size,totalProducts);
+		
+		List<Product> paginatedList=productsList.subList(startIndex, endIndex);
 
-		return products;
+		return new PageImpl(paginatedList,PageRequest.of(page, size),totalProducts);
 	}
 
 	@Override

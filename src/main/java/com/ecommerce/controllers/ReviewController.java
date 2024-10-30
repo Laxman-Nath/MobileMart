@@ -3,6 +3,7 @@ package com.ecommerce.controllers;
 import java.security.Principal;
 import java.util.List;
 
+import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,11 +25,14 @@ import com.ecommerce.models.Order;
 import com.ecommerce.models.Product;
 import com.ecommerce.models.Review;
 import com.ecommerce.services.CategoryService;
+import com.ecommerce.services.CustomerService;
 import com.ecommerce.services.OrderService;
 import com.ecommerce.services.ReviewService;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 import com.ecommerce.servicesimpl.ProductServiceImpl;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ReviewController {
@@ -40,32 +44,30 @@ public class ReviewController {
 	private ReviewService reviewService;
 	@Autowired
 	private OrderService orderService;
-    @Autowired
-    private CategoryService categoryService;
-//	@ModelAttribute
-//	public void getLoggedInUser(Principal p, Model m) {
-//		String emailString = p.getName();
-////System.out.println(emailString);
-//		Customer customer = this.customerServiceImpl.findByEmail(emailString);
-////System.out.println(customer.getName());
-//		m.addAttribute("customer", customer);
-//	}
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private CustomerService customerService;
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
 		List<Category> categories = this.categoryService.findByIsActiveTrue();
 		m.addAttribute("categories", categories);
-		String emailString = p.getName();
-//	System.out.println(emailString);
-		Customer customer = this.customerServiceImpl.findByEmail(emailString);
-		List<Order> orders = this.orderService.findByCustomer(customer);
+		if (p != null) {
+			String emailString = p.getName();
+
+			Customer customer = this.customerServiceImpl.findByEmail(emailString);
+			List<Order> orders = this.orderService.findByCustomer(customer);
+
+			m.addAttribute("orders", orders);
+
+			m.addAttribute("loggedUser", customer);
+		} else {
+			System.out.println("Inside null");
+			m.addAttribute("loggedUser", null);
+		}
 		List<Product> latest = this.psi.getLatestProduct();
 		m.addAttribute("latest", latest);
-		m.addAttribute("orders", orders);
-		System.out.println(orders.isEmpty());
-		orders.forEach(o -> o.getCustomer().getName());
-//	System.out.println(customer.getName());
-		m.addAttribute("loggedUser", customer);
 	}
 
 	@GetMapping("/reviews/{id}")
@@ -74,7 +76,7 @@ public class ReviewController {
 		List<Review> reviews = product.getReviews();
 		model.addAttribute("product", product);
 		model.addAttribute("reviews", reviews);
-		model.addAttribute("newReview", new Review());
+
 		return "review/reviews";
 	}
 
@@ -94,8 +96,8 @@ public class ReviewController {
 	}
 
 	@PostMapping("/saveReview/{id}")
-	@ResponseBody
-	public ResponseEntity<String> saveReview(@PathVariable int id, @ModelAttribute("newReview") Review review) {
+	public String saveReview(@PathVariable int id, @ModelAttribute("newReview") Review review, HttpSession session) {
+		Review savedReview = null;
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //		System.out.println(userDetails.getUsername());
@@ -110,22 +112,21 @@ public class ReviewController {
 				email = (String) authentication.getPrincipal();
 			}
 			System.out.println("Email is:" + email);
-			reviewService.saveReview(id, review, email);
+			savedReview = reviewService.saveReview(id, review, customerService.findByEmail(email).getId());
 			System.out.println(review.getComment());
 			System.out.println(review.getRating());
-			String htmlResponse = "<html>" + "<head><title>Review Added</title></head>" + "<body>"
-					+ "<h1 style='color: green;'>Review added successfully!</h1>"
-					+ "<p>Thank you for your feedback.</p>" + "</body>" + "</html>";
 
-			return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(htmlResponse);
 		} catch (Exception e) {
-			String errorHtmlResponse = "<html>" + "<head><title>Error</title></head>" + "<body>"
-					+ "<h1 style='color: red;'>Error adding review</h1>"
-					+ "<p>There was a problem processing your request.</p>" + "</body>" + "</html>";
-
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.TEXT_HTML)
-					.body(errorHtmlResponse);
+			e.printStackTrace();
 		}
+
+		if (savedReview == null) {
+			session.setAttribute("error", "Error adding review!");
+		} else {
+			session.setAttribute("success", "Your review was added successfully! Thank you for your feedback");
+		}
+
+		return "redirect:/showreviewform/" + id;
 	}
 
 	@GetMapping("/admin/viewReviews")
@@ -136,13 +137,13 @@ public class ReviewController {
 	}
 
 	@GetMapping("admin/deleteReview/{reviewId}")
-	@ResponseBody
-	public String deleteReview(@PathVariable int reviewId, Model m) {
+
+	public String deleteReview(@PathVariable int reviewId, HttpSession session) {
 		if (this.reviewService.deleteReview(reviewId)) {
-			m.addAttribute("success", "Review is successfully deleted");
+			session.setAttribute("success", "Review is successfully deleted");
 
 		} else {
-			m.addAttribute("error", "Error deleting reviews");
+			session.setAttribute("error", "Error deleting reviews");
 		}
 		return "redirect:/admin/viewReviews";
 	}

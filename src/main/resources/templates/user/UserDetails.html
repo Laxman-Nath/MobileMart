@@ -12,8 +12,16 @@
 				<div class="col-md-6 offset-md-3">
 					<div class="card">
 						<div class="card-header text-center">
-							<img th:src="@{'/img/profile_img/'+${customer.file}}"
-								class="rounded-circle img-fluid" />
+                            <h1 class="text-center bg-info text-white" style="border-radius:10px;">User Details</h1>
+							
+								<div class="d-flex justify-content-center align-items-center"
+									>
+
+									<img th:src="@{'/img/profile_img/'+${url}}" class="img-fluid"
+										style="height: 250px; width: 250px; border-radius: 50%;" />
+								</div>
+						
+							
 
 							<th:block th:if="${session.success}">
 								<p th:text="${session.success}"></p>
@@ -23,7 +31,7 @@
 							</th:block>
 
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
 							</th:block>
 						</div>
 						<hr>

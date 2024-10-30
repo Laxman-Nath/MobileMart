@@ -10,7 +10,7 @@
 		<div class="container  d-flex justify-content-center">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="card text-center" >
+					<div class="card text-center">
 						<div class="card-header text-center bg-primary text-white">
 							<h3>Add Product</h3>
 							<th:block th:if="${session.addProductSuccess}">
@@ -20,9 +20,11 @@
 								<h3 th:text="${session.addProductError}"></h3>
 							</th:block>
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
+							</th:block>
 						</div>
-						<div class="card-body" style="background-image: url('/img/bg-01.jpg')">
+						<div class="card-body"
+							style="background-image: url('/img/bg-01.jpg')">
 							<form action="/admin/saveProduct" method="post"
 								enctype="multipart/form-data">
 								<div class="row">

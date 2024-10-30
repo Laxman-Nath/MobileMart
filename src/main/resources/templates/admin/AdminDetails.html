@@ -4,16 +4,30 @@
 <head>
 <meta charset="UTF-8">
 <title>Admin Profile</title>
+<style>
+.profile-image {
+	width: 200px; /* Fixed width */
+	height: 200px; /* Fixed height */
+
+	
+}
+</style>
 </head>
 <body>
 	<section style="margin-top: 240px;">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
-					<div class="card">
+					<div class="card text-center">
 						<div class="card-header text-center">
-							<img th:src="@{'/img/profile_img/'+${customer.file}}"
-								class="rounded-circle img-fluid" />
+							<div
+								style="width: 400px; height: 400px; overflow: hidden; border-radius: 50%;"
+								class="text-center">
+								<img th:src="@{'/img/profile_img/' + ${customer.file}}"
+									class="profile-image img-fluid" />
+							</div>
+
+
 
 							<th:block th:if="${session.success}">
 								<p th:text="${session.success}"></p>
@@ -23,7 +37,7 @@
 							</th:block>
 
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
 							</th:block>
 						</div>
 						<hr>

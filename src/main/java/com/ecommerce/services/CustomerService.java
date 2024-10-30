@@ -26,10 +26,11 @@ public interface CustomerService {
 	void unlockAccount(Customer customer);
 
 	Customer updateCustomer(Customer customer);
-	
+
 	boolean isPasswordMatches(Customer customer);
 
 	boolean changePassword(int customerId, String password, String newPassword);
-	
+
+	List<Customer> getAllLockedCustomers();
 
 }

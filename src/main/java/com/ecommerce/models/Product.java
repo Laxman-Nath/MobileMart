@@ -10,6 +10,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -92,6 +94,10 @@ public class Product {
 	@OneToMany(mappedBy = "product")
 	private List<CartProduct> cartProducts = new ArrayList<>();
 
-	@OneToMany(mappedBy = "product")
+	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems;
+
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 }

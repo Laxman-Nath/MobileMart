@@ -35,6 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setEnable(true);
 		customer.setAccountNonLocked(true);
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+		customer.setProvider("self");
 		return this.cd.save(customer);
 	}
 
@@ -154,6 +155,12 @@ public class CustomerServiceImpl implements CustomerService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<Customer> getAllLockedCustomers() {
+	
+		return this.cd.findCustomerByIsAccountNonLockedIsFalse();
 	}
 
 }

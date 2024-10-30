@@ -29,9 +29,9 @@ public class ReviewServiceImpl implements ReviewService {
 	private CustomerDao customerDao;
 
 	@Override
-	public void saveReview(int pid, Review review, String customerEmail) {
+	public Review saveReview(int pid, Review review, int customerId) {
 		Product product = this.productDao.findById(pid).get();
-		Customer customer = this.customerDao.findByEmail(customerEmail);
+		Customer customer = this.customerDao.findById(customerId).get();
 		review.setProduct(product);
 		review.setDate(LocalDate.now());
 		review.setCustomer(customer);
@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
 		productDao.save(product);
 		customerDao.save(customer);
 
-//		return this.reviewDao.save(review);
+		return review;
 	}
 
 	@Override

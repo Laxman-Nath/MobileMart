@@ -23,17 +23,17 @@
 								</div>
 							</th:block>
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
 							</th:block>
 						</div>
 						<div class="card-body">
 
-							
+
 							<div class="row">
 
 								<div class="col-md-4">
-                                   <h3 class="text-center text-primary" >Description</h3>
-                                   <hr>
+									<h3 class="text-center text-primary">Description</h3>
+									<hr>
 									<div class="desc">
 										<table class="table table-success table-striped">
 											<tr>
@@ -197,9 +197,13 @@
 
 									<div class="row">
 										<div class="col-md-4">
-											<a href="#" class="btn btn-primary"
-												th:href="@{ /reviews/{id}(id=${product.id} )}">View
-												Reviews</a>
+											
+
+											
+												<a href="#" class="btn btn-primary"
+													th:href="@{ /reviews/{id}(id=${product.id} )}">View
+													Reviews</a>
+											
 										</div>
 										<div class="col-md-8 text-center">
 											<th:block th:if="${loggedUser==null}">

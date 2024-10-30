@@ -29,22 +29,64 @@
 
 							<form th:action="@{/user/updateOrder/{id}(id=${order.id})}"
 								method="post" th:object="${order}">
-								 <input type="hidden" th:value="${order.invoiceNumber}"
-                                 th:field="*{invoiceNumber}">
-								<input type="hidden" th:field="*{status}" name="status"
-									th:value="${order.status}">
+								<input type="hidden" th:value="${order.invoiceNumber}"
+									th:field="*{invoiceNumber}"> <input type="hidden"
+									th:field="*{status}" name="status" th:value="${order.status}">
 								<div class="mb-3">
 									<label class="form-label" for="name">Customer name</label> <input
 										type="text" th:value="${order.customer.name}" id="name"
 										autocomplete="name" th:field="*{customer.name}"
 										class="form-control">
 								</div>
-								<div class="mb-3">
-									<label class="form-label" for="address">Shipping
-										address</label> <input type="text" th:value="${order.shippingAddress}"
-										id="address" autocomplete="address" class="form-control"
-										th:field="*{shippingAddress}">
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<label class="form-label">Country</label> <input type="text"
+											id="shippingCountry" name="shippingCountry"
+											class="form-control" th:value="Nepal" placeholder="Country"
+											readonly>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label">State</label> <input type="text"
+											id="shippingState" name="shippingState" class="form-control"
+											placeholder="State" th:value="${order.shippingState}"
+											th:field="*{shippingState}" required>
+									</div>
 								</div>
+
+								<div class=" row mb-3">
+									<div class="col-md-6">
+										<label class="form-label">District</label> <input type="text"
+											id="shippingDistrict" name="shippingDistrict"
+											class="form-control" placeholder="District"
+											th:value="${order.shippingDistrict}"
+											th:field="*{shippingDistrict}" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label">Muncipility/Gaupalika</label> <input
+											type="text" id="shippingMuncipility"
+											name="shippingMuncipility" class="form-control"
+											th:value="${order.shippingMuncipility}"
+											placeholder="Muncipility" th:field="*{shippingMuncipility}"
+											required>
+									</div>
+								</div>
+
+								<div class=" row mb-3">
+									<div class="col-md-6">
+										<label class="form-label">Ward</label> <input type="number"
+											id="shippingWard" name="shippingWard" class="form-control"
+											placeholder="Ward" th:field="*{shippingWard}"
+											th:value="${order.shippingWard}" required>
+									</div>
+
+									<div class="col-md-6">
+										<label class="form-label">Tole</label> <input type="text"
+											id="shippingTole" name="shippingTole" class="form-control"
+											placeholder="Tole" th:field="*{shippingTole}"
+											th:value="${order.shippingTole}" required>
+									</div>
+								</div>
+
 								<div class="mb-3">
 									<label class="form-label" for="date">Placed Date</label> <input
 										type="text" th:value="${order.placedDate}" id="date"

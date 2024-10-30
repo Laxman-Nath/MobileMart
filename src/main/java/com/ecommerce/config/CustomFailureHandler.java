@@ -2,29 +2,23 @@ package com.ecommerce.config;
 
 import java.io.IOException;
 
-import org.apache.catalina.startup.FailedContext;
-import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ecommerce.dao.CustomerDao;
 import com.ecommerce.models.Customer;
-import com.ecommerce.services.CommonService;
-import com.ecommerce.services.CustomerService;
+
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,8 +29,7 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 	Logger logger = LoggerFactory.getLogger(CustomFailureHandler.class);
 	@Autowired
 	private CustomerServiceImpl customerServiceImpl;
-	@Autowired
-	private CommonService commonService;
+	
 	@Autowired
 	private CustomerDao customerDao;
 	@Autowired

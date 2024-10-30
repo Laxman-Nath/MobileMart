@@ -5,7 +5,7 @@ import java.util.List;
 import com.ecommerce.models.Review;
 
 public interface ReviewService {
-	void saveReview(int pid,Review review,String customerEmail);
+	Review saveReview(int pid,Review review,int customerId);
 	
 	int calculateRating(int productId);
 	

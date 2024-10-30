@@ -3,6 +3,7 @@ package com.ecommerce.dao;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +16,7 @@ import com.ecommerce.models.Product;
 public interface ProductDao extends JpaRepository<Product, Integer> {
 	Boolean existsByName(String name);
 
-	List<Product> findByCategory(String category);
+	Page<Product> findByCategory(String category,Pageable pageable);
 
 	@Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
 			+ "LOWER(p.dimension) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "

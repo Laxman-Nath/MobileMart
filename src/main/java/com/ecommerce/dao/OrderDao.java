@@ -20,6 +20,6 @@ public interface OrderDao extends JpaRepository<Order, Integer> {
 
 	List<Order> findByPlacedDateBetween(LocalDateTime startDateTime, LocalDateTime enDateTime);
 
-	@Query("SELECT o FROM Order o  WHERE o.customer=?1 AND (o.status='Submitted' OR o.status='Shipped')")
+	@Query("SELECT o FROM Order o  WHERE o.customer=?1 AND (o.status='Submitted')")
 	List<Order> findByCustomerAndStatus(Customer customer);
 }

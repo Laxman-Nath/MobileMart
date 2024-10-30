@@ -8,23 +8,37 @@
 </head>
 <body>
 
-	<section style="margin-top: 200px;">
+	<section style="margin-top: 200px;" class="overflow-auto bg-primary">
 		<div class="row d-flex justify-content-center">
 			<div class="col-md-10 col-xl-8 text-center">
-				<h3 class="mb-4">What Our Customers Say?</h3>
+				<h3 class="mb-4" style="font-size: 50px;">What Our Customers
+					Say?</h3>
 			</div>
 		</div>
 
-		<div class="row text-center d-flex  justify-content-center">
-			<div class="col-md-4 mb-5 mb-md-0 "
-				th:each="review : ${product.getReviews()}">
+		<div class="row  list-group ">
+			<div class="col-md-6 offset-md-3  list-group-item text-center"
+				th:each="review : ${product.getReviews()}"
+				style="margin-bottom: 20px;">
 				<div class="card testimonial-card">
 					<div class="card-up" style="background-color: #9d789b;"></div>
-					<div class="avatar mx-auto bg-white">
+
+					<div class="d-flex justify-content-center align-items-center">
+
 						<img
-							src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(1).webp"
-							class="rounded-circle img-fluid" />
+							th:src="@{'/img/profile_img/'+${review.getCustomer.getFile()}}"
+							class=" img-fluid" alt="Profile Image" width="250px"
+							height="250px" />
+
+
+
 					</div>
+
+
+
+
+
+
 					<div class="card-body">
 						<h4 class="mb-4" th:text="${review.getCustomer().getName()}"></h4>
 						<p class="text-muted mb-2" th:text="${review.date}"></p>
@@ -34,7 +48,7 @@
 								<span th:each="star : ${#numbers.sequence(1, review.rating)}">
 									<i class="fas fa-star text-warning"></i>
 								</span>
-							
+
 							</th:block>
 							<th:block th:if="${review.rating>0 && review.rating!=5}">
 								<span th:each="star : ${#numbers.sequence(1, review.rating)}">
@@ -60,10 +74,19 @@
 				</div>
 			</div>
 		</div>
-		<div class="text-center " style="margin-top: 50px;">
-			<a th:href="@{/showreviewform/{id}(id=${product.id})}"
-				class="btn btn-success text-center  "
-				style="margin-left: 40px; font-size: 22px;">Add review</a>
+		<div class="row text-center">
+			<div class="text-center col-md-6 offset-md-3 "
+				style="margin-top: 50px;">
+				<th:block th:if="${loggedUser==null}">
+					<a th:href="@{/login}" class="btn btn-success text-center w-100 "
+						style="margin-bottom: 10px; font-size: 40px;">Add review</a>
+				</th:block>
+				<th:block th:unless="${loggedUser==null}">
+					<a th:href="@{/showreviewform/{id}(id=${product.id})}"
+						class="btn btn-success text-center w-100 "
+						style="margin-bottom: 10px; font-size: 40px;">Add review</a>
+				</th:block>
+			</div>
 		</div>
 	</section>
 </body>

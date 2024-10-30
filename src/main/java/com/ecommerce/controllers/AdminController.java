@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,12 +25,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ecommerce.commonutils.FileUploadUtils;
 import com.ecommerce.models.Category;
 import com.ecommerce.models.Customer;
 import com.ecommerce.models.Order;
 import com.ecommerce.models.OrderItem;
 import com.ecommerce.models.Product;
 import com.ecommerce.models.Sale;
+import com.ecommerce.services.OrderItemService;
 import com.ecommerce.services.OrderService;
 import com.ecommerce.servicesimpl.CategoryServiceImpl;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
@@ -54,9 +57,12 @@ public class AdminController {
 
 	@Autowired
 	private SaleServiceImpl ssi;
-
+	@Autowired
+	private FileUploadUtils fileUpload;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private OrderItemService orderItemService;
 
 	@GetMapping("/")
 	public String adminPanel() {
@@ -66,9 +72,12 @@ public class AdminController {
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
 		List<Category> categories = csi.findByIsActiveTrue();
+	
 		m.addAttribute("categories", categories);
 		String emailString = p.getName();
 		Customer customer = customerServiceImpl.findByEmail(emailString);
+		List<Order> orders = this.orderService.findByCustomer(customer);
+		m.addAttribute("orders", orders);
 		m.addAttribute("loggedUser", customer);
 	}
 
@@ -104,8 +113,8 @@ public class AdminController {
 	}
 
 	@GetMapping("/viewProducts")
-	public String viewProduct(@RequestParam(required = false, defaultValue = "") String category, Model m) {
-		List<Product> products = psi.getAllProducts(category);
+	public String viewProduct(@RequestParam(required = false, defaultValue = "") String category, Model m,@RequestParam (defaultValue = "0") int page,@RequestParam(defaultValue = "5") int pageNo) {
+		Page<Product> products = psi.getAllProducts(category,page,pageNo);
 		List<Sale> sales = ssi.getAllProductsOnSale();
 		m.addAttribute("products", products);
 		m.addAttribute("sales", sales);
@@ -207,22 +216,39 @@ public class AdminController {
 	public String addCategory(@ModelAttribute Category category, @RequestParam("image") MultipartFile image,
 			HttpSession session, @RequestParam("status") Boolean status) throws IOException {
 
-		if (csi.existsByName(category.getName())) {
+//		if (csi.existsByName(category.getName())) {
+//			session.setAttribute("error", "Category already exists in database");
+//		} else {
+//			category.setFile(image.getOriginalFilename());
+//			category.setActive(status);
+//			Category cat = csi.addCategory(category);
+//			if (cat != null) {
+//				File saveFile = new ClassPathResource("static/img").getFile();
+//				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
+//						+ image.getOriginalFilename());
+//				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//				session.setAttribute("success", "Successfully added category");
+//			} else {
+//				session.setAttribute("error", "Something went wrong");
+//			}
+//		}
+
+		if (this.csi.existsByName(category.getName())) {
 			session.setAttribute("error", "Category already exists in database");
-		} else {
+		} else if (image != null) {
 			category.setFile(image.getOriginalFilename());
-			category.setActive(status);
-			Category cat = csi.addCategory(category);
-			if (cat != null) {
-				File saveFile = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-						+ image.getOriginalFilename());
-				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-				session.setAttribute("success", "Successfully added category");
+			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\category_img\\")) {
+				Category registeredCategory = this.csi.addCategory(category);
+				if (registeredCategory != null) {
+					session.setAttribute("success", "Successfully added category");
+				} else {
+					session.setAttribute("error", "Something went wrong");
+				}
 			} else {
 				session.setAttribute("error", "Something went wrong");
 			}
 		}
+
 		return "redirect:/admin/category";
 	}
 
@@ -254,24 +280,22 @@ public class AdminController {
 		oldcategory.setName(category.getName());
 		oldcategory.setActive(status);
 
-		if (csi.existsByName(oldcategory.getName())) {
-			session.setAttribute("EditError", "Category with similar name already exists!!");
-		} else {
+		
 			if (!ObjectUtils.isEmpty(newfile) && !newfile.isEmpty()) {
 				oldcategory.setFile(newfile.getOriginalFilename());
-				File file = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(file.getAbsolutePath() + File.separator + "category_img" + File.separator
-						+ newfile.getOriginalFilename());
-				Files.copy(newfile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				if (fileUpload.uploadFile(newfile, "src\\main\\resources\\static\\img\\category_img\\")) {
+					Category cat = csi.addCategory(oldcategory);
+					if (cat == null) {
+						session.setAttribute("EditError", "Error editing category");
+					} else {
+						session.setAttribute("EditSuccess", "Successfully Edited category");
+					}
+				}
 			}
-			Category cat = csi.addCategory(oldcategory);
-			if (cat == null) {
-				session.setAttribute("EditError", "Error editing category");
-			} else {
-				session.setAttribute("EditSuccess", "Successfully Edited category");
-			}
-		}
+
+		
 		return "redirect:/admin/category";
+
 	}
 
 	@GetMapping("addToSale/{id}")
@@ -371,9 +395,7 @@ public class AdminController {
 	public ResponseEntity<String> deleteProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
 		try {
 			if (orderService.deleteProductFromOrder(itemId)) {
-				String message = "Order updated successfully";
-				Map<String, Object> response = new HashMap<>();
-				response.put("message", message);
+			
 				return ResponseEntity.ok("Product deleted successfully.");
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
@@ -387,7 +409,16 @@ public class AdminController {
 
 	@PatchMapping("/increaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> increaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
-		try {
+		  OrderItem orderItem = this.orderItemService.findById(itemId);
+		    Product product = orderItem.getProduct();
+
+		    try {
+		        if (product.getQuantity() <= orderItem.getQuantity()) {
+		        	System.out.println("******************Inside if************************** ");
+		            return ResponseEntity.status(HttpStatus.CONFLICT)
+		                    .body("Cannot increase product quantity. Available: " + product.getQuantity());
+		        }
+		        else {
 			if (orderService.increaseProductFromOrder(itemId)) {
 				String message = "Product is increased successfully";
 				Map<String, Object> response = new HashMap<>();
@@ -396,6 +427,7 @@ public class AdminController {
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
 			}
+		        }
 		} catch (Exception e) {
 			logger.error("Failed to increase product quantity", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -460,11 +492,10 @@ public class AdminController {
 			@RequestParam(required = false) MultipartFile image) throws IOException {
 		System.out.println("Password:" + customer.getPassword());
 		if (!image.isEmpty() && image != null) {
-			customer.setFile(image.getOriginalFilename());
-			File file = new ClassPathResource("static/img").getFile();
-			Path path = Paths.get(file.getAbsolutePath() + File.separator + "profile_img" + File.separator
-					+ image.getOriginalFilename());
-			Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			if (!fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
+				session.setAttribute("error", "Error updating your profile!");
+				return "redirect:/admin/viewProfile/" + customer.getId();
+			}
 		}
 //		customer.setFile(image.getOriginalFilename());
 		customer.setRole("ROLE_ADMIN");
@@ -506,23 +537,22 @@ public class AdminController {
 	public String registerUser(@ModelAttribute Customer customer, @RequestParam MultipartFile image,
 			HttpSession session) throws IOException {
 
-		if (customer != null) {
-			if (!image.isEmpty() && image != null) {
-				customer.setFile(image.getOriginalFilename());
-				File file = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(file.getAbsolutePath() + File.separator + "profile_img" + File.separator
-						+ image.getOriginalFilename());
-				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+		if (customer != null && image != null) {
+			customer.setFile(image.getOriginalFilename());
+			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
 				customer.setRole("ROLE_ADMIN");
-				Customer c = this.customerServiceImpl.addCustomer(customer);
-				if (!ObjectUtils.isEmpty(c)) {
-					session.setAttribute("registerSuccess", "Admin added successfully!");
+				Customer registeredCustomer = customerServiceImpl.addCustomer(customer);
+				if (registeredCustomer != null) {
+					session.setAttribute("Success", "Admin is registered successfully!");
 				} else {
-					session.setAttribute("registerError", "Error adding admin!");
+					session.setAttribute("Error", "Error registering admin!");
 				}
+			} else {
+				session.setAttribute("Error", "Error registering admin!");
 			}
+
 		} else {
-			System.out.println("Customer is null");
+			session.setAttribute("Error", "Error registering admin!");
 		}
 		return "redirect:/admin/addAdmin";
 	}

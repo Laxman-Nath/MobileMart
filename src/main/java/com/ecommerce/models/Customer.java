@@ -1,9 +1,11 @@
 package com.ecommerce.models;
+
 import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;;
 @Entity
 public class Customer {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String name;
 	private long mnumber;
@@ -34,7 +36,7 @@ public class Customer {
 	private String password;
 	private String cpassword;
 	private String file;
-	@OneToMany(mappedBy="customer")
+	@OneToMany(mappedBy = "customer")
 	private List<Review> reviews;
 	private String role;
 	private boolean isEnable;
@@ -42,9 +44,12 @@ public class Customer {
 	private int failedAttempt;
 	private Date lockedTime;
 	private String code;
-	@OneToMany(mappedBy = "customer",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	private List<Cart> carts;
-	@OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	private List<Order> orders;
-	
+	private String provider;
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Product> products;
+
 }

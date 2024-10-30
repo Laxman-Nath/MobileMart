@@ -2,10 +2,12 @@ package com.ecommerce.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.ecommerce.models.Customer;
 
@@ -14,36 +16,33 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CustomCustomer implements UserDetails {
 
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return this.customer.isAccountNonLocked();
-	}
+    private Customer customer;
 
-	private Customer customer;
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		SimpleGrantedAuthority authority=new SimpleGrantedAuthority(customer.getRole());
-		return Arrays.asList(authority);
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.customer.isAccountNonLocked();
+    }
 
-	@Override
-	public String getPassword() {
-		
-		return customer.getPassword();
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(customer.getRole());
+        return Arrays.asList(authority);
+    }
 
-	@Override
-	public String getUsername() {
-		
-		return customer.getEmail();
-	}
+    @Override
+    public String getPassword() {
+        return customer.getPassword();
+    }
 
-	@Override
-	public boolean isEnabled() {
-	   return this.customer.isEnable();
-		
-	}
-	
+    @Override
+    public String getUsername() {
+        return customer.getEmail();
+    }
 
+    @Override
+    public boolean isEnabled() {
+        return this.customer.isEnable(); // Ensure you have a proper method in Customer
+    }
+
+  
 }

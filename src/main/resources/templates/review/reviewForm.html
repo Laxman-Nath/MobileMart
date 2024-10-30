@@ -3,16 +3,26 @@
 	th:replace="~{base::layout(~{::section})}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Add Review</title>
 </head>
 <body>
 	<section style="margin-top: 240px">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4 offset-md-4">
+				<div class="col-md-6 offset-md-3">
 					<div class="card">
-						<div class="card-header">
+						<div class="card-header bg-success text-white">
 							<h2 class="text-center">Review Form</h2>
+							<th:block th:if="${session.success}">
+								<h3>[[${session.success}]]</h3>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<h3>[[${session.error}]]</h3>
+							</th:block>
+
+
+							<th:block
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body text-center">
 							<form action="#" method="post"
@@ -33,7 +43,7 @@
 									<textarea id="reviewText" class="form-control" rows="3"
 										th:field="*{comment}"></textarea>
 								</div>
-								<button type="submit" class="btn btn-primary">Submit
+								<button type="submit" class="btn btn-primary w-100">Submit
 									Review</button>
 							</form>
 

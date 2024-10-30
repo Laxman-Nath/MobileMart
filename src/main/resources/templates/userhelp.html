@@ -27,7 +27,7 @@
 								</div>
 							</th:block>
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}">
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
 							</th:block>
 							<h4 class="mb-0 text-center">Support Center</h4>
 						</div>
@@ -50,7 +50,7 @@
 							<h6>2. Resend Verification Email</h6>
 							<p>If you haven’t received the verification email, you can
 								request a new one by clicking the button below:</p>
-							<a href="#" class="btn btn-primary">Resend Verification Email</a>
+							<a th:href="@{/checkout/{customerId}/{cartId}(customerId=${customerId},cartId=${cartId})}" class="btn btn-primary">Resend Verification Email</a>
 
 							<h6>3. Ensure Your Email Address is Correct</h6>
 							<p>Double-check that the email address you provided is

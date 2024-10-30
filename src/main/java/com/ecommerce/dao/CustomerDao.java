@@ -10,8 +10,10 @@ import com.ecommerce.models.Customer;
 @Repository
 public interface CustomerDao extends JpaRepository<Customer,Integer>{
 Customer findByEmail(String email);
+boolean existsByEmail(String email);
 List<Customer> findCustomersByRole(String role);
 boolean existsByCode(String code);
 Customer findByCode(String code);
 boolean existsByPassword(String password);
+List<Customer> findCustomerByIsAccountNonLockedIsFalse();
 }

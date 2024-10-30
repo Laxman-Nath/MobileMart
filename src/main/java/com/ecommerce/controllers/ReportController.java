@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.ecommerce.commonutils.EmailUtils;
 import com.ecommerce.models.Category;
 import com.ecommerce.models.Customer;
 import com.ecommerce.models.Order;
-import com.ecommerce.services.CommonService;
+
 import com.ecommerce.services.CustomerService;
 import com.ecommerce.services.OrderService;
 import com.ecommerce.services.ReportService;
@@ -45,7 +46,7 @@ public class ReportController {
 	@Autowired
 	private CustomerService customerService;
 	@Autowired
-	private CommonService commonService;
+	private EmailUtils emailUtils;
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
@@ -100,7 +101,7 @@ public class ReportController {
 		
 		this.reportService.generateBill(orderId, pdfPath);
 
-		this.commonService.sendEmail(subject, url, customer, content, false, true, pdfPath);
+		this.emailUtils.sendEmail(subject, url, customer, content, false, true, pdfPath);
 		session.setAttribute("success", "Bill is sent to the customer mail!");
 		return "redirect:/admin/vieworderdetails/" + orderId;
 	}

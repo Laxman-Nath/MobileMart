@@ -15,11 +15,16 @@
 					<div class="card">
 						<div class="card-header text-center">
 							<h1>View Reviews</h1>
-
+							<th:block th:if="${session.success}">
+								<h3>[[${session.success}]]</h3>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<h3>[[${session.error}]]</h3>
+							</th:block>
 
 
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
 							<table class="table table-success table-striped">

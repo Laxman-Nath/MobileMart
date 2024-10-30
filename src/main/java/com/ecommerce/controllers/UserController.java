@@ -28,19 +28,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ecommerce.commonutils.EmailUtils;
+import com.ecommerce.commonutils.FileUploadUtils;
 import com.ecommerce.models.Category;
 import com.ecommerce.models.Customer;
 import com.ecommerce.models.Order;
 import com.ecommerce.models.OrderItem;
 import com.ecommerce.models.Product;
 import com.ecommerce.services.CategoryService;
+import com.ecommerce.services.OrderItemService;
 import com.ecommerce.services.OrderService;
 import com.ecommerce.services.ProductService;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -53,10 +58,14 @@ public class UserController {
 	private OrderService orderService;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private FileUploadUtils fileUpload;
+	@Autowired
+	private OrderItemService orderItemService;
 
 	@GetMapping("/")
 	public String home() {
-		return "/home";
+		return "home";
 	}
 
 	@ModelAttribute
@@ -80,6 +89,7 @@ public class UserController {
 	public String viewProfile(@PathVariable Integer userId, Model m) {
 //		System.out.println("The id is:" + userId);s
 		Customer customer = this.customerServiceImpl.findCustomerById(userId);
+		m.addAttribute("url", customer.getFile());
 		m.addAttribute("customer", customer);
 		return "user/UserDetails";
 	}
@@ -98,11 +108,13 @@ public class UserController {
 		System.out.println("Password:" + customer.getPassword());
 		if (!image.isEmpty() && image != null) {
 			customer.setFile(image.getOriginalFilename());
-			File file = new ClassPathResource("static/img").getFile();
-			Path path = Paths.get(file.getAbsolutePath() + File.separator + "profile_img" + File.separator
-					+ image.getOriginalFilename());
-			Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			if (!fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
+				session.setAttribute("error", "Error updating your profile!");
+				return "redirect:/user/viewProfile/" + customer.getId();
+			}
+
 		}
+
 //		customer.setFile(image.getOriginalFilename());
 		customer.setRole("ROLE_USER");
 		Customer c = this.customerServiceImpl.updateCustomer(customer);
@@ -179,21 +191,30 @@ public class UserController {
 
 	@PatchMapping("/increaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> increaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
-		try {
-			if (orderService.increaseProductFromOrder(itemId)) {
-				String message = "Product is increased successfully";
-				Map<String, Object> response = new HashMap<>();
-				response.put("message", message);
-				return ResponseEntity.ok("Product quantity increased successfully.");
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
-			}
-		} catch (Exception e) {
-			logger.error("Failed to increase product quantity", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("Failed to increase product quantity. Please try again.");
-		}
+	    OrderItem orderItem = this.orderItemService.findById(itemId);
+	    Product product = orderItem.getProduct();
+
+	    try {
+	        if (product.getQuantity() <= orderItem.getQuantity()) {
+	        	System.out.println("******************Inside if************************** ");
+	            return ResponseEntity.status(HttpStatus.CONFLICT)
+	                    .body("Cannot increase product quantity. Available: " + product.getQuantity());
+	        } else {
+	        	System.out.println("*****************inside else**********");
+	            if (orderService.increaseProductFromOrder(itemId)) {
+	                logger.info("Product quantity increased successfully for itemId: {}", itemId);
+	                return ResponseEntity.ok("Product quantity increased successfully.");
+	            } else {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+	            }
+	        }
+	    } catch (Exception e) {
+	        logger.error("Failed to increase product quantity", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Failed to increase product quantity. Please try again.");
+	    }
 	}
+
 
 	@PatchMapping("/decreaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> decreaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {

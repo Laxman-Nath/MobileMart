@@ -14,6 +14,7 @@
 					<div class="item text-center" th:each="sale:${sales}">
 						<img th:src="@{'img/product_img/'+${sale.getFile()}}"
 							height="400px" width="400px">
+							<hr>
 						<h1 th:text="${sale.getPName()}"></h1>
 						<div class="rating text-warning font-size-16">
 							<span><i class="fas fa-star"></i></span> <span><i
