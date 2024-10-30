@@ -46,5 +46,8 @@ public class Customer {
 	private List<Cart> carts;
 	@OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
 	private List<Order> orders;
-	
+	private String provider;
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	private List<Product> products;
+
 }
