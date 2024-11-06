@@ -7,15 +7,15 @@
 </head>
 <body>
 
-	<section class="onsale" style="margin-top: 200px;">
+	<section class="onsale section">
 		<div class="card">
-			<div class="card-body">
+			<div class="card-body" style="background: linear-gradient(90deg, hsla(233, 100%, 90%, 1) 0%, hsla(0, 0%, 89%, 1) 100%);">
 				<div class="owl-carousel sale-carousel owl-theme">
 					<div class="item text-center" th:each="sale:${sales}">
-						<img th:src="@{'img/product_img/'+${sale.getFile()}}"
+						<img th:src="@{'img/product_img/'+${sale.product.getFile()}}"
 							height="400px" width="400px">
 							<hr>
-						<h1 th:text="${sale.getPName()}"></h1>
+						<h1 th:text="${sale.product.name}"></h1>
 						<div class="rating text-warning font-size-16">
 							<span><i class="fas fa-star"></i></span> <span><i
 								class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>

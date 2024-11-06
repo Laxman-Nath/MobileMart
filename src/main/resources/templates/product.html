@@ -12,7 +12,7 @@
 	rel="stylesheet">
 </head>
 <body>
-	<section style="margin-top: 140px;">
+	<section class="section" style="border:none;">
 		<div class="container-fluid">
 			<div class="row">
 
@@ -35,8 +35,9 @@
 				<!-- Products Section -->
 				<div class="col-md-10">
 					<div class="card">
-						<div class="card-body">
+						<div class="card-body" style="background: linear-gradient(90deg, hsla(233, 100%, 90%, 1) 0%, hsla(0, 0%, 89%, 1) 100%);">>
 							<h4 class="text-center">Products</h4>
+							<hr/>
 							<div class="row">
 								<div class="col-md-4 col-sm-6 mb-4"
 									th:each="product:${products}">

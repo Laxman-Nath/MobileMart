@@ -306,6 +306,9 @@ public class AdminController {
 		}
 		Product product = psi.findByProductId(id);
 		m.addAttribute("product", product);
+		System.out.println("Products price.................."+product.getPrice());
+		System.out.println("Products Discount percent.................."+product.getDiscountPercent());
+//		m.addAttribute("sale",new Sale());
 		return "admin/addToSale";
 	}
 
@@ -323,10 +326,9 @@ public class AdminController {
 
 	@PostMapping("saveProductToSale")
 	public String saveProductToSale(@ModelAttribute Sale sale, @RequestParam int productId, HttpSession session) {
-		sale.setProduct(psi.findByProductId(productId));
-		sale.setFile(psi.findByProductId(productId).getFile());
-		sale.setDiscountedPrice(psi.findByProductId(productId).getDiscountedPrice());
-		Sale s = ssi.addProductToSale(sale);
+		
+//		sale.setDiscountedPrice(psi.findByProductId(productId).getDiscountedPrice());
+		Sale s = ssi.addProductToSale(sale,productId);
 		if (s != null) {
 			session.setAttribute("saleSuccess", "Product was added to sale");
 		} else {

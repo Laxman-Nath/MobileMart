@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://thymeleaf.org"
-	th:replace="~{base::layout(~{::section})}">
+	th:replace="~{admin/dashboard::layout(~{::section})}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Add to sale</title>
 </head>
 <body>
 	<section style="margin-top: 240px;">
@@ -16,11 +16,17 @@
 
 						</div>
 						<div class="card-body">
-							<form action="/admin/saveProductToSale" method="post" enctype="multipart/form-data">
+							<form action="/admin/saveProductToSale" method="post"
+								enctype="multipart/form-data" >
 								<input type="hidden" th:value="${product.id}" name="productId">
 								<div class="mb-2">
-									<label class="form-label"> Name</label> <input type="text"
-										name="pName" class="form-control " th:value="${product.name}" />
+									<label class="form-label">Sale Name</label> <input type="text"
+										name="saleName" class="form-control "  />
+								</div>
+								<div class="mb-2">
+									<label class="form-label">Product Name</label> <input
+										type="text" name="pName" class="form-control "
+										th:value="${product.name}" />
 								</div>
 								<div class="row">
 									<div class="col-md-6">
@@ -32,7 +38,7 @@
 									<div class="col-md-6">
 										<div class="mb-2">
 											<label class="form-label">End date</label><input type="date"
-												name="saleEndDate" class="form-control">
+												name="saleEndDate" class="form-control" >
 										</div>
 									</div>
 								</div>
@@ -40,7 +46,8 @@
 									<div class="col-md-6">
 										<div class="mb-2">
 											<label class="form-label">Price</label> <input type="number"
-												name="price" class="form-control" th:value="${product.price}" />
+												name="price" class="form-control" 
+												th:value="${product.price}" />
 										</div>
 
 									</div>
@@ -49,6 +56,7 @@
 										<div class="mb-2">
 											<label class="form-label">Discount</label> <input
 												type="number" name="discountPercent" class="form-control"
+												
 												th:value="${product.discountPercent}" />
 										</div>
 

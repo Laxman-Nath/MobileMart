@@ -83,7 +83,7 @@ public class Product {
 	private double price;
 	private int quantity;
 	private String file;
-	private int discountPercent;
+	private double discountPercent;
 	private double discountedPrice;
 	@OneToOne(mappedBy = "product")
 	private Sale sale;
