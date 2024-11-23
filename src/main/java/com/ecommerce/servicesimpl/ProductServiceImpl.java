@@ -91,4 +91,10 @@ public class ProductServiceImpl implements ProductService {
 		return products;
 	}
 
+	@Override
+	public Long getNumberOfProducts() {
+	
+		return this.pd.count();
+	}
+
 }

@@ -163,4 +163,10 @@ public class CustomerServiceImpl implements CustomerService {
 		return this.cd.findCustomerByIsAccountNonLockedIsFalse();
 	}
 
+	@Override
+	public Long findNumberOfCustomers() {
+	
+		return this.cd.findTotalNumberOfCustomers();
+	}
+
 }

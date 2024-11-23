@@ -15,4 +15,5 @@ public interface ProductService {
   Product findByProductId(int id);
   Page<Product> searchProduct(String keyword,int page,int size);
   List<Product> getLatestProduct();
+  Long getNumberOfProducts();
 }

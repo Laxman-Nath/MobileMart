@@ -65,7 +65,11 @@ public class AdminController {
 	private OrderItemService orderItemService;
 
 	@GetMapping("/")
-	public String adminPanel() {
+	public String adminPanel(Model m) {
+		m.addAttribute("totalProducts",psi.getNumberOfProducts());
+		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
+		m.addAttribute("totalSales",orderService.findTotalOrders());
 		return "admin/Admindashboard";
 	}
 

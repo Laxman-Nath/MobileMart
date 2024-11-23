@@ -48,5 +48,7 @@ public interface ProductDao extends JpaRepository<Product, Integer> {
 
 	@Query("SELECT p FROM Product p ORDER BY  p.id DESC")
 	List<Product> getLatestProducts(Pageable pageable);
+	
+	
 
 }

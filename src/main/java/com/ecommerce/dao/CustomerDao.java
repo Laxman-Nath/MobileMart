@@ -3,6 +3,7 @@ package com.ecommerce.dao;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.ecommerce.models.Customer;
@@ -16,4 +17,7 @@ boolean existsByCode(String code);
 Customer findByCode(String code);
 boolean existsByPassword(String password);
 List<Customer> findCustomerByIsAccountNonLockedIsFalse();
+
+@Query("SELECT COUNT(*) FROM Customer c where c.role='ROLE_USER'")
+Long findTotalNumberOfCustomers();
 }

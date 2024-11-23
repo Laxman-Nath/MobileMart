@@ -260,4 +260,16 @@ public class OrderServiceImpl implements OrderService {
 		return this.orderDao.save(order);
 	}
 
+	@Override
+	public Long findTotalDeliveredProducts() {
+		
+		return this.orderDao.findTotalDeliveredProducts();
+	}
+
+	@Override
+	public Long findTotalOrders() {
+		
+		return this.orderDao.count();
+	}
+
 }

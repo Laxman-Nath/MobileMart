@@ -32,5 +32,7 @@ public interface CustomerService {
 	boolean changePassword(int customerId, String password, String newPassword);
 
 	List<Customer> getAllLockedCustomers();
+	
+	Long findNumberOfCustomers();
 
 }

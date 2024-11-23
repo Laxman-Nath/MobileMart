@@ -33,4 +33,8 @@ public interface OrderService {
 	List<Order> findByCustomer(Customer customer);
 	
 	Order cancelOrder(int orderId);
+	
+	Long findTotalDeliveredProducts();
+	
+	Long findTotalOrders();
 }

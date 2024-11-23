@@ -22,4 +22,7 @@ public interface OrderDao extends JpaRepository<Order, Integer> {
 
 	@Query("SELECT o FROM Order o  WHERE o.customer=?1 AND (o.status='Submitted')")
 	List<Order> findByCustomerAndStatus(Customer customer);
+	
+	@Query("SELECT COUNT(*)  FROM Order o where o.status='Delivered'")
+	Long findTotalDeliveredProducts();
 }
