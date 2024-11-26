@@ -28,7 +28,7 @@ public class EmailUtils {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 			helper.setTo(to);
 			helper.setSubject(subject);
-			helper.setFrom("Laxman");
+			helper.setFrom("MobileMart");
 			content = content.replace("[[name]]", customer.getName());
 			if (isOrder) {
 				url = url + "/verifyOrder?code=" + customer.getCode();

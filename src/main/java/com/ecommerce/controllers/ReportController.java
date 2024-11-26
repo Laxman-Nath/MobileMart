@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ecommerce.commonutils.EmailUtils;
+import com.ecommerce.constants.BillConstant;
 import com.ecommerce.models.Category;
 import com.ecommerce.models.Customer;
 import com.ecommerce.models.Order;
 
 import com.ecommerce.services.CustomerService;
 import com.ecommerce.services.OrderService;
+import com.ecommerce.services.ProductService;
 import com.ecommerce.services.ReportService;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.itextpdf.text.pdf.qrcode.ByteArray;
@@ -47,10 +49,15 @@ public class ReportController {
 	private CustomerService customerService;
 	@Autowired
 	private EmailUtils emailUtils;
+	@Autowired
+	private ProductService productService;
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
-
+		m.addAttribute("totalProducts", productService.getNumberOfProducts());
+		m.addAttribute("deliveredProducts", orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers", customerService.findNumberOfCustomers());
+		m.addAttribute("totalSales", orderService.findTotalOrders());
 		String emailString = p.getName();
 		Customer customer = customerService.findByEmail(emailString);
 		m.addAttribute("loggedUser", customer);
@@ -92,16 +99,11 @@ public class ReportController {
 			HttpSession session, HttpServletResponse response) throws Exception {
 
 		Customer customer = this.customerService.findCustomerById(customerId);
-		String content = "Dear [[name]],\n\nPlease find your bill attached.\n\nThank you for your purchase!";
-		String url = request.getRequestURL().toString();
-		url = url.replace(request.getRequestURI(), "");
-		String subject = "Purchase bill";
-		String pdfPath = "C:\\Bills\\bill_" + orderId + ".pdf";
 
-		
-		this.reportService.generateBill(orderId, pdfPath);
+		this.reportService.generateBill(orderId, BillConstant.getPdfPath(orderId));
 
-		this.emailUtils.sendEmail(subject, url, customer, content, false, true, pdfPath);
+		this.emailUtils.sendEmail(BillConstant.SUBJECT, BillConstant.getURL(request), customer, BillConstant.CONTENT,
+				false, true, BillConstant.getPdfPath(orderId));
 		session.setAttribute("success", "Bill is sent to the customer mail!");
 		return "redirect:/admin/vieworderdetails/" + orderId;
 	}

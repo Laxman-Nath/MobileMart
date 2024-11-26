@@ -49,10 +49,13 @@ import com.ecommerce.servicesimpl.CategoryServiceImpl;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 import com.ecommerce.servicesimpl.ProductServiceImpl;
 import com.ecommerce.servicesimpl.SaleServiceImpl;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 public class HomeController {
 	@Autowired
@@ -79,6 +82,10 @@ public class HomeController {
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
+		m.addAttribute("totalProducts",psi.getNumberOfProducts());
+		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
+		m.addAttribute("totalSales",orderService.findTotalOrders());
 		System.out.println("Inside loggdin user:");
 		Cart cart = null;
 		boolean isEmptyCart = false;
@@ -344,9 +351,9 @@ public class HomeController {
 	@GetMapping("/increaseProduct")
 	public String increaseProductInCart(@RequestParam(required = false, defaultValue = "0") int cid,
 			@RequestParam(required = false, defaultValue = "0") int uid, @RequestParam int pid, HttpSession session) {
-		
+
 		CartProduct cartProduct = this.cartProductService.findById(pid);
-         Product product=cartProduct.getProduct();
+		Product product = cartProduct.getProduct();
 		if (product.getQuantity() <= cartProduct.getQuantity()) {
 			session.setAttribute("error", "Insufficent item available in our inventory!");
 
@@ -359,9 +366,8 @@ public class HomeController {
 				session.setAttribute("error", "Error increasing products in your cart!");
 			}
 		}
-			return "redirect:/viewcart?cid=" + cid + "&uid=" + uid;
-		}
-	
+		return "redirect:/viewcart?cid=" + cid + "&uid=" + uid;
+	}
 
 	@GetMapping("/decreaseProduct")
 	public String decreasProductInCart(@RequestParam(required = false, defaultValue = "0") int cid,
@@ -390,7 +396,7 @@ public class HomeController {
 
 	@PostMapping("/placeOrder/{customerId}/{cartId}")
 	public String placeOrder(@ModelAttribute Order order, @PathVariable int customerId, @PathVariable int cartId,
-			HttpSession session, HttpServletRequest request) {
+			HttpSession session, HttpServletRequest request,Model m) {
 //		System.out.println(order.getShippingAddress());
 //		System.out.println("customer id="+customerId);
 //		System.out.println("cart id="+cartId);
@@ -404,8 +410,13 @@ public class HomeController {
 		String url = request.getRequestURL().toString();
 		url = url.replace(request.getRequestURI(), "");
 		String subject = "Verify order";
-		this.emailUtils.sendEmail(subject, url, customer, content, true, false, null);
+		
 		Order o = this.orderService.placeOrder(cartId, customerId, order);
+		if (order.getPaymentMethod().equalsIgnoreCase("esewa")) {
+			
+			return "redirect:/payment/paymentform?orderId="+o.getId();
+		}
+		this.emailUtils.sendEmail(subject, url, customer, content, true, false, null);
 		if (o != null) {
 			session.setAttribute("success",
 					"Your order is successfully placed!Please verify your order through the mail that we have send to you.");

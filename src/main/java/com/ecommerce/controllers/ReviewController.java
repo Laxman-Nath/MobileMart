@@ -51,6 +51,10 @@ public class ReviewController {
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
+		m.addAttribute("totalProducts",psi.getNumberOfProducts());
+		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
+		m.addAttribute("totalSales",orderService.findTotalOrders());
 		List<Category> categories = this.categoryService.findByIsActiveTrue();
 		m.addAttribute("categories", categories);
 		if (p != null) {

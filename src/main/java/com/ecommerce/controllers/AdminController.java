@@ -66,15 +66,16 @@ public class AdminController {
 
 	@GetMapping("/")
 	public String adminPanel(Model m) {
-		m.addAttribute("totalProducts",psi.getNumberOfProducts());
-		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
-		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
-		m.addAttribute("totalSales",orderService.findTotalOrders());
+		
 		return "admin/Admindashboard";
 	}
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
+		m.addAttribute("totalProducts",psi.getNumberOfProducts());
+		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
+		m.addAttribute("totalSales",orderService.findTotalOrders());
 		List<Category> categories = csi.findByIsActiveTrue();
 	
 		m.addAttribute("categories", categories);

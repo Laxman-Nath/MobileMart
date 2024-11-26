@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Esewa form</title>
+</head>
+<body>
+	<section class="section">
+		<div class="row">
+			<div class="col-md-6 offset-md-3">
+				<div class="card">
+					<div class="card-header text-center">
+						<h3>Order Information</h3>
+					</div>
+					<div class="card-body">
+						<form action="/payment/pay" method="POST">
+							<input type="hidden" name="orderId" th:value=${order.Id} />
+							<div class="row">
+								<div class="col-md-12 mb-2">
+									<label for="amount" class="form-label">Amount:</label> <input
+										type="number" id="amount" name="amount"
+										th:value=${order.totalPrice} required class="form-control">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12 mb-2">
+									<label for="tax_amount" class="form-label">Tax Amount:</label>
+									<input type="number" id="tax_amount" name="tax_amount" value="10"
+										class="form-control" required><br>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-12 mb-2">
+									<label for="shipping_cost" class="form-label">Shipping cost:</label>
+									<input type="number" id="shipping_cost" name="shipping_cost" th:value=${order.shippingCost}
+										class="form-control" required><br>
+								</div>
+							</div>
+
+
+
+							<div class="mb-3 text-center">
+								<button class="btn btn-dark btn-lg btn-block w-100"
+									type="submit">Proceed payment</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
