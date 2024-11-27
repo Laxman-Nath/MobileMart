@@ -242,6 +242,7 @@ public class AdminController {
 			session.setAttribute("error", "Category already exists in database");
 		} else if (image != null) {
 			category.setFile(image.getOriginalFilename());
+			category.setActive(status);
 			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\category_img\\")) {
 				Category registeredCategory = this.csi.addCategory(category);
 				if (registeredCategory != null) {

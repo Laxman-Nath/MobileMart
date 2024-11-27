@@ -20,11 +20,11 @@
 					<div class="list-group">
 						<h1>Categories</h1>
 						<a th:href="@{/product}"
-							th:classappend="${selectedCategory == null || selectedCategory.isEmpty() ? 'active':''}"
+							th:classappend="${selectedCategory == null || selectedCategory.isEmpty() ? 'activeproduct':''}"
 							class="list-group-item list-group-item-action">All</a> <a
 							th:each="c:${categories}"
 							th:href="@{/product(category=${c.getName()})}"
-							th:classappend="${selectedCategory == c.getName() ? 'active':''}"
+							th:classappend="${selectedCategory == c.getName() ? 'activeproduct':''}"
 							class="list-group-item list-group-item-action "
 							aria-current="true" th:text="${c.getName()}"></a>
 
@@ -35,17 +35,18 @@
 				<!-- Products Section -->
 				<div class="col-md-10">
 					<div class="card">
-						<div class="card-body" style="background: linear-gradient(90deg, hsla(233, 100%, 90%, 1) 0%, hsla(0, 0%, 89%, 1) 100%);">>
-							<h4 class="text-center">Products</h4>
+						<div class="card-body bg-white" >
+							<h1 class="text-center">Products</h1>
 							<hr/>
 							<div class="row">
 								<div class="col-md-4 col-sm-6 mb-4"
 									th:each="product:${products}">
 									<div class="card">
 
-										<div class="card-body text-center products" style="background-color:rgb(66, 135, 245);border-radius:10px;">
+										<div class="card-body text-center products bg-white" style="box-shadow:2px 2px 10px black; border-radius:10px;">
 											<img th:src="@{'/img/product_img/'+${product.getFile()}}"
-												class="img-fluid" alt="Samsung Galaxy S10" style="background-color:lightgray;">
+												 alt="Samsung Galaxy S10" >
+												<hr/>
 											<h3 th:text="${product.getName()}"></h3>
 											<div class="review-rating">
 												<th:block
@@ -95,12 +96,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="row d-flex justify-content-center align-items-center">
+				<div class="row mt-2 ">
 					
 					<div class="col-md-12 ">
 						<th:block th:if="${productsSize>0}">
 							<nav aria-label="Page navigation example" class="text-center">
-								<ul class="pagination">
+								<ul class="pagination d-flex justify-content-center align-items-center w-100">
 									<li class="page-item"
 										th:classappend="${isFirst} ? 'disabled':''"><a
 										class="page-link" th:href="@{'/product?page='+${page-1}}"

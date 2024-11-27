@@ -452,7 +452,7 @@ public class HomeController {
 	}
 
 	@GetMapping("/searchProduct")
-	public String searchProduct(Model m, @RequestParam String keyword,
+	public String searchProduct(Model m, @RequestParam(required=false,defaultValue = "") String keyword,
 			@RequestParam(required = false, defaultValue = "0") int page,
 			@RequestParam(required = false, defaultValue = "1") int size, HttpSession session) {
 //		System.out.println("Searching for: " + keyword);
@@ -463,13 +463,14 @@ public class HomeController {
 		if (pages.isEmpty()) {
 			session.setAttribute("error",
 					"No products found matching your search criteria. Please try different keywords.");
+			return "/";
 		}
 
 		else {
 			List<Product> products = pages.getContent();
 			m.addAttribute("products", products);
 			m.addAttribute("productsSize", products.size());
-
+            m.addAttribute("keyword",keyword);
 			m.addAttribute("page", pages.getNumber());
 			m.addAttribute("pageSize", size);
 			m.addAttribute("totalElements", pages.getTotalElements());
