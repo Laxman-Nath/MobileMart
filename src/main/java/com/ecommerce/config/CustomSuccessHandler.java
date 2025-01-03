@@ -39,13 +39,14 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 			customerServiceImpl.unlockAccount(customer);
 			logger.info("User {} logged in successfully.", userDetails.getUsername());
 		}
-		String redirectString = "/";
+		String redirectString = "";
 		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
 			redirectString = "/admin/";
 		} else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
 			redirectString = "/user/";
 		}
 		response.sendRedirect(redirectString);
+//		request.getRequestDispatcher(redirectString).forward(request, response);
 
 	}
 

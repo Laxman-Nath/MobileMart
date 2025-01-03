@@ -1,5 +1,7 @@
 package com.ecommerce.dao;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,4 +27,19 @@ public interface OrderDao extends JpaRepository<Order, Integer> {
 	
 	@Query("SELECT COUNT(*)  FROM Order o where o.status='Delivered'")
 	Long findTotalDeliveredProducts();
+	
+	@Query("SELECT o FROM Order o WHERE o.status='Submitted' ORDER BY o.placedDate DESC")
+	Page<Order> getAllSubmittedOrders(Pageable pageable);
+	
+	@Query("SELECT o FROM Order o WHERE o.status='Shipped' ORDER BY o.placedDate DESC")
+	Page<Order> getAllShippedOrders(Pageable pageable);
+	
+	@Query("SELECT o FROM Order o WHERE o.status='Delivered' ORDER BY o.placedDate DESC")
+	Page<Order> getAllDeliveredOrders(Pageable pageable);
+	
+	@Query("SELECT o FROM Order o WHERE o.isVerified=true ORDER BY o.placedDate DESC")
+	Page<Order> getAllVerifiedOrders(Pageable pageable);
+	
+	@Query("SELECT o FROM Order o WHERE o.isVerified=false ORDER BY o.placedDate DESC")
+	Page<Order> getAllUnVerifiedOrders(Pageable pageable);
 }

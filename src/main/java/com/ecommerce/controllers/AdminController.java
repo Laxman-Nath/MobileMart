@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -32,31 +33,38 @@ import com.ecommerce.models.Order;
 import com.ecommerce.models.OrderItem;
 import com.ecommerce.models.Product;
 import com.ecommerce.models.Sale;
+import com.ecommerce.services.CategoryService;
+import com.ecommerce.services.CustomerService;
 import com.ecommerce.services.OrderItemService;
 import com.ecommerce.services.OrderService;
+import com.ecommerce.services.ProductService;
+import com.ecommerce.services.SaleService;
 import com.ecommerce.servicesimpl.CategoryServiceImpl;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 import com.ecommerce.servicesimpl.ProductServiceImpl;
 import com.ecommerce.servicesimpl.SaleServiceImpl;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
+//@RequestMapping("/admin")
 public class AdminController {
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@Autowired
-	private CategoryServiceImpl csi;
+	private CategoryService categoryService;
 
 	@Autowired
-	private ProductServiceImpl psi;
+	private ProductService productService;
 
 	@Autowired
-	private CustomerServiceImpl customerServiceImpl;
+	private CustomerService customerService;
 
 	@Autowired
-	private SaleServiceImpl ssi;
+	private SaleService saleService;
 	@Autowired
 	private FileUploadUtils fileUpload;
 	@Autowired
@@ -64,71 +72,65 @@ public class AdminController {
 	@Autowired
 	private OrderItemService orderItemService;
 
-	@GetMapping("/")
+	@GetMapping("/admin/")
+
 	public String adminPanel(Model m) {
-		
+
 		return "admin/Admindashboard";
 	}
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
-		m.addAttribute("totalProducts",psi.getNumberOfProducts());
-		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
-		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
-		m.addAttribute("totalSales",orderService.findTotalOrders());
-		List<Category> categories = csi.findByIsActiveTrue();
-	
+		m.addAttribute("totalProducts", productService.getNumberOfProducts());
+		m.addAttribute("deliveredProducts", orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers", customerService.findNumberOfCustomers());
+		m.addAttribute("totalSales", orderService.findTotalOrders());
+		List<Category> categories = categoryService.findByIsActiveTrue();
+
 		m.addAttribute("categories", categories);
 		String emailString = p.getName();
-		Customer customer = customerServiceImpl.findByEmail(emailString);
+		Customer customer = customerService.findByEmail(emailString);
 		List<Order> orders = this.orderService.findByCustomer(customer);
 		m.addAttribute("orders", orders);
 		m.addAttribute("loggedUser", customer);
 	}
 
-	@GetMapping("/addProduct")
+	@GetMapping("admin/addProduct")
 	public String product(Model m) {
-		List<Category> categories = csi.listAllCategory();
+		List<Category> categories = categoryService.listAllCategory();
 		m.addAttribute("categories", categories);
 		return "admin/addProduct";
 	}
 
-	@PostMapping("/saveProduct")
+	@PostMapping("admin/saveProduct")
 	public String addProduct(@ModelAttribute("Product") Product product, @RequestParam("image") MultipartFile image,
 			HttpSession session) throws IOException {
 
-		if (psi.existByName(product.getName())) {
+		if (productService.existByName(product.getName())) {
 			session.setAttribute("addProductError", "Product already exists");
 		} else {
-			product.setFile(image.getOriginalFilename());
-			double discountedPrice = product.getPrice() - ((product.getPrice() * product.getDiscountPercent()) / 100);
-			product.setDiscountedPrice(discountedPrice);
-			Product p = psi.addProduct(product);
-			if (p != null) {
-				File saveFile = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
-						+ image.getOriginalFilename());
-				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-				session.setAttribute("addProductSuccess", "Product successfully added");
+			if (productService.addProduct(product, image) != null) {
+				session.setAttribute("success", "Product added successfully!");
 			} else {
-				session.setAttribute("addProductError", "Something went wrong");
+				session.setAttribute("error", "Error adding product!");
 			}
 		}
 		return "redirect:/admin/addProduct";
 	}
 
-	@GetMapping("/viewProducts")
-	public String viewProduct(@RequestParam(required = false, defaultValue = "") String category, Model m,@RequestParam (defaultValue = "0") int page,@RequestParam(defaultValue = "5") int pageNo) {
-		Page<Product> products = psi.getAllProducts(category,page,pageNo);
-		List<Sale> sales = ssi.getAllProductsOnSale();
+	@GetMapping("admin/viewProducts")
+	public String viewProduct(@RequestParam(required = false, defaultValue = "") String category, Model m,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageNo) {
+		Page<Product> products = productService.getAllProducts(category, page, pageNo);
+		List<Sale> sales = saleService.getAllProductsOnSale();
 		m.addAttribute("products", products);
 		m.addAttribute("sales", sales);
 		return "admin/viewProducts";
 	}
 
-	@GetMapping("/deleteProduct/{id}")
+	@GetMapping("admin/deleteProduct/{id}")
 	public String deleteProduct(@PathVariable int id, HttpSession session) {
-		if (psi.deleteProductById(id)) {
+		if (productService.deleteProductById(id)) {
 			session.setAttribute("deleteProductSuccess", "Product deleted Successfully");
 		} else {
 			session.setAttribute("deleteProductError", "Error deleting product");
@@ -136,10 +138,10 @@ public class AdminController {
 		return "redirect:/admin/viewProducts";
 	}
 
-	@GetMapping("/editProductForm/{id}")
+	@GetMapping("admin/editProductForm/{id}")
 	public String editProductForm(@PathVariable int id, HttpSession session, Model m) {
-		Product product = psi.findByProductId(id);
-		List<Category> categories = csi.listAllCategory();
+		Product product = productService.findByProductId(id);
+		List<Category> categories = categoryService.listAllCategory();
 		if (product != null) {
 			m.addAttribute("product", product);
 			m.addAttribute("categories", categories);
@@ -147,120 +149,46 @@ public class AdminController {
 		return "admin/editProductForm";
 	}
 
-	@PostMapping("/editProduct")
+	@PostMapping("admin/editProduct")
 	public String editProduct(@ModelAttribute Product product, @RequestParam String oldfile,
 			@RequestParam MultipartFile newfile, HttpSession session) throws IOException {
-		Product oldProduct = psi.findByProductId(product.getId());
-		oldProduct.setName(product.getName());
-		oldProduct.setDimension(product.getDimension());
-		oldProduct.setWeight(product.getWeight());
-		oldProduct.setBuild(product.getBuild());
-		oldProduct.setSim(product.getSim());
-		oldProduct.setColor(product.getColor());
-		oldProduct.setType(product.getType());
-		oldProduct.setSize(product.getSize());
-		oldProduct.setResolution(product.getResolution());
-		oldProduct.setOs(product.getOs());
-		oldProduct.setChipSet(product.getChipSet());
-		oldProduct.setCpu(product.getCpu());
-		oldProduct.setGpu(product.getGpu());
-		oldProduct.setCardSlot(product.getCardSlot());
-		oldProduct.setInternal(product.getInternal());
-		oldProduct.setBFeatures(product.getBFeatures());
-		oldProduct.setBVideo(product.getBVideo());
-		oldProduct.setFFeatures(product.getFFeatures());
-		oldProduct.setFVideo(product.getFVideo());
-		oldProduct.setLoudSpeaker(product.getLoudSpeaker());
-		oldProduct.setSFeatures(product.getSFeatures());
-		oldProduct.setBType(product.getBType());
-		oldProduct.setCharging(product.getCharging());
-		oldProduct.setCFeatures(product.getCFeatures());
-		oldProduct.setSecurity(product.getSecurity());
-
-		oldProduct.setStatus(product.getStatus());
-		oldProduct.setCategory(product.getCategory());
-		oldProduct.setPolicy(product.getPolicy());
-		oldProduct.setPrice(product.getPrice());
-		oldProduct.setQuantity(product.getQuantity());
-
-		if (oldProduct.getDiscountPercent() != product.getDiscountPercent()) {
-			oldProduct.setDiscountPercent(product.getDiscountPercent());
-			double discountedPrice = product.getPrice() - ((product.getPrice() * product.getDiscountPercent()) / 100);
-			oldProduct.setDiscountedPrice(discountedPrice);
-		}
-
-		if (csi.existsByName(oldProduct.getName())) {
-			session.setAttribute("ProductEditError", "Product with similar name already exists!!");
+		Product oldProduct = productService.findByProductId(product.getId());
+		if (productService.editProduct(oldProduct, product, newfile) != null) {
+			session.setAttribute("success", "Product is successfully edited!");
 		} else {
-			if (!ObjectUtils.isEmpty(newfile) && !newfile.isEmpty()) {
-				oldProduct.setFile(newfile.getOriginalFilename());
-				File file = new ClassPathResource("static/img").getFile();
-				Path path = Paths.get(file.getAbsolutePath() + File.separator + "product_img" + File.separator
-						+ newfile.getOriginalFilename());
-				Files.copy(newfile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-			}
-			Product p = psi.addProduct(oldProduct);
-			if (p == null) {
-				session.setAttribute("ProductEditError", "Error editing Product");
-			} else {
-				session.setAttribute("ProductEditSuccess", "Successfully Edited Product");
-			}
+			session.setAttribute("error", "Error editing products!");
 		}
 		return "redirect:/admin/viewProducts";
 	}
 
-	@GetMapping("/category")
+	@GetMapping("admin/category")
 	public ModelAndView category() {
 		ModelAndView mv = new ModelAndView();
-		mv.addObject("categories", csi.listAllCategory());
+		mv.addObject("categories", categoryService.listAllCategory());
 		mv.setViewName("admin/category");
 		return mv;
 	}
 
-	@PostMapping("/addCategory")
+	@PostMapping("admin/addCategory")
 	public String addCategory(@ModelAttribute Category category, @RequestParam("image") MultipartFile image,
 			HttpSession session, @RequestParam("status") Boolean status) throws IOException {
 
-//		if (csi.existsByName(category.getName())) {
-//			session.setAttribute("error", "Category already exists in database");
-//		} else {
-//			category.setFile(image.getOriginalFilename());
-//			category.setActive(status);
-//			Category cat = csi.addCategory(category);
-//			if (cat != null) {
-//				File saveFile = new ClassPathResource("static/img").getFile();
-//				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator
-//						+ image.getOriginalFilename());
-//				Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//				session.setAttribute("success", "Successfully added category");
-//			} else {
-//				session.setAttribute("error", "Something went wrong");
-//			}
-//		}
-
-		if (this.csi.existsByName(category.getName())) {
+		if (this.categoryService.existsByName(category.getName())) {
 			session.setAttribute("error", "Category already exists in database");
 		} else if (image != null) {
-			category.setFile(image.getOriginalFilename());
-			category.setActive(status);
-			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\category_img\\")) {
-				Category registeredCategory = this.csi.addCategory(category);
-				if (registeredCategory != null) {
-					session.setAttribute("success", "Successfully added category");
-				} else {
-					session.setAttribute("error", "Something went wrong");
-				}
+			if (categoryService.addCategory(category, image, status) != null) {
+				session.setAttribute("success", "Successfully added category!");
 			} else {
-				session.setAttribute("error", "Something went wrong");
+				session.setAttribute("error", "Error adding  category!");
 			}
 		}
 
 		return "redirect:/admin/category";
 	}
 
-	@GetMapping("/deleteCategory/{id}")
+	@GetMapping("admin/deleteCategory/{id}")
 	public String deleteCategory(@PathVariable int id, HttpSession session) {
-		if (csi.deleteCategoryById(id)) {
+		if (categoryService.deleteCategoryById(id)) {
 			session.setAttribute("Deletesuccess", "Category is successfully deleted");
 		} else {
 			session.setAttribute("Deleteerror", "Error deleting category");
@@ -268,10 +196,10 @@ public class AdminController {
 		return "redirect:/admin/category";
 	}
 
-	@GetMapping("/editCategoryForm/{id}")
+	@GetMapping("admin/editCategoryForm/{id}")
 	public ModelAndView editCategoryForm(@PathVariable int id) {
 		ModelAndView mv = new ModelAndView();
-		Category category = csi.findByCategoryId(id);
+		Category category = categoryService.findByCategoryId(id);
 		if (category != null) {
 			mv.addObject("category", category);
 		}
@@ -279,50 +207,39 @@ public class AdminController {
 		return mv;
 	}
 
-	@PostMapping("/updateCategory")
+	@PostMapping("admin/updateCategory")
 	public String updateCategory(@ModelAttribute Category category, @RequestParam String oldfile,
 			@RequestParam MultipartFile newfile, @RequestParam Boolean status, HttpSession session) throws IOException {
-		Category oldcategory = csi.findByCategoryId(category.getId());
-		oldcategory.setName(category.getName());
-		oldcategory.setActive(status);
 
-		
-			if (!ObjectUtils.isEmpty(newfile) && !newfile.isEmpty()) {
-				oldcategory.setFile(newfile.getOriginalFilename());
-				if (fileUpload.uploadFile(newfile, "src\\main\\resources\\static\\img\\category_img\\")) {
-					Category cat = csi.addCategory(oldcategory);
-					if (cat == null) {
-						session.setAttribute("EditError", "Error editing category");
-					} else {
-						session.setAttribute("EditSuccess", "Successfully Edited category");
-					}
-				}
-			}
+		if (this.categoryService.updateCategory(category, newfile, status) != null) {
+			session.setAttribute("success", "Category is successfully updated!");
+		} else {
+			session.setAttribute("error", "Error updating category!");
+		}
 
-		
 		return "redirect:/admin/category";
 
 	}
 
-	@GetMapping("addToSale/{id}")
+	@GetMapping("admin/addToSale/{id}")
 	public String addToSale(@PathVariable int id, Model m, HttpSession session) {
-		if (ssi.getProductOnSaleByProductId(id)) {
+		if (saleService.getProductOnSaleByProductId(id)) {
 			session.setAttribute("saleError", "Product was already added to sale");
 			return "redirect:/admin/viewProducts";
 		}
-		Product product = psi.findByProductId(id);
+		Product product = productService.findByProductId(id);
 		m.addAttribute("product", product);
-		System.out.println("Products price.................."+product.getPrice());
-		System.out.println("Products Discount percent.................."+product.getDiscountPercent());
+		System.out.println("Products price.................." + product.getPrice());
+		System.out.println("Products Discount percent.................." + product.getDiscountPercent());
 //		m.addAttribute("sale",new Sale());
 		return "admin/addToSale";
 	}
 
-	@GetMapping("removeFromSale/{id}")
+	@GetMapping("admin/removeFromSale/{id}")
 	public String removeFromSale(@PathVariable int id, HttpSession session) {
-		Sale sale = ssi.getByProductId(id);
+		Sale sale = saleService.getByProductId(id);
 		if (sale != null) {
-			ssi.deleteByProductId(id);
+			saleService.deleteByProductId(id);
 			session.setAttribute("saleSuccess", "Product is successfully deleted from sale");
 		} else {
 			session.setAttribute("saleError", "Error deleting product from sale");
@@ -330,11 +247,11 @@ public class AdminController {
 		return "redirect:/admin/viewProducts";
 	}
 
-	@PostMapping("saveProductToSale")
+	@PostMapping("admin/saveProductToSale")
 	public String saveProductToSale(@ModelAttribute Sale sale, @RequestParam int productId, HttpSession session) {
-		
+
 //		sale.setDiscountedPrice(psi.findByProductId(productId).getDiscountedPrice());
-		Sale s = ssi.addProductToSale(sale,productId);
+		Sale s = saleService.addProductToSale(sale, productId);
 		if (s != null) {
 			session.setAttribute("saleSuccess", "Product was added to sale");
 		} else {
@@ -343,16 +260,16 @@ public class AdminController {
 		return "redirect:/admin/viewProducts";
 	}
 
-	@GetMapping("/viewCustomers")
+	@GetMapping("admin/viewCustomers")
 	public String viewUsers(Model m) {
-		List<Customer> customers = customerServiceImpl.findAllCustomers("ROLE_USER");
+		List<Customer> customers = customerService.findAllCustomers("ROLE_USER");
 		m.addAttribute("customers", customers);
 		return "admin/ViewUsers";
 	}
 
-	@GetMapping("updateCustomerStatus/{id}")
+	@GetMapping("admin/updateCustomerStatus/{id}")
 	public String updateCustomerStatus(@PathVariable int id, HttpSession session) {
-		if (customerServiceImpl.updateCustomerStatus(id)) {
+		if (customerService.updateCustomerStatus(id)) {
 			session.setAttribute("success", "Successfully updated!");
 		} else {
 			session.setAttribute("success", "Error updating!");
@@ -360,27 +277,39 @@ public class AdminController {
 		return "redirect:/admin/viewCustomers";
 	}
 
-	@GetMapping("/showorders")
-	public String showOrders(HttpSession session, Model m) {
-		List<Order> orders = orderService.showVerifiedOrders();
-		if (orders.isEmpty()) {
-			session.setAttribute("error", "There are no verified orders!");
-		}
-		m.addAttribute("orders", orders);
+	@GetMapping("admin/showorders")
+	public String showOrders(HttpSession session,@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo, Model m) {
+		Page<Order> orders = orderService.showVerifiedOrders(pageNo, pageSize);
+		m.addAttribute("orders", orders.getContent());
+		m.addAttribute("orderssize", orders.getTotalElements());
+		m.addAttribute("page", orders.getNumber());
+		m.addAttribute("pageSize", orders.getSize());
+		m.addAttribute("totalElements", orders.getTotalElements());
+		m.addAttribute("totalPages", orders.getTotalPages());
+		m.addAttribute("isFirst", orders.isFirst());
+		m.addAttribute("isLast", orders.isLast());
+		
 		return "admin/showverifiedorders";
 	}
 
-	@GetMapping("/showunverifiedorders")
-	public String showUnverifiedOrders(HttpSession session, Model m) {
-		List<Order> orders = orderService.showUnverfiedOrders();
-		if (orders.isEmpty()) {
-			session.setAttribute("error", "There are no unverified orders!");
-		}
-		m.addAttribute("orders", orders);
+	@GetMapping("admin/showunverifiedorders")
+	public String showUnverifiedOrders(HttpSession session, @RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo, Model m) {
+		Page<Order> orders = orderService.showVerifiedOrders(pageNo, pageSize);
+		m.addAttribute("orders", orders.getContent());
+		m.addAttribute("orderssize", orders.getTotalElements());
+		m.addAttribute("page", orders.getNumber());
+		m.addAttribute("pageSize", orders.getSize());
+		m.addAttribute("totalElements", orders.getTotalElements());
+		m.addAttribute("totalPages", orders.getTotalPages());
+		m.addAttribute("isFirst", orders.isFirst());
+		m.addAttribute("isLast", orders.isLast());
+		
 		return "admin/unverifiedorders";
 	}
 
-	@GetMapping("/vieworderdetails/{id}")
+	@GetMapping("admin/vieworderdetails/{id}")
 	public String showProductDetails(@PathVariable int id, Model m) {
 		Order order = orderService.findById(id);
 		List<OrderItem> items = order.getOrderItems();
@@ -389,7 +318,7 @@ public class AdminController {
 		return "admin/orderdetails";
 	}
 
-	@GetMapping("/editorder/{id}")
+	@GetMapping("admin/editorder/{id}")
 	public String editOrder(@PathVariable int id, Model m) {
 		System.out.println("The id is :" + id);
 		Order order = orderService.findById(id);
@@ -399,11 +328,11 @@ public class AdminController {
 		return "admin/editorderform";
 	}
 
-	@DeleteMapping("/deleteProductFromOrder/{itemId}")
+	@DeleteMapping("admin/deleteProductFromOrder/{itemId}")
 	public ResponseEntity<String> deleteProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
 		try {
 			if (orderService.deleteProductFromOrder(itemId)) {
-			
+
 				return ResponseEntity.ok("Product deleted successfully.");
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
@@ -415,27 +344,26 @@ public class AdminController {
 		}
 	}
 
-	@PatchMapping("/increaseProductFromOrder/{itemId}")
+	@PatchMapping("admin/increaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> increaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
-		  OrderItem orderItem = this.orderItemService.findById(itemId);
-		    Product product = orderItem.getProduct();
+		OrderItem orderItem = this.orderItemService.findById(itemId);
+		Product product = orderItem.getProduct();
 
-		    try {
-		        if (product.getQuantity() <= orderItem.getQuantity()) {
-		        	System.out.println("******************Inside if************************** ");
-		            return ResponseEntity.status(HttpStatus.CONFLICT)
-		                    .body("Cannot increase product quantity. Available: " + product.getQuantity());
-		        }
-		        else {
-			if (orderService.increaseProductFromOrder(itemId)) {
-				String message = "Product is increased successfully";
-				Map<String, Object> response = new HashMap<>();
-				response.put("message", message);
-				return ResponseEntity.ok("Product quantity increased successfully.");
+		try {
+			if (product.getQuantity() <= orderItem.getQuantity()) {
+				System.out.println("******************Inside if************************** ");
+				return ResponseEntity.status(HttpStatus.CONFLICT)
+						.body("Cannot increase product quantity. Available: " + product.getQuantity());
 			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+				if (orderService.increaseProductFromOrder(itemId)) {
+					String message = "Product is increased successfully";
+					Map<String, Object> response = new HashMap<>();
+					response.put("message", message);
+					return ResponseEntity.ok("Product quantity increased successfully.");
+				} else {
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+				}
 			}
-		        }
 		} catch (Exception e) {
 			logger.error("Failed to increase product quantity", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -443,7 +371,7 @@ public class AdminController {
 		}
 	}
 
-	@PatchMapping("/decreaseProductFromOrder/{itemId}")
+	@PatchMapping("admin/decreaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> decreaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
 		try {
 			if (orderService.decreaseProductFromOrder(itemId)) {
@@ -461,7 +389,7 @@ public class AdminController {
 		}
 	}
 
-	@PostMapping("/updateOrder/{id}")
+	@PostMapping("admin/updateOrder/{id}")
 	public String updateOrder(@PathVariable int id, @ModelAttribute("order") Order order, HttpSession session) {
 		Order oldOrder = orderService.findById(id);
 
@@ -479,36 +407,32 @@ public class AdminController {
 		return "redirect:/admin/vieworderdetails/" + id;
 	}
 
-	@GetMapping("/viewProfile/{userId}")
+	@GetMapping("admin/viewProfile/{userId}")
 	public String viewProfile(@PathVariable Integer userId, Model m) {
 //		System.out.println("The id is:" + userId);s
-		Customer customer = this.customerServiceImpl.findCustomerById(userId);
+		Customer customer = this.customerService.findCustomerById(userId);
 		m.addAttribute("customer", customer);
 		return "admin/AdminDetails";
 	}
 
-	@GetMapping("/EditProfile/{userId}")
+	@GetMapping("admin/EditProfile/{userId}")
 	public String editProfile(@PathVariable Integer userId, Model m) {
 //		System.out.println("The id is:" + userId);
-		Customer customer = this.customerServiceImpl.findCustomerById(userId);
+		Customer customer = this.customerService.findCustomerById(userId);
 		m.addAttribute("customer", customer);
 		return "admin/EditProfile";
 	}
 
-	@PostMapping("/saveUpdatedProfile")
+	@PostMapping("admin/saveUpdatedProfile")
 	public String saveUpdatedProfile(@ModelAttribute("customer") Customer customer, HttpSession session,
 			@RequestParam(required = false) MultipartFile image) throws IOException {
-		System.out.println("Password:" + customer.getPassword());
-		if (!image.isEmpty() && image != null) {
-			if (!fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
-				session.setAttribute("error", "Error updating your profile!");
-				return "redirect:/admin/viewProfile/" + customer.getId();
-			}
-		}
-//		customer.setFile(image.getOriginalFilename());
+		logger.info("Name :{}", customer.getName());
+		logger.info("Role :{}", customer.getRole());
+//	
 		customer.setRole("ROLE_ADMIN");
-		Customer c = this.customerServiceImpl.updateCustomer(customer);
+		Customer c = this.customerService.updateCustomer(customer, image);
 		if (c != null) {
+			logger.info("updated customer");
 			session.setAttribute("success", "Your profile is successfully updated!");
 		} else {
 			session.setAttribute("error", "Error updating your profile!");
@@ -516,18 +440,18 @@ public class AdminController {
 		return "redirect:/admin/viewProfile/" + customer.getId();
 	}
 
-	@GetMapping("/changePassword/{userId}")
+	@GetMapping("admin/changePassword/{userId}")
 	public String changePassword(@PathVariable int userId, Model m) {
-		Customer customer = this.customerServiceImpl.findCustomerById(userId);
+		Customer customer = this.customerService.findCustomerById(userId);
 		System.out.println("Name is:" + customer.getName());
 		m.addAttribute("customer", customer);
 		return "/admin/changePassword";
 	}
 
-	@PostMapping("/saveChangedPassword")
+	@PostMapping("admin/saveChangedPassword")
 	public String saveChangedPassword(@RequestParam int id, @RequestParam String password,
 			@RequestParam String newpassword, HttpSession session) {
-		if (customerServiceImpl.changePassword(id, password, newpassword)) {
+		if (customerService.changePassword(id, password, newpassword)) {
 			session.setAttribute("success", "Your password is changed successfully!");
 		} else {
 			session.setAttribute("error", "Error changing password!");
@@ -535,33 +459,68 @@ public class AdminController {
 		return "redirect:/admin/changePassword/" + id;
 	}
 
-	@GetMapping("/addAdmin")
+	@GetMapping("admin/addAdmin")
 	public String addAdmin() {
 
 		return "/admin/addAdmin";
 	}
 
-	@PostMapping("/saveAdmin")
+	@PostMapping("admin/saveAdmin")
 	public String registerUser(@ModelAttribute Customer customer, @RequestParam MultipartFile image,
 			HttpSession session) throws IOException {
 
-		if (customer != null && image != null) {
-			customer.setFile(image.getOriginalFilename());
-			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
-				customer.setRole("ROLE_ADMIN");
-				Customer registeredCustomer = customerServiceImpl.addCustomer(customer);
-				if (registeredCustomer != null) {
-					session.setAttribute("Success", "Admin is registered successfully!");
-				} else {
-					session.setAttribute("Error", "Error registering admin!");
-				}
-			} else {
-				session.setAttribute("Error", "Error registering admin!");
-			}
+		customer.setRole("ROLE_ADMIN");
+		if (customerService.addCustomer(customer, image) != null) {
+			session.setAttribute("Success", "Admin is successfully registered!");
 
 		} else {
 			session.setAttribute("Error", "Error registering admin!");
 		}
 		return "redirect:/admin/addAdmin";
+	}
+
+	@GetMapping("admin/getAllSubmittedOrders")
+	public String getAllSubmittedOrders(@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo, Model m) {
+		Page<Order> submittedOrders = orderService.getAllSubmittedOrders(pageNo, pageSize);
+		m.addAttribute("orders", submittedOrders.getContent());
+		m.addAttribute("orderssize", submittedOrders.getTotalElements());
+		m.addAttribute("page", submittedOrders.getNumber());
+		m.addAttribute("pageSize", submittedOrders.getSize());
+		m.addAttribute("totalElements", submittedOrders.getTotalElements());
+		m.addAttribute("totalPages", submittedOrders.getTotalPages());
+		m.addAttribute("isFirst", submittedOrders.isFirst());
+		m.addAttribute("isLast", submittedOrders.isLast());
+		return "/admin/submittedorders";
+	}
+
+	@GetMapping("admin/getAllShippedOrders")
+	public String getAllShippedOrders(@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo, Model m) {
+		Page<Order> orders = orderService.getAllShippedOrders(pageNo, pageSize);
+		m.addAttribute("orders", orders.getContent());
+		m.addAttribute("orderssize", orders.getTotalElements());
+		m.addAttribute("page", orders.getNumber());
+		m.addAttribute("pageSize", orders.getSize());
+		m.addAttribute("totalElements", orders.getTotalElements());
+		m.addAttribute("totalPages", orders.getTotalPages());
+		m.addAttribute("isFirst", orders.isFirst());
+		m.addAttribute("isLast", orders.isLast());
+		return "/admin/shippedorders";
+	}
+
+	@GetMapping("admin/getAllDeliveredOrders")
+	public String getAllDeliveredOrders(@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo, Model m) {
+		Page<Order> orders = orderService.getAllDeliveredOrders(pageNo, pageSize);
+		m.addAttribute("orders", orders.getContent());
+		m.addAttribute("orderssize", orders.getTotalElements());
+		m.addAttribute("page", orders.getNumber());
+		m.addAttribute("pageSize", orders.getSize());
+		m.addAttribute("totalElements", orders.getTotalElements());
+		m.addAttribute("totalPages", orders.getTotalPages());
+		m.addAttribute("isFirst", orders.isFirst());
+		m.addAttribute("isLast", orders.isLast());
+		return "/admin/deliveredorders";
 	}
 }

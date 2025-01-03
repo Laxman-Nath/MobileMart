@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://thymeleaf.org"
-	th:replace="~{base::layout(~{::section})}">
+	th:replace="~{admin/dashboard::layout(~{::section})}">
 <head>
 <meta charset="UTF-8">
 <title>Edit Product</title>
@@ -118,7 +118,7 @@
 									<div class="col-md-6">
 
 										<input type="text" name="chipSet" placeholder="ChipSet"
-											class="form-control" th:value="${product.chipset}">
+											class="form-control" th:value="${product.chipSet}">
 									</div>
 								</div>
 								<div class="row mb-2">

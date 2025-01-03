@@ -21,7 +21,7 @@
 							</th:block>
 
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
 							<table class="table table-success table-striped">
@@ -63,9 +63,45 @@
 									
 									<tfoot>
 									<tr>
-									<td colspan="8" class="text-center"><a
-											th:href="@{/admin/showorders}"
-											class="btn btn-danger">Verified orders</a></td>
+									<td colspan="8" class="text-center">
+									<!-- Pagination Section -->
+												<div class="row mt-2">
+													<div class="col-md-12">
+														<th:block th:if="${orderssize > 0}">
+															<nav aria-label="Page navigation example"
+																class="text-center">
+																<ul
+																	class="pagination d-flex justify-content-center align-items-center w-100">
+																	<!-- Previous Button -->
+																	<li class="page-item"
+																		th:classappend="${isFirst} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${page - 1}}"
+																		aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+																	</a></li>
+
+																	<!-- Page Number Buttons -->
+																	<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+																		class="page-item"
+																		th:classappend="${page + 1 == i} ? 'active' : ''">
+																		<a class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${i - 1}}"
+																		th:text="${i}"></a>
+																	</li>
+
+																	<!-- Next Button -->
+																	<li class="page-item"
+																		th:classappend="${isLast} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${page + 1}}"
+																		aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+																	</a></li>
+																</ul>
+															</nav>
+														</th:block>
+													</div>
+												</div>
+									</td>
 									</tr>
 									</tfoot>
 

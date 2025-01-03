@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <title>Order list</title>
 <body>
-	<section style="margin-top: 100px;"
+	<section class="section"
 		th:if="${orders != null && !orders.isEmpty()}">
 		<div class="container-fluid">
 			<div class="row">
@@ -13,6 +13,15 @@
 					<div class="card">
 						<div class="card-header bg-success text-white text-center">
 							<h3>Order list</h3>
+							<th:block th:if="${session.success}">
+								<p th:text="${session.success}"></p>
+								</th:block>
+								<th:block th:if="${session.error}">
+								<p th:text="${session.error}"></p>
+								</th:block >
+								
+								<th:block th:text="${@removeSessionUtils.removeSessionAttribute()}">
+								</th:block>
 						</div>
 						<div class="card-body">
 
@@ -43,8 +52,8 @@
 
 
 										<td>
-										<a class="btn btn-success" th:href="@{/user/editorder/{id}(id=${order.id})}">Edit</a>
-										<a class="btn btn-success" th:href="@{/user/cancelOrder/{orderId}(orderId=${order.id})}">Cancel</a>
+										<a class="btn btn-success" th:href="@{/user/editorder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Edit</a>
+										<a class="btn btn-success" th:href="@{/user/cancelOrder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Cancel</a>
 										</td>
 									</tr>
 

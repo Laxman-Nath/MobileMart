@@ -49,8 +49,6 @@ public class PaymentController {
 	private CustomerService customerService;
 	@Autowired
 	private ReportService reportService;
-	@Autowired
-	private EmailUtils emailUtils;
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
@@ -120,10 +118,11 @@ public class PaymentController {
 		Customer customer = this.customerService.findCustomerById(order.getCustomer().getId());
 		model.addAttribute("order", order);
 		this.reportService.generateBill(orderId, BillConstant.getPdfPath(orderId));
+		orderService.setVerified(order, request,customer);
+
+		
 		model.addAttribute("date", LocalDate.now().getYear());
 
-		this.emailUtils.sendEmail(BillConstant.SUBJECT, BillConstant.getURL(request), customer, BillConstant.CONTENT,
-				false, true, BillConstant.getPdfPath(orderId));
 		return "payment/paymentsuccess";
 	}
 

@@ -15,4 +15,5 @@ public interface CartService {
 	Cart decreaseProductInCart(int productCartId);
 	Cart getCartByUserIdAndIsCheckedFalse(int cartId);
 	boolean isCartEmpty(int customerId);
+	Cart saveCart(Cart cart);
 }

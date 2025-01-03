@@ -11,8 +11,14 @@ import java.util.function.DoubleToLongFunction;
 import org.hibernate.grammars.hql.HqlParser.NthSideClauseContext;
 import org.springframework.aot.nativex.NativeConfigurationWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ecommerce.commonutils.EmailUtils;
+import com.ecommerce.constants.BillConstant;
 import com.ecommerce.dao.CartDao;
 import com.ecommerce.dao.CartProductDao;
 import com.ecommerce.dao.CustomerDao;
@@ -24,32 +30,43 @@ import com.ecommerce.models.CartProduct;
 import com.ecommerce.models.Customer;
 import com.ecommerce.models.Order;
 import com.ecommerce.models.OrderItem;
+import com.ecommerce.services.CartProductService;
+import com.ecommerce.services.CartService;
+import com.ecommerce.services.CustomerService;
+import com.ecommerce.services.OrderItemService;
 import com.ecommerce.services.OrderService;
+import com.ecommerce.services.ProductService;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
 //@Transactional
+
 public class OrderServiceImpl implements OrderService {
 	@Autowired
-	private CustomerDao customerDao;
+	private CustomerService customerService;
 	@Autowired
-	private ProductDao productDao;
+	private ProductService productService;
 	@Autowired
-	private CartDao cartDao;
+	private CartService cartService;
 	@Autowired
-	private CartProductDao cartProductDao;
+	private CartProductService cartProductService;
 	@Autowired
 	private OrderDao orderDao;
 	@Autowired
-	private OrderItemDao orderItemDao;
+	private OrderItemService orderItemService;
+	@Autowired
+	private EmailUtils emailUtils;
 
 	@Override
-	public Order placeOrder(int cartId, int userId, Order o) {
-		Cart cart = cartDao.findByIdAndCustomerIdAndIsCheckedFalse(cartId, userId);
-		Customer customer = customerDao.findById(userId).get();
+	public Order placeOrder(int cartId, int userId, Order o, String code) {
+		Cart cart = cartService.getCartByCartIdAndCustomerIdAndIsCheckedFalse(cartId, userId);
+		Customer customer = customerService.findCustomerById(userId);
+		customer.setCode(code);
+		customerService.addCustomer(customer);
 		Order order = new Order();
 		double totalPrice = 0.0;
 //	   CartProduct cartProduct=
@@ -83,33 +100,63 @@ public class OrderServiceImpl implements OrderService {
 //			order.setTotalPrice(totalPrice);
 			order.setStatus("Submitted");
 			order.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
-			if(order.getShippingState().equals("sudurpaschim")) {
-				order.setShippingCost(50.0);
+			if (order.getShippingState().equalsIgnoreCase("sudurpaschim")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 300.0);
+
+			} else if (order.getShippingState().equals("karnali")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 500.0);
+			} else if (order.getShippingState().equals("province5")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 800.0);
+			} else if (order.getShippingState().equals("gandaki")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 1500.0);
+			} else if (order.getShippingState().equals("bagmati")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 2000.0);
+			} else if (order.getShippingState().equals("province1")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 2500.0);
+			} else if (order.getShippingState().equals("province2")) {
+				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
+					Object weight = item.getProduct().getWeight();
+					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
+				}).sum();
+
+				order.setShippingCost(totalWeight * 0.5 + 3000.0);
 			}
-			else if(order.getShippingState().equals("karnali")) {
-				order.setShippingCost(100.0);
-			}
-			else if(order.getShippingState().equals("province5")) {
-				order.setShippingCost(250.0);
-			}
-			else if(order.getShippingState().equals("gandaki")) {
-				order.setShippingCost(200.0);
-			}
-			else if(order.getShippingState().equals("bagmati")) {
-				order.setShippingCost(500.0);
-			}
-			else if(order.getShippingState().equals("province1")) {
-				order.setShippingCost(600.0);
-			}
-			else if(order.getShippingState().equals("province2")) {
-				order.setShippingCost(700.0);
-			}
-			
-			order.setTotalPrice(totalPrice+order.getShippingCost());
+
+			order.setTotalPrice(totalPrice + order.getShippingCost());
 
 		}
 		cart.setChecked(true);
-		cartDao.save(cart);
+		cartService.saveCart(cart);
 		return orderDao.save(order);
 	}
 
@@ -127,15 +174,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> showVerifiedOrders() {
+	public Page<Order> showVerifiedOrders(int pageNo,int pageSize) {
 		// TODO Auto-generated method stub
-		return this.orderDao.findByIsVerifiedTrue();
+		return this.orderDao.getAllVerifiedOrders(PageRequest.of(pageNo,pageSize));
 	}
 
 	@Override
-	public List<Order> showUnverfiedOrders() {
+	public Page<Order> showUnverfiedOrders(int pageNo,int pageSize) {
 		// TODO Auto-generated method stub
-		return this.orderDao.findByIsVerifiedFalse();
+		return this.orderDao.getAllUnVerifiedOrders(PageRequest.of(pageNo,pageSize));
 	}
 
 	@Override
@@ -146,13 +193,13 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public boolean deleteProductFromOrder(int orderItemId) {
-		OrderItem orderItem = this.orderItemDao.findById(orderItemId).get();
+		OrderItem orderItem = this.orderItemService.findById(orderItemId);
 		Order order = orderItem.getOrder();
 		if (order != null) {
 			order.getOrderItems().remove(orderItem);
 			orderItem.setOrder(null);
 			orderItem.setProduct(null);
-			orderItemDao.save(orderItem);
+			orderItemService.saveOrderItem(orderItem);
 			orderDao.save(order);
 			if (order.getOrderItems().isEmpty()) {
 				orderDao.deleteById(order.getId());
@@ -164,15 +211,15 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public boolean increaseProductFromOrder(int orderItemId) {
-		OrderItem orderItem = this.orderItemDao.findById(orderItemId).get();
+		OrderItem orderItem = this.orderItemService.findById(orderItemId);
 		Order order = orderItem.getOrder();
 		if (order != null) {
 			orderItem.setQuantity(orderItem.getQuantity() + 1);
 			orderItem.setPrice(orderItem.getProduct().getDiscountedPrice() * orderItem.getQuantity());
 			order.setTotalPrice(order.getTotalPrice() + orderItem.getPrice());
-			orderItemDao.save(orderItem);
+			orderItemService.saveOrderItem(orderItem);
 			orderDao.save(order);
-			orderItemDao.save(orderItem);
+			orderItemService.saveOrderItem(orderItem);
 			orderDao.save(order);
 			return true;
 		}
@@ -182,7 +229,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public boolean decreaseProductFromOrder(int orderItemId) {
-		OrderItem orderItem = this.orderItemDao.findById(orderItemId).get();
+		OrderItem orderItem = this.orderItemService.findById(orderItemId);
 		Order order = orderItem.getOrder();
 
 		if (order != null) {
@@ -190,14 +237,14 @@ public class OrderServiceImpl implements OrderService {
 				orderItem.setQuantity(orderItem.getQuantity() - 1);
 				orderItem.setPrice(orderItem.getProduct().getDiscountedPrice() * orderItem.getQuantity());
 				order.setTotalPrice(order.getTotalPrice() - orderItem.getProduct().getDiscountedPrice());
-				orderItemDao.save(orderItem);
+				orderItemService.saveOrderItem(orderItem);
 				orderDao.save(order);
 
 			} else {
 				orderItem.setProduct(null);
 				order.getOrderItems().remove(orderItem);
-				orderItemDao.deleteById(orderItemId);
-				orderItemDao.save(orderItem);
+				orderItemService.deleteById(orderItemId);
+				orderItemService.saveOrderItem(orderItem);
 				orderDao.save(order);
 			}
 
@@ -228,14 +275,14 @@ public class OrderServiceImpl implements OrderService {
 						System.out.println("Inside if block");
 						oldItem.setOrder(null);
 						oldOrder.getOrderItems().remove(oldItem);
-						orderItemDao.save(oldItem);
+						orderItemService.saveOrderItem(oldItem);
 					} else {
 						System.out.println("Inside else block");
 						oldItem.setQuantity(newItem.getQuantity());
 						oldItem.setPrice(newItem.getProduct().getDiscountedPrice() * newItem.getQuantity());
 						System.out.println("Item Price is:" + oldItem.getPrice());
 						oldOrder.setTotalPrice(oldOrder.getTotalPrice() + oldItem.getPrice());
-						orderItemDao.save(oldItem);
+						orderItemService.saveOrderItem(oldItem);
 
 					}
 					break;
@@ -262,14 +309,42 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Long findTotalDeliveredProducts() {
-		
+
 		return this.orderDao.findTotalDeliveredProducts();
 	}
 
 	@Override
 	public Long findTotalOrders() {
-		
+
 		return this.orderDao.count();
+	}
+
+	@Override
+	public Order setVerified(Order order, HttpServletRequest request, Customer customer) {
+		order.setVerified(true);
+
+		this.emailUtils.sendEmail(BillConstant.SUBJECT, BillConstant.getURL(request), customer, BillConstant.CONTENT,
+				false, true, BillConstant.getPdfPath(order.getId()));
+
+		return orderDao.save(order);
+	}
+
+	@Override
+	public Page<Order> getAllSubmittedOrders(int pageNo, int pageSize) {
+
+		return this.orderDao.getAllSubmittedOrders(PageRequest.of(pageNo, pageSize));
+	}
+
+	@Override
+	public Page<Order> getAllShippedOrders(int pageNo, int pageSize) {
+
+		return this.orderDao.getAllShippedOrders(PageRequest.of(pageNo, pageSize));
+	}
+
+	@Override
+	public Page<Order> getAllDeliveredOrders(int pageNo, int pageSize) {
+
+		return this.orderDao.getAllDeliveredOrders(PageRequest.of(pageNo, pageSize));
 	}
 
 }

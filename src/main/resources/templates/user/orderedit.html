@@ -27,7 +27,7 @@
 								<p th:text="${error}"></p>
 							</div>
 
-							<form th:action="@{/user/updateOrder/{id}(id=${order.id})}"
+							<form th:action="@{/user/updateOrder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}"
 								method="post" th:object="${order}">
 								<input type="hidden" th:value="${order.invoiceNumber}"
 									th:field="*{invoiceNumber}"> <input type="hidden"

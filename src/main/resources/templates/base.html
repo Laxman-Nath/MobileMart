@@ -19,11 +19,11 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
 </head>
-<body class="bg-dark text-white" style="font-size:20px;">
+<body style="background-color: #FFFFFF; font-size: 20px;">
 	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg  fixed-top">
+	<nav class="navbar navbar-expand-lg  fixed-top ">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#"> <img src="/img/logo.jpg"
+			<a class="navbar-brand" href="/"> <img src="/img/logo.jpg"
 				alt="Logo" class="d-inline-block align-text-top img-fluid logo">
 			</a>
 			<button class="navbar-toggler" type="button"
@@ -40,19 +40,30 @@
 					<button type="button" class="btn-close text-reset"
 						data-bs-dismiss="offcanvas" aria-label="Close"></button>
 				</div>
-				<div class="offcanvas-body" style="font-size:1.1rem;">
-					<ul class="navbar-nav d-flex gap-3 justify-content-center align-items-center flex-grow-1 pe-3">
-						<li class="nav-item"><a class="nav-link active mx-lg-2"
-							href="/" th:classappend="${loggedUser != null?'active':''}"><i
+				<div class="offcanvas-body" style="font-size: 1.1rem;">
+					<ul
+						class="navbar-nav d-flex gap-3 justify-content-center align-items-center flex-grow-1 pe-3">
+						<li class="nav-item"><a class="nav-link activenav mx-lg-2"
+							href="/" ><i
 								class="fa-solid fa-house"></i> Home</a></li>
 						<li class="nav-item"><a class="nav-link mx-lg-2"
-							href="/product"><i class="fa-solid fa-mobile"></i> Products</a></li>
+							th:if="${loggedUser == null}" th:href="@{/product}"><i
+								class="fa-solid fa-mobile"></i> Products</a> <a
+							class="nav-link mx-lg-2" th:if="${loggedUser != null}"
+							th:href="@{/user/product}"><i class="fa-solid fa-mobile"></i>
+								Products</a></li>
 						<li class="nav-item"><a class="nav-link mx-lg-2"
-							href="/onSale">On Sale</a></li>
-						<li class="nav-item dropdown"><a
-							class="nav-link " href="about"
-							 >About us</a>
-						</li>
+							th:if="${loggedUser == null}" th:href="@{/onSale}"><i
+								class="fa-solid fa-mobile"></i> OnSale</a> <a
+							class="nav-link mx-lg-2" th:if="${loggedUser != null}"
+							th:href="@{/user/onSale}"><i class="fa-solid fa-mobile"></i>
+								OnSale</a></li>
+						<li class="nav-item dropdown"><a class="nav-link mx-lg-2"
+							th:if="${loggedUser == null}" th:href="@{/about}"><i
+								class="fa-solid fa-mobile"></i> About Us</a> <a
+							class="nav-link mx-lg-2" th:if="${loggedUser != null}"
+							th:href="@{/user/about}"><i class="fa-solid fa-mobile"></i>
+								About us</a></li>
 
 						<th:block th:if="${loggedUser == null}">
 							<li class="nav-item">
@@ -70,7 +81,9 @@
 
 						<th:block th:if="${loggedUser != null}">
 							<li class="nav-item">
-								<form class="d-flex" action="/searchProduct" role="search">
+								<form class="d-flex"
+									th:action="${loggedUser == null ? '/searchProduct' : '/user/searchProduct'}"
+									action="/searchProduct" role="search">
 									<input class="form-control me-2" type="search"
 										placeholder="Search" aria-label="Search" name="keyword">
 									<button class="btn btn-outline-success" type="submit">Search</button>
@@ -109,7 +122,7 @@
 	<!-- Footer -->
 	<div class="container-fluid d-flex justify-content-center my-2">
 		<footer class="text-center text-lg-start"
-			style="background-color: white; padding: 0.5rem; border-radius: 16px; color: black; width: 98%; height: 40%;box-shadow:2px 2px 10px white;">
+			style="background-color: black; color: white; padding: 0.5rem; border-radius: 16px; color: black; width: 98%; height: 40%; box-shadow: 2px 2px 10px white;">
 			<div class="container d-flex justify-content-center py-1">
 				<button type="button"
 					class="btn btn-primary btn-lg btn-floating mx-2"
@@ -134,7 +147,7 @@
 				</button>
 			</div>
 			<hr>
-			<div class="text-center ">
+			<div class="text-center text-white ">
 				© 2024 Copyright: <a class="" href="#">MobileMart.com</a>
 			</div>
 		</footer>

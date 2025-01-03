@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{admin/dashboard::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Delivered orders</title>
+</head>
+<body>
+	<th:block th:if="${orders != null}">
+		<section style="margin-top: 100px;">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header text-center">
+								<h1>Verified Orders</h1>
+								<th:block th:if="${session.success}">
+									<h3 class="text-success" th:text="${session.success}"></h3>
+								</th:block>
+								<th:block th:if="${session.error}">
+									<h3 class="text-danger" th:text="${session.error}"></h3>
+								</th:block>
+								<th:block
+									th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
+							</div>
+							<div class="card-body">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Order Id</th>
+											<th scope="col">Order Details</th>
+											<th scope="col">Placed Date</th>
+											<th scope="col">Status</th>
+											<th scope="col">Email</th>
+											<th scope="col">Customer Profile</th>
+											<th scope="col">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="o, stat : ${orders}">
+											<td th:text="${stat.index + 1}"></td>
+											<td th:text="${o.id}"></td>
+											<td><a class="btn btn-success"
+												th:href="@{/admin/vieworderdetails/{id}(id=${o.id})}">View
+													Details</a></td>
+											<td th:text="${o.placedDate}"></td>
+											<td th:text="${o.status}"></td>
+											<td th:text="${o.customer.email}"></td>
+											<td><img
+												th:src="@{'/img/profile_img/' + ${o.customer.file}}"
+												alt="profile_img" width="50px" height="50px"></td>
+											<td><a th:href="@{/admin/editorder/{id}(id=${o.id})}"
+												class="btn btn-danger"> <i class="fa-solid fa-trash"></i>
+													Edit
+											</a></td>
+										</tr>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="8" class="text-center">
+												<!-- Pagination Section -->
+												<div class="row mt-2">
+													<div class="col-md-12">
+														<th:block th:if="${orderssize > 0}">
+															<nav aria-label="Page navigation example"
+																class="text-center">
+																<ul
+																	class="pagination d-flex justify-content-center align-items-center w-100">
+																	<!-- Previous Button -->
+																	<li class="page-item"
+																		th:classappend="${isFirst} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/getAllDeliveredOrders?pageNo=' + ${page - 1}}"
+																		aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+																	</a></li>
+
+																	<!-- Page Number Buttons -->
+																	<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+																		class="page-item"
+																		th:classappend="${page + 1 == i} ? 'active' : ''">
+																		<a class="page-link"
+																		th:href="@{'/admin/getAllDeliveredOrders?pageNo=' + ${i - 1}}"
+																		th:text="${i}"></a>
+																	</li>
+
+																	<!-- Next Button -->
+																	<li class="page-item"
+																		th:classappend="${isLast} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/getAllSubmittedOrders?pageNo=' + ${page + 1}}"
+																		aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+																	</a></li>
+																</ul>
+															</nav>
+														</th:block>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</section>
+	</th:block>
+</body>
+</html>

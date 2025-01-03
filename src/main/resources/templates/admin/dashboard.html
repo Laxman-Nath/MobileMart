@@ -44,10 +44,11 @@
 			<div class="list-group list-group-flush my-3">
 				<a href="#"
 					class="list-group-item list-group-item-action bg-transparent second-text active"><i
-					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a href="category"
+					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a
+					href="/admin/category"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-square-plus me-2"></i>Category
-				</a> <a href="addProduct"
+				</a> <a href="/admin/addProduct"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fa-solid fa-square-plus me-2"></i>Add Product</a>
 				<div class="dropdown">
@@ -57,24 +58,41 @@
 						aria-expanded="false"> <i class="fas fa-paperclip me-2"></i>Reports
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="reportDropdown">
-						<li><a class="dropdown-item" href="orderReport">Orders</a></li>
-						<li><a class="dropdown-item" href="generateBill">Bill</a></li>
-						<li><a class="dropdown-item" href="Product">Products</a></li>
+						<li><a class="dropdown-item" href="/admin/orderReport">Orders</a></li>
+						<li><a class="dropdown-item" href="/admin/generateBill">Bill</a></li>
+						<li><a class="dropdown-item" href="/admin/Product">Products</a></li>
 					</ul>
 				</div>
-				<a href="viewProducts"
+				<a href="/admin/viewProducts"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-list-ul me-2"></i>View Products
-				</a>  <a href="viewCustomers"
+				</a> <a href="/admin/viewCustomers"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-circle-user "></i> Customers
-				</a> <a href="addAdmin"
+				</a> <a href="/admin/addAdmin"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-circle-user "></i> Add Admin
-				</a> <a href="showorders"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
-					<i class="fa-regular fa-rectangle-list "></i> Orders
-				</a> <a href="viewReviews"
+				</a>
+				<div class="dropdown">
+					<a href="#"
+						class="list-group-item list-group-item-action bg-transparent second-text fw-bold dropdown-toggle"
+						id="reportDropdown" role="button" data-bs-toggle="dropdown"
+						aria-expanded="false"> <i class="fas fa-paperclip me-2"></i>Orders
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+						<li><a class="dropdown-item"
+							href="/admin/getAllSubmittedOrders">Submitted</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/getAllShippedOrders">Shipped</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/getAllDeliveredOrders">Delivered</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/showorders">Verified</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/showunverifiedorders">Unverified</a></li>
+					</ul>
+				</div>
+				<a href="/admin/viewReviews"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-star"></i> Reviews
 				</a> <a href="/logout"

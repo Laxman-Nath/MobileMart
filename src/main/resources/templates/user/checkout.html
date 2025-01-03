@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Checkout</title>
+<style>
+</style>
+</head>
+<body>
+	<section class="section" th:if="${cart!=null}">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-6 offset-3">
+					<div class="card">
+						<div class="card-header text-center bg-primary text-white">
+							<h1>Checkout</h1>
+						</div>
+						<div class="card-body text-center">
+							<form th:action="@{'/user/placeOrder/'+${customer.id}+'/'+${cart.id}}"
+								method="post">
+								<div class="form-group">
+									<label for="customerName">Full Name:</label> <input type="text"
+										id="customerName" name="customerName" readonly
+										th:value="${customer.name}" class="form-control" required>
+								</div>
+								<h3>Shipping address</h3>
+								<div class="form-group">
+									<div class="row mb-3">
+										<div class="col-md-6">
+											<input type="text" id="shippingCountry"
+												name="shippingCountry" class="form-control" th:value="Nepal"
+												placeholder="Country" readonly>
+										</div>
+										<div class="col-md-6">
+											<input type="text" id="shippingState" name="shippingState"
+												class="form-control" placeholder="State"
+												th:value="${customer.state}" required>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<div class="col-md-6">
+											<input type="text" id="shippingDistrict"
+												name="shippingDistrict" class="form-control"
+												placeholder="District" th:value="${customer.district}"
+												required>
+										</div>
+										<div class="col-md-6">
+											<input type="text" id="shippingMuncipility"
+												name="shippingMuncipility" class="form-control"
+												th:value="${customer.muncipility}" placeholder="Muncipility"
+												required>
+										</div>
+									</div>
+									<div class="row mb-3">
+										<div class="col-md-6">
+											<input type="number" id="shippingWard" name="shippingWard"
+												class="form-control" placeholder="Ward"
+												th:value="${customer.ward}" required>
+										</div>
+										<div class="col-md-6">
+											<input type="text" id="shippingTole" name="shippingTole"
+												class="form-control" placeholder="Tole"
+												th:value="${customer.tole}" required>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="paymentMethod">Payment Method:</label> <select
+											id="paymentMethod" name="paymentMethod" class="form-control"
+											required>
+											<option value="esewa">eSewa</option>
+											<option value="cod">Cash on Delivery</option>
+										</select>
+									</div>
+									<div class="mt-3">
+										<button type="submit" class="btn btn-success w-100">Place
+											Order</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section th:unless="${cart!=null}" style="margin-top: 140px">
+		<div class="text-center">
+			<h1 class="text-success">The verification email has been sent to your email!
+		</h1>
+		</div>
+		
+	</section>
+</body>
+</html>

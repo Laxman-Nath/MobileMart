@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -40,6 +41,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class ReportController {
 	@Autowired
 	private ReportService reportService;
@@ -80,8 +82,9 @@ public class ReportController {
 	}
 
 	@GetMapping("/generateBill")
-	public String generateBill(Model m) {
-		List<Order> orders = this.orderService.showVerifiedOrders();
+	public String generateBill(Model m,@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "0") int pageNo) {
+		List<Order> orders = this.orderService.showVerifiedOrders(pageNo,pageSize).getContent();
 		m.addAttribute("orders", orders);
 		m.addAttribute("forWhich", "admin");
 		return "/admin/generatebill";

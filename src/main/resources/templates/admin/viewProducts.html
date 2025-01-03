@@ -13,25 +13,13 @@
 					<div class="card">
 						<div class="card-header text-center">
 							<h1>Product details</h1>
-							<th:block th:if="${session.ProductEditError}">
-								<h3 class="text-danger" th:text="${session.ProductEditError}"></h3>
+							<th:block th:if="${session.error}">
+								<h3 class="text-danger" th:text="${session.error}"></h3>
 							</th:block>
-							<th:block th:if="${session.ProductEditSuccess}">
-								<h3 class="text-success" th:text="${session.ProductEditSuccess}"></h3>
+							<th:block th:if="${session.success}">
+								<h3 class="text-success" th:text="${session.success}"></h3>
 							</th:block>
-							<th:block th:if="${session.deleteProductError}">
-								<h3 class="text-danger" th:text="${session.deleteProductError}"></h3>
-							</th:block>
-							<th:block th:if="${session.deleteProductSuccess}">
-								<h3 class="text-success"
-									th:text="${session.deleteProductSuccess}"></h3>
-							</th:block>
-							<th:block th:if="${session.saleSuccess}">
-								<h3 class="text-danger" th:text="${session.saleSuccess}"></h3>
-							</th:block>
-							<th:block th:if="${session.saleError}">
-								<h3 class="text-success" th:text="${session.saleError}"></h3>
-							</th:block>
+
 
 							<th:block
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>

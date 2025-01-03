@@ -27,6 +27,7 @@ import com.ecommerce.models.Review;
 import com.ecommerce.services.CategoryService;
 import com.ecommerce.services.CustomerService;
 import com.ecommerce.services.OrderService;
+import com.ecommerce.services.ProductService;
 import com.ecommerce.services.ReviewService;
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 import com.ecommerce.servicesimpl.ProductServiceImpl;
@@ -37,9 +38,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ReviewController {
 	@Autowired
-	private ProductServiceImpl psi;
-	@Autowired
-	private CustomerServiceImpl customerServiceImpl;
+	private ProductService productService;
+
 	@Autowired
 	private ReviewService reviewService;
 	@Autowired
@@ -51,16 +51,16 @@ public class ReviewController {
 
 	@ModelAttribute
 	public void getLoggedInUser(Principal p, Model m) {
-		m.addAttribute("totalProducts",psi.getNumberOfProducts());
-		m.addAttribute("deliveredProducts",orderService.findTotalDeliveredProducts());
-		m.addAttribute("NumberOfCustomers",customerServiceImpl.findNumberOfCustomers());
-		m.addAttribute("totalSales",orderService.findTotalOrders());
+		m.addAttribute("totalProducts", productService.getNumberOfProducts());
+		m.addAttribute("deliveredProducts", orderService.findTotalDeliveredProducts());
+		m.addAttribute("NumberOfCustomers", customerService.findNumberOfCustomers());
+		m.addAttribute("totalSales", orderService.findTotalOrders());
 		List<Category> categories = this.categoryService.findByIsActiveTrue();
 		m.addAttribute("categories", categories);
 		if (p != null) {
 			String emailString = p.getName();
 
-			Customer customer = this.customerServiceImpl.findByEmail(emailString);
+			Customer customer = this.customerService.findByEmail(emailString);
 			List<Order> orders = this.orderService.findByCustomer(customer);
 
 			m.addAttribute("orders", orders);
@@ -70,13 +70,13 @@ public class ReviewController {
 			System.out.println("Inside null");
 			m.addAttribute("loggedUser", null);
 		}
-		List<Product> latest = this.psi.getLatestProduct();
+		List<Product> latest = this.productService.getLatestProduct();
 		m.addAttribute("latest", latest);
 	}
 
 	@GetMapping("/reviews/{id}")
 	public String showReviews(@PathVariable int id, Model model) {
-		Product product = psi.findByProductId(id);
+		Product product = productService.findByProductId(id);
 		List<Review> reviews = product.getReviews();
 		model.addAttribute("product", product);
 		model.addAttribute("reviews", reviews);
@@ -91,7 +91,7 @@ public class ReviewController {
 		if (p == null) {
 			return "redirect:/login";
 		}
-		Product product = psi.findByProductId(id);
+		Product product = productService.findByProductId(id);
 		List<Review> reviews = product.getReviews();
 		model.addAttribute("product", product);
 		model.addAttribute("reviews", reviews);

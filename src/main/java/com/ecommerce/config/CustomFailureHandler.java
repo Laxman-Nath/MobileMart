@@ -35,7 +35,7 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 	@Autowired
 	private CustomSuccessHandler customSuccessHandler;
 
-//	private ModelAndView mView=new ModelAndView();
+
 
 	public Authentication createAuthentication(CustomCustomer customer) {
 		return new UsernamePasswordAuthenticationToken(customer, customer.getPassword(), customer.getAuthorities());
