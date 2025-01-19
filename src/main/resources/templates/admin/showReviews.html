@@ -7,8 +7,7 @@
 </head>
 <body>
 	<h5 th:text="${success}"></h5>
-	<section style="margin-top: 100px;"
-		th:if="${reviews != null && !reviews.isEmpty()}">
+	<section style="margin-top: 100px;">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
@@ -27,42 +26,47 @@
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N.</th>
-										<th scope="col">Customer Name</th>
-										<th scope="col">Date</th>
-										<th scope="col">Rating</th>
-										<th scope="col">Comment</th>
-										<th scope="col">Product Name</th>
+							<th:block th:if="${reviews.isEmpty()}">
+								<h3 class="text-center text-warning">No Reviews available</h3>
+							</th:block>
+							<th:block th:unless="${reviews.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Customer Name</th>
+											<th scope="col">Date</th>
+											<th scope="col">Rating</th>
+											<th scope="col">Comment</th>
+											<th scope="col">Product Name</th>
 
-										<th scope="col">Action</th>
+											<th scope="col">Action</th>
 
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="review,stat:${reviews}">
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="review,stat:${reviews}">
 
-										<td th:text="${stat.index+1}"></td>
-										<td th:text="${review.customer.name}"></td>
-										<td th:text="${review.date}"></td>
-										<td th:text="${review.rating}"></td>
-										<td th:text="${review.comment}"></td>
-										<td th:text="${review.product.name}"></td>
-
-
-
-										<td><a
-											th:href="@{/admin/deleteReview/{reviewId}(reviewId=${review.id})}"
-											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
-										</td>
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${review.customer.name}"></td>
+											<td th:text="${review.date}"></td>
+											<td th:text="${review.rating}"></td>
+											<td th:text="${review.comment}"></td>
+											<td th:text="${review.product.name}"></td>
 
 
-									</tr>
 
-								</tbody>
-							</table>
+											<td><a
+												th:href="@{/admin/deleteReview/{reviewId}(reviewId=${review.id})}"
+												class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
+											</td>
+
+
+										</tr>
+
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>
@@ -70,11 +74,6 @@
 		</div>
 	</section>
 
-	<section style="margin-top: 100px;"
-		th:if="${reviews == null || reviews.isEmpty()}">
-		<div class="text-danger text-center bg-success">
-			<h3>There are no Reviews.</h3>
-		</div>
-	</section>
+
 </body>
 </html>

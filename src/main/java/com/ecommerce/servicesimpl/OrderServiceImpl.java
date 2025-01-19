@@ -82,6 +82,7 @@ public class OrderServiceImpl implements OrderService {
 				orderItem.setPrice(c.getProduct().getDiscountedPrice() * c.getQuantity());
 				orderItem.getProduct().setCustomer(customer);
 				customer.getProducts().add(orderItem.getProduct());
+				c.getProduct().setQuantity(c.getProduct().getQuantity() - c.getQuantity());
 				totalPrice = totalPrice + orderItem.getPrice();
 				orderItems.add(orderItem);
 
@@ -90,17 +91,18 @@ public class OrderServiceImpl implements OrderService {
 			order.setCustomer(customer);
 			order.setOrderItems(orderItems);
 			order.setPlacedDate(LocalDateTime.now());
-			order.setShippingCountry(o.getShippingCountry());
-			order.setShippingState(o.getShippingState());
-			order.setShippingDistrict(o.getShippingDistrict());
-			order.setShippingMuncipility(o.getShippingMuncipility());
-			order.setShippingWard(o.getShippingWard());
-			order.setShippingTole(o.getShippingTole());
+
+			order.setState(o.getState());
+			order.setDistrict(o.getDistrict());
+			order.setMuncipility(o.getMuncipility());
+			order.setWard(o.getWard());
+			order.setTole(o.getTole());
 			order.setPaymentMethod(o.getPaymentMethod());
 //			order.setTotalPrice(totalPrice);
 			order.setStatus("Submitted");
+			order.setIsPaid(o.getIsPaid());
 			order.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
-			if (order.getShippingState().equalsIgnoreCase("sudurpaschim")) {
+			if (order.getState().equalsIgnoreCase("Sudurpashchim Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
@@ -108,42 +110,42 @@ public class OrderServiceImpl implements OrderService {
 
 				order.setShippingCost(totalWeight * 0.5 + 300.0);
 
-			} else if (order.getShippingState().equals("karnali")) {
+			} else if (order.getState().equals("Karnali Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
 				}).sum();
 
 				order.setShippingCost(totalWeight * 0.5 + 500.0);
-			} else if (order.getShippingState().equals("province5")) {
+			} else if (order.getState().equals("Lumbini Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
 				}).sum();
 
 				order.setShippingCost(totalWeight * 0.5 + 800.0);
-			} else if (order.getShippingState().equals("gandaki")) {
+			} else if (order.getState().equals("Gandaki Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
 				}).sum();
 
 				order.setShippingCost(totalWeight * 0.5 + 1500.0);
-			} else if (order.getShippingState().equals("bagmati")) {
+			} else if (order.getState().equals("Bagmati Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
 				}).sum();
 
 				order.setShippingCost(totalWeight * 0.5 + 2000.0);
-			} else if (order.getShippingState().equals("province1")) {
+			} else if (order.getState().equals("Province No. 2")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
 				}).sum();
 
 				order.setShippingCost(totalWeight * 0.5 + 2500.0);
-			} else if (order.getShippingState().equals("province2")) {
+			} else if (order.getState().equals("Province No. 1")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;
@@ -174,15 +176,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Page<Order> showVerifiedOrders(int pageNo,int pageSize) {
+	public Page<Order> showVerifiedOrders(int pageNo, int pageSize) {
 		// TODO Auto-generated method stub
-		return this.orderDao.getAllVerifiedOrders(PageRequest.of(pageNo,pageSize));
+		return this.orderDao.getAllVerifiedOrders(PageRequest.of(pageNo, pageSize));
 	}
 
 	@Override
-	public Page<Order> showUnverfiedOrders(int pageNo,int pageSize) {
+	public Page<Order> showUnverfiedOrders(int pageNo, int pageSize) {
 		// TODO Auto-generated method stub
-		return this.orderDao.getAllUnVerifiedOrders(PageRequest.of(pageNo,pageSize));
+		return this.orderDao.getAllUnVerifiedOrders(PageRequest.of(pageNo, pageSize));
 	}
 
 	@Override
@@ -255,13 +257,21 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order updateOrder(Order oldOrder, Order newOrder) {
-		oldOrder.getCustomer().setName(newOrder.getCustomer().getName());
-		;
+
+		oldOrder.setDistrict(newOrder.getDistrict());
+		oldOrder.setTole(newOrder.getTole());
+		oldOrder.setWard(newOrder.getWard());
+		oldOrder.setMuncipility(newOrder.getMuncipility());
 		oldOrder.setPaymentMethod(newOrder.getPaymentMethod());
-		oldOrder.setShippingCountry(newOrder.getShippingCountry());
-		oldOrder.setShippingState(newOrder.getShippingTole());
+
+		oldOrder.setState(newOrder.getState());
 		oldOrder.setPlacedDate(newOrder.getPlacedDate());
 		oldOrder.setStatus(newOrder.getStatus());
+		if (newOrder.getIsPaid() == null) {
+			oldOrder.setIsPaid(false);
+		} else {
+			oldOrder.setIsPaid(newOrder.getIsPaid());
+		}
 		oldOrder.setTotalPrice(0);
 		for (OrderItem newItem : newOrder.getOrderItems()) {
 
@@ -303,6 +313,10 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order cancelOrder(int orderId) {
 		Order order = this.orderDao.findById(orderId).get();
+		List<OrderItem> orderItems = order.getOrderItems();
+		for (OrderItem o : orderItems) {
+			o.getProduct().setQuantity(o.getQuantity() + o.getProduct().getQuantity());
+		}
 		order.setStatus("Cancelled");
 		return this.orderDao.save(order);
 	}

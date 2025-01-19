@@ -5,8 +5,7 @@
 <meta charset="UTF-8">
 <title>Order list</title>
 <body>
-	<section class="section"
-		th:if="${orders != null && !orders.isEmpty()}">
+	<section class="section">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
@@ -15,51 +14,56 @@
 							<h3>Order list</h3>
 							<th:block th:if="${session.success}">
 								<p th:text="${session.success}"></p>
-								</th:block>
-								<th:block th:if="${session.error}">
+							</th:block>
+							<th:block th:if="${session.error}">
 								<p th:text="${session.error}"></p>
-								</th:block >
-								
-								<th:block th:text="${@removeSessionUtils.removeSessionAttribute()}">
-								</th:block>
+							</th:block>
+
+							<th:block
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
+							</th:block>
 						</div>
 						<div class="card-body">
-
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N</th>
-										<th scope="col">Customer Name</th>
-										<th scope="col">Shipping Address</th>
-										<th scope="col">Total Amount</th>
-										<th scope="col">Status</th>
-										<th scope="col">Placed Date</th>
-										<th>Action</th>
-
-
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="order, stat : ${orders}">
-
-										<td>[[${stat.index + 1}]]</td>
-										<td>[[${order.customer.name}]]</td>
-										<td>[[${order.shippingCountry}+','+${order.shippingState}+','+${order.shippingDistrict}+','+${order.shippingMuncipility}]]</td>
-										<td>[[${order.totalPrice}]]</td>
-										<td>[[${order.status}]]</td>
-										<td>[[${order.placedDate}]]</td>
+							<th:block th:if="${orders.isEmpty()}">
+								<h3 class="text-center text-warning">No orders available</h3>
+							</th:block>
+							<th:block th:unless="${orders.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N</th>
+											<th scope="col">Customer Name</th>
+											<th scope="col">Shipping Address</th>
+											<th scope="col">Total Amount</th>
+											<th scope="col">Status</th>
+											<th scope="col">Placed Date</th>
+											<th>Action</th>
 
 
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="order, stat : ${orders}">
 
-										<td>
-										<a class="btn btn-success" th:href="@{/user/editorder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Edit</a>
-										<a class="btn btn-success" th:href="@{/user/cancelOrder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Cancel</a>
-										</td>
-									</tr>
+											<td>[[${stat.index + 1}]]</td>
+											<td>[[${order.customer.name}]]</td>
+											<td>[[${order.state}+','+${order.district}+','+${order.muncipility}]]</td>
+											<td>[[${order.totalPrice}]]</td>
+											<td>[[${order.status}]]</td>
+											<td>[[${order.placedDate}]]</td>
 
-								</tbody>
-							</table>
 
+
+											<td><a class="btn btn-success"
+												th:href="@{/user/editorder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Edit</a>
+												<a class="btn btn-success"
+												th:href="@{/user/cancelOrder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}">Cancel</a>
+											</td>
+										</tr>
+
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>
@@ -67,12 +71,7 @@
 		</div>
 	</section>
 
-	<section style="margin-top: 100px;"
-		th:if="${orders == null || orders.isEmpty()}">
-		<div class="text-danger text-center bg-success">
-			<h3>There are no orders</h3>
-		</div>
-	</section>
+
 
 </body>
 </html>

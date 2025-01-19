@@ -7,267 +7,254 @@
 </head>
 <body>
 	<section style="margin-top: 100px;">
-		<div class="container  d-flex justify-content-center">
+		<div class="container d-flex justify-content-center">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card text-center">
-						<div class="card-header text-center bg-primary text-white">
+						<div class="card-header text-center bg-secondary text-white">
 							<h3>Add Product</h3>
-							<th:block th:if="${session.addProductSuccess}">
-								<h3 th:text="${session.addProductSuccess}"></h3>
+							<th:block th:if="${session.success}">
+								<h3 th:text="${session.success}"></h3>
 							</th:block>
-							<th:block th:if="${session.addProductError}">
-								<h3 th:text="${session.addProductError}"></h3>
+							<th:block th:if="${session.error}">
+								<h3 th:text="${session.error}"></h3>
 							</th:block>
 							<th:block
-								th:text="${@removeSessionUtils.removeSessionAttribute()}">
-							</th:block>
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body"
 							style="background: linear-gradient(90deg, hsla(63, 100%, 77%, 1) 0%, hsla(331, 74%, 68%, 1) 100%);">
 							<form action="/admin/saveProduct" method="post"
-								enctype="multipart/form-data">
+								enctype="multipart/form-data" id="productForm">
+								<!-- Name and Status -->
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mb-2">
-											<label class="form-label"> Name</label> <input type="text"
-												name="name" class="form-control " />
+											<label class="form-label">Name</label> <input type="text"
+												name="name" class="form-control" id="pname" required /> <span
+												class="error" id="pname-error"></span>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="mb-2">
-
-											<label class="form-label">Status:</label> <select id="status"
-												name="status" class="form-control">
+											<label class="form-label">Status</label> <select id="status"
+												name="status" class="form-control" required>
 												<option value="available">Available</option>
 												<option value="sold">Sold</option>
-											</select>
+											</select> <span class="error" id="status-error"></span>
 										</div>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Description -->
 								<h4>Description</h4>
 								<hr>
-								<h5>BODY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="dimension" class="form-control"
-											placeholder="Dimension">
+											placeholder="Dimension" required /> <span class="error"
+											id="dimension-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="weight" placeholder="Weight"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="weight-error"></span>
 									</div>
 								</div>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="build" class="form-control"
-											placeholder="Build">
+											placeholder="Build" required /> <span class="error"
+											id="build-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="sim" placeholder="SIM"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="sim-error"></span>
 									</div>
 								</div>
-
 								<div class="row mb-2">
-
 									<div class="col-md-12">
-
 										<input type="text" name="color" class="form-control"
-											placeholder="Colors">
+											placeholder="Colors" required /> <span class="error"
+											id="color-error"></span>
 									</div>
-
 								</div>
 								<hr>
+
+								<!-- Display -->
 								<h5>DISPLAY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="type" class="form-control"
-											placeholder="Type">
+											placeholder="Type" required /> <span class="error"
+											id="type-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="size" placeholder="Size"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="size-error"></span>
 									</div>
 								</div>
-
-
 								<div class="row mb-2">
-
 									<div class="col-md-12">
-
 										<input type="text" name="resolution" class="form-control"
-											placeholder="Resolution">
+											placeholder="Resolution" required /> <span class="error"
+											id="resolution-error"></span>
 									</div>
-
 								</div>
 								<hr>
+
+								<!-- Performance -->
 								<h5>PERFORMANCE</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="os" class="form-control"
-											placeholder="OS">
+											placeholder="OS" required /> <span class="error"
+											id="os-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="chipSet" placeholder="ChipSet"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="chipSet-error"></span>
 									</div>
 								</div>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="cpu" class="form-control"
-											placeholder="CPU">
+											placeholder="CPU" required /> <span class="error"
+											id="cpu-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="gpu" placeholder="GPU"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="gpu-error"></span>
 									</div>
 								</div>
-
 								<hr>
 
+								<!-- Memory -->
 								<h5>MEMORY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="cardSlot" class="form-control"
-											placeholder="CardSlot">
+											placeholder="Card Slot" required /> <span class="error"
+											id="cardSlot-error"></span>
 									</div>
 									<div class="col-md-6">
-
-
 										<input type="text" name="internal" placeholder="Internal"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="internal-error"></span>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Back Camera -->
 								<h5>BACK CAMERA</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="bFeatures" class="form-control"
-											placeholder="Features">
+											placeholder="Features" required /> <span class="error"
+											id="bFeatures-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="bVideo" placeholder="Video"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="bVideo-error"></span>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Front Camera -->
 								<h5>FRONT CAMERA</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="fFeatures" class="form-control"
-											placeholder="Features">
+											placeholder="Features" required /> <span class="error"
+											id="fFeatures-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="fVideo" placeholder="Video"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="fVideo-error"></span>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Sound -->
 								<h5>SOUND</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="loudSpeaker" class="form-control"
-											placeholder="LoudSpeaker">
+											placeholder="LoudSpeaker" required /> <span class="error"
+											id="loudSpeaker-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="sFeatures" placeholder="Features"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="sFeatures-error"></span>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Battery -->
 								<h5>BATTERY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-6">
-
 										<input type="text" name="bType" class="form-control"
-											placeholder="Type">
+											placeholder="Type" required /> <span class="error"
+											id="bType-error"></span>
 									</div>
 									<div class="col-md-6">
-
 										<input type="text" name="charging" placeholder="Charging"
-											class="form-control">
+											class="form-control" required /> <span class="error"
+											id="charging-error"></span>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Connectivity -->
 								<h5>CONNECTIVITY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-12">
-
 										<input type="text" name="cFeatures" class="form-control"
-											placeholder="Features">
+											placeholder="Features" required /> <span class="error"
+											id="cFeatures-error"></span>
 									</div>
-
 								</div>
 								<hr>
 
+								<!-- Security -->
 								<h5>SECURITY</h5>
 								<div class="row mb-2">
-
 									<div class="col-md-12">
-
 										<input type="text" name="security" class="form-control"
-											placeholder="Security">
+											placeholder="Security" required /> <span class="error"
+											id="security-error"></span>
 									</div>
-
 								</div>
 								<hr>
 
-
+								<!-- Category -->
 								<div class="row">
-
 									<div class="col-md-12">
 										<div class="mb-2">
 											<label class="form-label">Category:</label> <select
-												id="status" name="category" class="form-control">
-												<option>--select--</option>
+												id="category" name="category" class="form-control" required>
+												<option value="" disabled selected>--select--</option>
 												<option th:each="category:${categories}"
 													th:text="${category.name}"></option>
-
-											</select>
+											</select> <span class="error" id="category-error"></span>
 										</div>
 									</div>
 								</div>
 								<hr>
 
+								<!-- Policy -->
 								<div class="mb-2">
 									<label for="policySelect">Select Policy:</label> <select
-										class="form-control" id="policySelect" name="policy">
+										class="form-control" id="policySelect" name="policy" required>
 										<option value="" disabled selected>Select a policy</option>
 										<option value="return">Return Policy: 7-30 days,
 											original condition</option>
@@ -275,47 +262,51 @@
 											days, defects only</option>
 										<option value="warranty">Warranty Policy: 1 year,
 											defects covered</option>
-
-									</select>
+									</select> <span class="error" id="policy-error"></span>
 								</div>
 								<hr>
+
+								<!-- Price and Discount -->
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mb-2">
 											<label class="form-label">Price</label> <input type="number"
-												name="price" class="form-control" />
+												name="price" class="form-control" required /> <span
+												class="error" id="price-error"></span>
 										</div>
-
 									</div>
 
 									<div class="col-md-6">
 										<div class="mb-2">
 											<label class="form-label">Discount</label> <input
-												type="number" name="discountPercent" class="form-control" />
+												type="number" name="discountPercent" class="form-control"
+												required /> <span class="error" id="discount-error"></span>
 										</div>
-
 									</div>
 								</div>
 								<hr>
+
+								<!-- Quantity and Image -->
 								<div class="row">
 									<div class="col-md-6">
 										<div class="mb-3">
-
 											<label class="form-label">Quantity:</label> <input
-												type="number" class="form-control" name="quantity">
-
+												type="number" class="form-control" name="quantity" required />
+											<span class="error" id="quantity-error"></span>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="mb-3">
-											<!-- Image Upload -->
 											<label for="image" class="form-label">Upload Image:</label> <input
-												class="form-control" type="file" id="image" name="image"
-												accept="image/*">
+												class="form-control" type="file" id="file" name="image"
+												accept="image/*" required /> <span class="error"
+												id="file-error"></span>
 										</div>
 									</div>
 								</div>
-								<div class="mb-3 mt-10 text-center  ">
+
+								<!-- Submit -->
+								<div class="mb-3 mt-10 text-center">
 									<button
 										class="btn bg-primary text-white btn-lg btn-block submit-form w-100"
 										type="submit">Add</button>
@@ -327,5 +318,7 @@
 			</div>
 		</div>
 	</section>
+
+
 </body>
 </html>

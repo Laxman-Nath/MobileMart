@@ -33,7 +33,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 			Authentication authentication) throws IOException, ServletException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //		System.out.println("Email="+userDetails.getUsername());
-		Customer customer = this.customerServiceImpl.findByEmail(userDetails.getUsername());
+		Customer customer = this.customerServiceImpl.findByEmailAndProviderNotGoogle(userDetails.getUsername());
+//		request.getSession().invalidate();
 		if (customer != null) {
 			customerServiceImpl.resetFailedAttempt(customer);
 			customerServiceImpl.unlockAccount(customer);

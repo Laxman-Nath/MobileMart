@@ -27,6 +27,16 @@
 										th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></h4>
 								</div>
 							</th:block>
+							<th:block th:if="${param.lockedError}">
+								<div class="text-center text-white">
+									<h4 id="error" th:text="${param.lockedError}"></h4>
+								</div>
+							</th:block>
+							<th:block th:if="${param.accessError}">
+								<div class="text-center text-white">
+									<h4 id="error" th:text="${param.accessError}"></h4>
+								</div>
+							</th:block>
 							<th:block th:if="${param.logout}">
 								<div class="text-white text-center">
 									<h4>You have been successfully logged out!</h4>
@@ -34,7 +44,7 @@
 
 								</div>
 							</th:block>
-									<th:block th:if="${param.authError=='true'}">
+							<th:block th:if="${param.authError=='true'}">
 								<div class="text-white text-center">
 									<h4>You have not authority to view this page!</h4>
 
@@ -77,25 +87,26 @@
 
 								<div data-mdb-input-init class="form-outline mb-4">
 									<label class="form-label" for="form2Example17">Email
-										address</label> <input type="email" id="form2Example17"
-										name="username" class="form-control form-control-lg"
-										autocomplete="name" />
+										address</label> <input type="email" id="email" name="username"
+										class="form-control form-control-lg" autocomplete="name" /> <span
+										id="email-error" class="error"></span>
 								</div>
 
 
 								<div class="form-outline mb-4">
 									<label class="form-label" for="LoginPassword">Password</label>
 									<div class="input-group">
-										<input type="password" id="LoginPassword"
-											class="form-control form-control-lg" name="password"
-											autocomplete="password" /> <span class="input-group-text"
-											id="PasswordIcon"
+										<input type="password" id=""
+											class="form-control form-control-lg LoginPassword"
+											name="password" autocomplete="password " /> <span
+											class="input-group-text PasswordIcon" id=""
 											style="cursor: pointer; width: 3rem; text-align: center;">
-											<i class="fas fa-eye-slash"></i>
+											<i class="fas fa-eye"></i>
 										</span>
 
-									</div>
 
+									</div>
+									<span id="password-error" class="error"></span>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="checkbox"
@@ -106,6 +117,7 @@
 								<div class="pt-1 mb-4">
 									<button class="btn btn-dark btn-lg btn-block w-100"
 										type="submit">Login</button>
+
 								</div>
 								<a href="/oauth2/authorization/google"
 									class="login-with-google-btn w-100 btn btn-danger text-center">
@@ -129,6 +141,13 @@
 	</section>
 
 </body>
-
+<script>
+	$(document).ready(function() {
+		$("form").submit(function(event) {
+			event.preventDefault();
+			alert("Submit prevented");
+		});
+	});
+</script>
 
 </html>

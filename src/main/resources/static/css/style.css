@@ -286,3 +286,8 @@
 .activeproduct {
 	background-color: blue;
 }
+
+.error {
+    color: red;
+    font-size: 12px;
+}

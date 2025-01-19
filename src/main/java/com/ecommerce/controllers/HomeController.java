@@ -73,7 +73,7 @@ public class HomeController {
 	private SaleService saleService;
 	@Autowired
 	private CustomerService customerService;
-	
+
 	@Autowired
 	private VerifyCodeUtils verifyCode;
 	@Autowired
@@ -100,6 +100,11 @@ public class HomeController {
 			Customer customer = this.customerService.findByEmail(emailString);
 			List<Order> orders = this.orderService.findByCustomer(customer);
 
+			if (customerService.findByEmailAndProviderNotGoogle(emailString) != null) {
+				m.addAttribute("isLoggedInByGoogle", false);
+			} else {
+				m.addAttribute("isLoggedInByGoogle", true);
+			}
 			m.addAttribute("orders", orders);
 
 			if (customer != null) {
@@ -172,16 +177,23 @@ public class HomeController {
 //			System.out.println("Customer is null");
 //		}
 		customer.setRole("ROLE_USER");
-		if (customerService.addCustomer(customer, image) != null) {
-			session.setAttribute("Success", "You are successfully registered!");
+		if (customerService.findByEmail(customer.getEmail()) == null) {
 
-		} else {
-			session.setAttribute("Error", "Error registering !");
+			if (customerService.addCustomer(customer, image) != null) {
+				session.setAttribute("success", "You are successfully registered!");
+
+			} else {
+				session.setAttribute("error", "Error registering !");
+			}
+		}
+
+		else {
+			session.setAttribute("error", "Customer with this email already exists");
 		}
 		return "redirect:/register";
 	}
 
-	@GetMapping({"product","/user/product"})
+	@GetMapping({ "product", "/user/product" })
 	public String product(Model m, @RequestParam(required = false, defaultValue = "") String category,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size) {
 //		System.out.println("Category="+category);
@@ -221,7 +233,7 @@ public class HomeController {
 		return "viewDetail";
 	}
 
-	@GetMapping({"/onSale","/user/onSale"})
+	@GetMapping({ "/onSale", "/user/onSale" })
 	public String onSale(Model m) {
 		List<Sale> sales = this.saleService.getAllProductsOnSale();
 		m.addAttribute("sales", sales);
@@ -234,10 +246,10 @@ public class HomeController {
 	}
 
 	@PostMapping("/processForgotPassword")
-	public String processForgotPassword(HttpSession session, HttpServletRequest request, @RequestParam String username)
+	public String processForgotPassword(HttpSession session, HttpServletRequest request, @RequestParam String email)
 			throws IOException {
 //		System.out.println("Email is :"+username);
-		Customer customer = this.customerService.processForgotPassword(username, request);
+		Customer customer = this.customerService.processForgotPassword(email, request);
 		if (customer != null) {
 
 			session.setAttribute("success", "Password reset link is send to your email!");
@@ -275,9 +287,7 @@ public class HomeController {
 		return "login";
 	}
 
-	
-
-	@GetMapping({"/searchProduct","/user/searchProduct"})
+	@GetMapping({ "/searchProduct", "/user/searchProduct" })
 	public String searchProduct(Model m, @RequestParam(required = false, defaultValue = "") String keyword,
 			@RequestParam(required = false, defaultValue = "0") int page,
 			@RequestParam(required = false, defaultValue = "1") int size, HttpSession session) {
@@ -303,12 +313,14 @@ public class HomeController {
 			m.addAttribute("totalPages", pages.getTotalPages());
 			m.addAttribute("isFirst", pages.isFirst());
 			m.addAttribute("isLast", pages.isLast());
+			m.addAttribute("keyword", keyword);
 		}
 		return "searchproduct";
 	}
 
 	@GetMapping("/logout")
-	public String logout() {
+	public String logout(HttpServletRequest request) {
+		request.getSession().invalidate();
 		return "login?logout";
 	}
 }

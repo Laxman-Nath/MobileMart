@@ -41,9 +41,11 @@ public interface CustomerService {
 	Long findNumberOfCustomers();
 
 	Customer processForgotPassword(String email, HttpServletRequest request);
-	
-	Customer saveResetPassword(int id,String password,String cPassword);
-	
+
+	Customer saveResetPassword(int id, String password, String cPassword);
+
 	Customer addCustomer(Customer customer);
+
+	Customer findByEmailAndProviderNotGoogle(String email);
 
 }

@@ -107,7 +107,7 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		if (productService.existByName(product.getName())) {
-			session.setAttribute("addProductError", "Product already exists");
+			session.setAttribute("error", "Product already exists");
 		} else {
 			if (productService.addProduct(product, image) != null) {
 				session.setAttribute("success", "Product added successfully!");
@@ -131,9 +131,9 @@ public class AdminController {
 	@GetMapping("admin/deleteProduct/{id}")
 	public String deleteProduct(@PathVariable int id, HttpSession session) {
 		if (productService.deleteProductById(id)) {
-			session.setAttribute("deleteProductSuccess", "Product deleted Successfully");
+			session.setAttribute("success", "Product deleted Successfully");
 		} else {
-			session.setAttribute("deleteProductError", "Error deleting product");
+			session.setAttribute("error", "Error deleting product");
 		}
 		return "redirect:/admin/viewProducts";
 	}
@@ -189,9 +189,9 @@ public class AdminController {
 	@GetMapping("admin/deleteCategory/{id}")
 	public String deleteCategory(@PathVariable int id, HttpSession session) {
 		if (categoryService.deleteCategoryById(id)) {
-			session.setAttribute("Deletesuccess", "Category is successfully deleted");
+			session.setAttribute("success", "Category is successfully deleted");
 		} else {
-			session.setAttribute("Deleteerror", "Error deleting category");
+			session.setAttribute("error", "Error deleting category");
 		}
 		return "redirect:/admin/category";
 	}
@@ -278,7 +278,7 @@ public class AdminController {
 	}
 
 	@GetMapping("admin/showorders")
-	public String showOrders(HttpSession session,@RequestParam(defaultValue = "10") int pageSize,
+	public String showOrders(HttpSession session, @RequestParam(defaultValue = "10") int pageSize,
 			@RequestParam(defaultValue = "0") int pageNo, Model m) {
 		Page<Order> orders = orderService.showVerifiedOrders(pageNo, pageSize);
 		m.addAttribute("orders", orders.getContent());
@@ -289,7 +289,7 @@ public class AdminController {
 		m.addAttribute("totalPages", orders.getTotalPages());
 		m.addAttribute("isFirst", orders.isFirst());
 		m.addAttribute("isLast", orders.isLast());
-		
+
 		return "admin/showverifiedorders";
 	}
 
@@ -305,7 +305,7 @@ public class AdminController {
 		m.addAttribute("totalPages", orders.getTotalPages());
 		m.addAttribute("isFirst", orders.isFirst());
 		m.addAttribute("isLast", orders.isLast());
-		
+
 		return "admin/unverifiedorders";
 	}
 
@@ -450,8 +450,10 @@ public class AdminController {
 
 	@PostMapping("admin/saveChangedPassword")
 	public String saveChangedPassword(@RequestParam int id, @RequestParam String password,
-			@RequestParam String newpassword, HttpSession session) {
-		if (customerService.changePassword(id, password, newpassword)) {
+			@RequestParam String newpassword, @RequestParam String rnewpassword, HttpSession session) {
+		if (!newpassword.equals(rnewpassword)) {
+			session.setAttribute("success", "Confirm password does not match the new password.!");
+		} else if (customerService.changePassword(id, password, newpassword)) {
 			session.setAttribute("success", "Your password is changed successfully!");
 		} else {
 			session.setAttribute("error", "Error changing password!");
@@ -470,6 +472,7 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		customer.setRole("ROLE_ADMIN");
+		
 		if (customerService.addCustomer(customer, image) != null) {
 			session.setAttribute("Success", "Admin is successfully registered!");
 

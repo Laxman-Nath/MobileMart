@@ -41,7 +41,7 @@ public class AboutController {
 		}
 	}
 
-	@GetMapping("/about")
+	@GetMapping({"/about","/user/about"})
 	public String getAbout() {
 		return "aboutus";
 	}

@@ -23,44 +23,49 @@
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N.</th>
-										<th scope="col">Name</th>
-										<th scope="col">Address</th>
-										<th scope="col">Status</th>
+							<th:block th:if="${customers.isEmpty()}">
+								<h3 class="text-center text-warning">No customers available</h3>
+							</th:block>
+							<th:block th:unless="${customers.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Name</th>
+											<th scope="col">Address</th>
+											<th scope="col">Status</th>
 
-										<th scope="col">Email</th>
-										<th scope="col">Profile</th>
-										<th scope="col">Action</th>
-
-
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="c,stat:${customers}">
-
-										<td th:text="${stat.index+1}"></td>
-										<td th:text="${c.name}"></td>
-										<td th:text="${c.district}"></td>
-										<td th:text="${c.isEnable}"></td>
-										<td th:text="${c.email}"></td>
-
-										<td><img th:src="@{'/img/profile_img/'+${c.file}}"
-											alt="user_img" width="50px" height="50px"></td>
+											<th scope="col">Email</th>
+											<th scope="col">Profile</th>
+											<th scope="col">Action</th>
 
 
-										<td><a
-											th:href="@{/admin/updateCustomerStatus/{id}(id=${c.id})}"
-											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Change</a>
-										</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="c,stat:${customers}">
+
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${c.name}"></td>
+											<td th:text="${c.district}"></td>
+											<td th:text="${c.isEnable}"></td>
+											<td th:text="${c.email}"></td>
+
+											<td><img th:src="@{'/img/profile_img/'+${c.file}}"
+												alt="user_img" width="50px" height="50px"></td>
 
 
-									</tr>
+											<td><a
+												th:href="@{/admin/updateCustomerStatus/{id}(id=${c.id})}"
+												class="btn btn-danger"><i class="fa-solid fa-trash"></i>Change</a>
+											</td>
 
-								</tbody>
-							</table>
+
+										</tr>
+
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>

@@ -85,17 +85,17 @@ public class Product {
 	private String file;
 	private double discountPercent;
 	private double discountedPrice;
-	@OneToOne(mappedBy = "product")
+	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Sale sale;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-	private List<Review> reviews;
+	private List<Review> reviews=new ArrayList<>();
 
-	@OneToMany(mappedBy = "product")
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartProduct> cartProducts = new ArrayList<>();
 
-	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-	private List<OrderItem> orderItems;
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+	private List<OrderItem> orderItems=new ArrayList<>();
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id")

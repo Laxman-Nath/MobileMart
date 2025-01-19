@@ -1,15 +1,12 @@
 package com.ecommerce.commonutils;
 
 import java.io.File;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
 import com.ecommerce.models.Customer;
-
 import jakarta.mail.internet.MimeMessage;
 @Component
 public class EmailUtils {
@@ -31,7 +28,7 @@ public class EmailUtils {
 			helper.setFrom("MobileMart");
 			content = content.replace("[[name]]", customer.getName());
 			if (isOrder) {
-				url = url + "/verifyOrder?code=" + customer.getCode();
+				url = url + "/user/verifyOrder?code=" + customer.getCode();
 			} else if (isBill) {
 				url = url + "/sendBill";
 				FileSystemResource file = new FileSystemResource(new File(filePath));

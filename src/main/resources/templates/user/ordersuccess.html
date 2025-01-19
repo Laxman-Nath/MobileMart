@@ -15,10 +15,10 @@
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
 					<div class="card">
-						<div class="card-header text-center bg-success text-white">
+						<div class="card-header text-center bg-danger text-white">
 							<h4 class="mb-0">Order Verified</h4>
 						</div>
-						<div class="card-body">
+						<div class="card-body bg-secondary text-white text-center">
 							<div class="text-center mb-4">
 								<h5 class="text-success">Thank you! Your order has been
 									successfully verified.</h5>
@@ -61,8 +61,8 @@
 									</p>
 									<p>
 										<strong>Address:</strong> <span
-											th:text="${order.shippingState}+${order.shippingDistrict
-                                    }+${order.shippingMuncipility}+${order.shippingWard}+${order.shippingTole}"></span>
+											th:text="${order.customer.state}+','+${order.customer.district
+                                    }+','+${order.customer.muncipility}+','+${order.customer.ward}+','+${order.customer.tole}"></span>
 									</p>
 								</div>
 								<div class="col-md-6">
@@ -72,10 +72,17 @@
 											th:text="${order.placedDate}"></span>
 									</p>
 									<p>
-										<strong>Subtotal:</strong> <span th:text="${order.totalPrice-order.shippingCost}"></span>
+										<strong>Subtotal:</strong> <span
+											th:text="${order.totalPrice-order.shippingCost}"></span>
 									</p>
 									<p>
-										<strong>Shipping:</strong> <span th:text="${order.shippingCost}"></span>
+										<strong>Shipping Cost:</strong> <span
+											th:text="${order.shippingCost}"></span>
+									</p>
+									<p>
+										<strong>Shipping Address:</strong> <span
+											th:text="${order.state}+','+${order.district
+                                    }+','+${order.muncipility}+','+${order.ward}+','+${order.tole}"></span>
 									</p>
 									<p>
 										<strong>Total:</strong> Rs. <span

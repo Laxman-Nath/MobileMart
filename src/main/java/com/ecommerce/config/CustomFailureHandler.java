@@ -2,7 +2,6 @@ package com.ecommerce.config;
 
 import java.io.IOException;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +18,6 @@ import com.ecommerce.models.Customer;
 
 import com.ecommerce.servicesimpl.CustomerServiceImpl;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,13 +27,11 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 	Logger logger = LoggerFactory.getLogger(CustomFailureHandler.class);
 	@Autowired
 	private CustomerServiceImpl customerServiceImpl;
-	
+
 	@Autowired
 	private CustomerDao customerDao;
 	@Autowired
 	private CustomSuccessHandler customSuccessHandler;
-
-
 
 	public Authentication createAuthentication(CustomCustomer customer) {
 		return new UsernamePasswordAuthenticationToken(customer, customer.getPassword(), customer.getAuthorities());
@@ -45,7 +41,8 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 
-		Customer customer = customerServiceImpl.findByEmail(request.getParameter("username"));
+		Customer customer = customerServiceImpl.findByEmailAndProviderNotGoogle(request.getParameter("username"));
+		logger.info("the email is {}", request.getParameter("username"));
 		System.out.println(request.getParameter("username"));
 
 		if (customer != null) {
@@ -87,8 +84,10 @@ public class CustomFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 					exception = new LockedException("Your account has been locked already!");
 				}
 
+			} else if (!customer.isAccountNonLocked() && customer.getFailedAttempt() >= 3) {
+				exception = new LockedException("Your account has been locked.Try again after one minute !");
 			} else {
-				exception = new LockedException("Your account has been locked.Try again after one minute!");
+				exception = new LockedException("Your account has been locked.");
 			}
 		} else {
 			exception = new LockedException("Customer with this email doesn't exist!");

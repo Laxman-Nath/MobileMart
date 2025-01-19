@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Edit profile</title>
+
 </head>
 <body class="">
 	<section
@@ -16,76 +17,115 @@
 						<div class="card p-3 ">
 							<div class="card-header text-center bg-success text-white">
 								<p class="fs-4 mb-0">Update profile</p>
-							
+
 							</div>
 							<div class="card-body">
 								<form action="/admin/saveUpdatedProfile" method="post"
 									enctype="multipart/form-data" th:object="${customer}">
 									<input type="hidden" value="${customer.id}" th:field="*{id}">
-									<div class="mb-2">
+									<div class="mb-2 text-center">
 										<label class="form-label">Full Name</label> <input type="text"
-											name="name" class="form-control" th:value="${customer.name}"
-											th:field="*{name}">
+											name="name" id="name" class="form-control"
+											th:value="${customer.name}" th:field="*{name}" required>
+										<span id="name-error" class="error"></span> <span
+											id="name-error" class="error"></span>
 									</div>
-									<div class="mb-2">
+									<div class="mb-2 text-center">
 										<label class="form-label">Mobile Number</label> <input
 											type="number" name="mnumber" class="form-control"
-											th:value="${customer.mnumber}" th:field="*{mnumber}" />
+											th:value="${customer.mnumber}" th:field="*{mnumber}"
+											id="phone" required /> <span id="phone-error" class="error"></span>
 									</div>
-									<div class="mb-2">
+									<div class="mb-2 text-center">
 										<label class="form-label">Email</label> <input type="email"
 											name="email" class="form-control"
-											th:value="${customer.email}" th:field="*{email}" />
+											th:value="${customer.email}" th:field="*{email}" id="email" />
+										<span id="email-error" class="error"></span>
 									</div>
-									<div class="row mb-2">
+									<h3 class="text-center">Address</h3>
+									<hr />
+									<div class="row mb-2 text-center">
 										<div class="col">
-											<div class="mb-2">
-												<label class="form-label">State</label> <input type="text"
-													name="state" class="form-control"
-													th:value="${customer.state}" th:field="*{state}" />
+											<div class="mb-2 text-center">
+												<label class="form-label">State</label> <select id="state"
+													name="state" class="form-control" required
+													th:data-district="${customer.district}">
+													<option value="" disabled>Select State</option>
+													<option value="Province No. 1"
+														th:selected="${customer.state=='Province No. 1'}">Province
+														No. 1</option>
+													<option value="Province No. 2"
+														th:selected="${customer.state=='Province No. 2'}">Province
+														No. 2</option>
+													<option value="Bagmati Province"
+														th:selected="${customer.state=='Bagmati Province'}">Bagmati
+														Province</option>
+													<option value="Gandaki Province"
+														th:selected="${customer.state=='Gandaki Province'}">Gandaki
+														Province</option>
+													<option value="Lumbini Province"
+														th:selected="${customer.state=='Lumbini Province'}">Lumbini
+														Province</option>
+													<option value="Karnali Province"
+														th:selected="${customer.state=='Karnali Province'}">Karnali
+														Province</option>
+													<option value="Sudurpaschim Province"
+														th:selected="${customer.state=='Sudurpaschim Province'}">Sudurpashchim
+														Province</option>
+												</select>
 											</div>
 										</div>
 										<div class="col">
-											<div class="mb-2">
-												<label class="form-label">District</label> <input
-													type="text" name="district" class="form-control"
-													th:value="${customer.district}" th:field="*{district}" />
+											<div class="mb-2 text-center">
+												<label class="form-label">District</label> <select
+													id="district" name="district" class="form-control" required>
+													<option value="" selected disabled>Select District</option>
+												</select>
 											</div>
 										</div>
 									</div>
-									<div class="mb-2">
+									<div class="mb-2 text-center">
 										<label class="form-label">Municipality</label> <input
 											type="text" name="muncipility" class="form-control"
-											th:value="${customer.muncipility}" th:field="*{muncipility}" />
+											id="muncipility" required th:value="${customer.muncipility}"
+											th:field="*{muncipility}"> <span
+											id="muncipility-error" class="error"></span>
 									</div>
 									<div class="row mb-2">
 										<div class="col">
-											<div class="mb-2">
+											<div class="mb-2 text-center">
 												<label class="form-label">Ward-no</label> <input
-													type="number" name="ward" class="form-control"
-													th:value="${customer.ward}" th:field="*{ward}" />
+													type="number" name="ward" class="form-control" required
+													id="ward" th:value="${customer.ward}" th:field="*{ward}">
+												<span id="ward-error" class="error"></span>
 											</div>
 										</div>
 										<div class="col">
-											<div class="mb-2">
+											<div class="mb-2 text-center">
 												<label class="form-label">Tole</label> <input type="text"
-													name="tole" class="form-control"
-													th:value="${customer.tole}" th:field="*{tole}" />
+													name="tole" class="form-control" required id="tole"
+													th:value="${customer.tole}" th:field="*{tole}"> <span
+													id="tole-error" class="error"></span>
 											</div>
 										</div>
 									</div>
-
-									<div class="mb-2">
+									<hr />
+									<div class="mb-2 text-center">
 										<label class="form-label">Change profile</label><input
-											type="file" name="image" class="form-control"
-											>
+											type="file" name="image" class="form-control" id="file">
+										<span id="file-error" class="error"></span>
 									</div>
-									<input type="hidden" value="${customer.file}" th:field="*{file}">
-									<input type="hidden" value="${customer.password}" th:field="*{password}">
-									<input type="hidden" value="${customer.cpassword}" th:field="*{cpassword}">
+									<div class="mb-2 text-center">
+										<input type="hidden" value="${customer.file}"
+											th:field="*{file}"> <input type="hidden"
+											value="${customer.password}" th:field="*{password}">
+										<input type="hidden" value="${customer.cpassword}"
+											th:field="*{cpassword}">
+									</div>
 									<div class="mb-3 text-center">
-										<button class="btn btn-dark btn-lg btn-block w-100" type="submit">Update</button>
+										<button class="btn btn-dark btn-lg btn-block" type="submit">Update</button>
 									</div>
+
 
 								</form>
 							</div>
@@ -96,4 +136,5 @@
 		</div>
 	</section>
 </body>
+
 </html>

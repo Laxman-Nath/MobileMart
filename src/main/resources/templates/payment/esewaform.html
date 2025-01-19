@@ -20,22 +20,24 @@
 								<div class="col-md-12 mb-2">
 									<label for="amount" class="form-label">Amount:</label> <input
 										type="number" id="amount" name="amount"
-										th:value=${order.totalPrice} required class="form-control">
+										th:value=${order.totalPrice} required class="form-control"
+										readonly>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-12 mb-2">
 									<label for="tax_amount" class="form-label">Tax Amount:</label>
-									<input type="number" id="tax_amount" name="tax_amount" value="10"
-										class="form-control" required><br>
+									<input type="number" id="tax_amount" name="tax_amount"
+										value="10" class="form-control" required readonly><br>
 								</div>
 							</div>
-							
+
 							<div class="row">
 								<div class="col-md-12 mb-2">
-									<label for="shipping_cost" class="form-label">Shipping cost:</label>
-									<input type="number" id="shipping_cost" name="shipping_cost" th:value=${order.shippingCost}
-										class="form-control" required><br>
+									<label for="shipping_cost" class="form-label">Shipping
+										cost:</label> <input type="number" id="shipping_cost"
+										name="shipping_cost" th:value=${order.shippingCost}
+										class="form-control" required readonly><br>
 								</div>
 							</div>
 

@@ -15,7 +15,7 @@
 			<div class="row">
 				<div class="col-md-8 offset-md-2">
 					<div class="card">
-						<div class="card-header bg-primary text-white">
+						<div class="card-header bg-danger text-white">
 							<th:block th:if="${session.success}">
 								<div class="text-danger text-center">
 									<h2 th:text="${session.success}"></h2>
@@ -31,13 +31,13 @@
 							</th:block>
 							<h4 class="mb-0 text-center">Support Center</h4>
 						</div>
-						<div class="card-body">
-							<h5 class="card-title">Need Help with Email Verification?</h5>
+						<div class="card-body bg-secondary text-white text-center">
+							<h3 class="card-title">Need Help with Email Verification?</h3>
 							<p class="card-text">We’re here to assist you! If you’re
 								having trouble verifying your email address, please follow these
 								steps:</p>
 
-							<h6>1. Check Your Email Inbox</h6>
+							<h3>1. Check Your Email Inbox</h3>
 							<ul>
 								<li><strong>Verify Receipt:</strong> Make sure you’ve
 									received the verification email from us. It may take a few
@@ -47,17 +47,14 @@
 									you don’t see it in your inbox.</li>
 							</ul>
 
-							<h6>2. Resend Verification Email</h6>
-							<p>If you haven’t received the verification email, you can
-								request a new one by clicking the button below:</p>
-							<a th:href="@{/checkout/{customerId}/{cartId}(customerId=${customerId},cartId=${cartId})}" class="btn btn-primary">Resend Verification Email</a>
 
-							<h6>3. Ensure Your Email Address is Correct</h6>
+
+							<h3>2. Ensure Your Email Address is Correct</h3>
 							<p>Double-check that the email address you provided is
 								correct. If you believe there might be a mistake, please contact
 								support.</p>
 
-							<h6>4. Contact Support</h6>
+							<h3>3. Contact Support</h3>
 							<p>If you’ve tried the above steps and still need assistance,
 								our support team is here to help. Please provide the following
 								information when you reach out:</p>
@@ -69,14 +66,15 @@
 							</ul>
 							<p>You can contact us via:</p>
 							<ul>
-								<li><strong>Email:</strong> <a
-									href="mailto:nathlaxman242@gmail.com">Emailus</a></li>
-								<li><strong>Phone:</strong> +1-800-123-4567</li>
-								<li><strong>Live Chat:</strong> <a href="#"
-									class="btn btn-link">Click here to start a chat</a></li>
-							</ul>
+								<li><a
+									href="mailto:nathlaxman242@gmail.com?subject=Support Inquiry&body=Please describe your issue here."
+									class="support-link">Email Us</a></li>
 
-							<h6>FAQs</h6>
+								<li><strong>Phone:</strong>9805759293</li>
+
+							</ul>
+							<hr />
+							<h3>FAQs</h3>
 							<dl>
 								<dt>How long does email verification take?</dt>
 								<dd>Verification emails are usually sent within a few
@@ -90,13 +88,13 @@
 									as long as you have access to your email account.</dd>
 							</dl>
 
-							<h6>Need More Help?</h6>
+							<h3>Need More Help?</h3>
 							<p>If you need further assistance or have any other
 								questions, feel free to reach out to our support team. We’re
 								here to help you!</p>
 						</div>
-						<div class="card-footer text-center">
-							<small class="text-muted">© 2024 Your Company</small>
+						<div class="card-footer text-center bg-danger text-white">
+							<small class="text-muted">© 2024 MobileMart</small>
 						</div>
 					</div>
 				</div>

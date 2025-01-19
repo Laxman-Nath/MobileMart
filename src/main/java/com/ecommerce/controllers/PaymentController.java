@@ -57,6 +57,11 @@ public class PaymentController {
 		m.addAttribute("categories", categories);
 		String emailString = p.getName();
 		Customer customer = customerService.findByEmail(emailString);
+		if (customerService.findByEmailAndProviderNotGoogle(emailString) != null) {
+			m.addAttribute("isLoggedInByGoogle", false);
+		} else {
+			m.addAttribute("isLoggedInByGoogle", true);
+		}
 		List<Order> orders = this.orderService.findByCustomer(customer);
 		m.addAttribute("orders", orders);
 		m.addAttribute("loggedUser", customer);
@@ -118,9 +123,11 @@ public class PaymentController {
 		Customer customer = this.customerService.findCustomerById(order.getCustomer().getId());
 		model.addAttribute("order", order);
 		this.reportService.generateBill(orderId, BillConstant.getPdfPath(orderId));
-		orderService.setVerified(order, request,customer);
+		order.setIsPaid(true);
+		;
 
-		
+		orderService.setVerified(order, request, customer);
+
 		model.addAttribute("date", LocalDate.now().getYear());
 
 		return "payment/paymentsuccess";

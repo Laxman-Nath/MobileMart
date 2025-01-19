@@ -41,12 +41,14 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional
 	public Customer addCustomer(Customer customer, MultipartFile image) throws IOException {
+
 		if (customer != null && image != null) {
 			customer.setFile(image.getOriginalFilename());
 			if (fileUpload.uploadFile(image, "src\\main\\resources\\static\\img\\profile_img\\")) {
 				customer.setEnable(true);
 				customer.setAccountNonLocked(true);
 				customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+				customer.setPassword(passwordEncoder.encode(customer.getCpassword()));
 				customer.setProvider("self");
 
 				Customer registeredCustomer = cd.save(customer);
@@ -62,7 +64,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 		return null;
 	}
-	
 
 	@Override
 	public Customer findByEmail(String email) {
@@ -146,7 +147,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer updateCustomer(Customer customer, MultipartFile image) throws IOException {
-		
 
 		if (image != null && !image.isEmpty()) {
 
@@ -173,7 +173,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 			if (passwordEncoder.matches(password, customer.getPassword())) {
 				customer.setPassword(passwordEncoder.encode(newPassword));
-				customer.setCpassword(newPassword);
+				customer.setCpassword(passwordEncoder.encode(newPassword));
 				cd.save(customer);
 				return true;
 			}
@@ -237,11 +237,15 @@ public class CustomerServiceImpl implements CustomerService {
 		return null;
 	}
 
-
 	@Override
 	public Customer addCustomer(Customer customer) {
-		
+
+		//customer.setProvider("self");
 		return this.cd.save(customer);
+	}
+
+	public Customer findByEmailAndProviderNotGoogle(String email) {
+		return this.cd.findByEmailAndProviderNotGoogle(email);
 	}
 
 }

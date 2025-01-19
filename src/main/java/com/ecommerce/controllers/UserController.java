@@ -80,8 +80,7 @@ public class UserController {
 	private CartService cartService;
 	@Autowired
 	private VerifyCodeUtils verifyCode;
-	
-	
+
 	@Autowired
 	private CartProductService cartProductService;
 
@@ -101,6 +100,12 @@ public class UserController {
 		String emailString = p.getName();
 //	System.out.println(emailString);
 		Customer customer = this.customerService.findByEmail(emailString);
+		if (customerService.findByEmailAndProviderNotGoogle(emailString) != null) {
+			m.addAttribute("isLoggedInByGoogle", false);
+		} else {
+			m.addAttribute("isLoggedInByGoogle", true);
+		}
+
 		List<Order> orders = this.orderService.findByCustomer(customer);
 		List<Product> latest = this.productService.getLatestProduct();
 		m.addAttribute("latest", latest);
@@ -151,9 +156,12 @@ public class UserController {
 	}
 
 	@PostMapping("/saveChangedPassword")
-	public String saveChangedPassword(@RequestParam int id, @RequestParam String password,
-			@RequestParam String newpassword, HttpSession session) {
-		if (customerService.changePassword(id, password, newpassword)) {
+	public String saveChangedPassword(@RequestParam int id, @RequestParam String oldpassword,
+			@RequestParam String newpassword, @RequestParam String rnewpassword, HttpSession session) {
+
+		if (!newpassword.equals(rnewpassword)) {
+			session.setAttribute("success", "Confirm password does not match the new password.!");
+		} else if (customerService.changePassword(id, oldpassword, newpassword)) {
 			session.setAttribute("success", "Your password is changed successfully!");
 		} else {
 			session.setAttribute("error", "Error changing password!");
@@ -165,7 +173,7 @@ public class UserController {
 	public String viewOrders(@PathVariable int customerId, Model m) {
 		List<Order> orders = this.orderService.findByCustomer(customerService.findCustomerById(customerId));
 		m.addAttribute("orders", orders);
-		m.addAttribute("customerId",customerId);
+		m.addAttribute("customerId", customerId);
 		return "/user/orderlist";
 
 	}
@@ -180,27 +188,27 @@ public class UserController {
 //	}
 
 	@GetMapping("/editorder/{orderId}/{customerId}")
-	public String editOrder(@PathVariable int orderId,@PathVariable int customerId, Model m) {
+	public String editOrder(@PathVariable int orderId, @PathVariable int customerId, Model m) {
 		Order order = orderService.findById(orderId);
+		System.out.println("State of order:" + order.getState());
 		List<OrderItem> items = order.getOrderItems();
 		m.addAttribute("order", order);
 		m.addAttribute("items", items);
-		m.addAttribute("customerId",customerId);
+		m.addAttribute("customerId", customerId);
 		return "user/orderedit";
 	}
 
 	@GetMapping("/cancelOrder/{orderId}/{customerId}")
-	public String deleteProductFromOrder(@PathVariable int orderId,@PathVariable int customerId,HttpSession session) {
-		
-			if (orderService.cancelOrder(orderId) != null) {
-				session.setAttribute("success", "Order is cancelled successfully!");
-				
-			} else {
-				session.setAttribute("error","Error cancelling order!");
-			}
-			return "redirect:/user/viewOrders/"+customerId;
-		} 
-	
+	public String deleteProductFromOrder(@PathVariable int orderId, @PathVariable int customerId, HttpSession session) {
+
+		if (orderService.cancelOrder(orderId) != null) {
+			session.setAttribute("success", "Order is cancelled successfully!");
+
+		} else {
+			session.setAttribute("error", "Error cancelling order!");
+		}
+		return "redirect:/user/viewOrders/" + customerId;
+	}
 
 	@PatchMapping("/increaseProductFromOrder/{itemId}")
 	public ResponseEntity<String> increaseProductFromOrder(@PathVariable int itemId, @RequestParam int orderId) {
@@ -247,7 +255,8 @@ public class UserController {
 	}
 
 	@PostMapping("/updateOrder/{orderId}/{customerId}")
-	public String updateOrder(@PathVariable int orderId,@PathVariable int customerId, @ModelAttribute("order") Order order, HttpSession session) {
+	public String updateOrder(@PathVariable int orderId, @PathVariable int customerId,
+			@ModelAttribute("order") Order order, HttpSession session) {
 		Order oldOrder = orderService.findById(orderId);
 
 //        for(OrderItem item:order.getOrderItems()) {
@@ -256,12 +265,15 @@ public class UserController {
 //        }
 
 		if (orderService.updateOrder(oldOrder, order) != null) {
+			if (order.getPaymentMethod().equalsIgnoreCase("esewa")) {
+				return "redirect:/payment/paymentform?orderId=" + orderId;
+			}
 			session.setAttribute("success", "Order updated successfully!");
 		} else {
 			session.setAttribute("error", "Error updating order!");
 		}
 
-		return "redirect:/user/viewOrders/"+customerId;
+		return "redirect:/user/viewOrders/" + customerId;
 	}
 
 	@GetMapping("/addtocart")
@@ -369,6 +381,7 @@ public class UserController {
 //		System.out.println("customer id="+customerId);
 //		System.out.println("cart id="+cartId);
 //		System.out.println(order.getPaymentMethod());
+		System.out.println("is order paid " + order.getIsPaid());
 
 		Customer customer = this.customerService.findCustomerById(customerId);
 
