@@ -86,7 +86,7 @@
 
 									<p>
 										<strong>Subtotal:</strong> <span
-											th:text="${order.totalPrice-order.shippingCost}"></span>
+											th:text="${order.totalPrice}"></span>
 									</p>
 									<p>
 										<strong>Shipping Cost:</strong> <span
@@ -99,7 +99,7 @@
 									</p>
 									<p>
 										<strong>Total:</strong> Rs. <span
-											th:text="${order.totalPrice}"></span>
+											th:text="${order.totalPrice+order.shippingCost}"></span>
 									</p>
 								</div>
 							</div>

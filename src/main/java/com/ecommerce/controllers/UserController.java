@@ -278,9 +278,13 @@ public class UserController {
 
 	@GetMapping("/addtocart")
 	public String addToCart(@RequestParam int pid, @RequestParam int uid, HttpSession session) {
-		System.out.println(pid);
-		System.out.println(uid);
+//		System.out.println(pid);
+//		System.out.println(uid);
 //		System.out.println("We are inside add to cart");
+		if (productService.findByProductId(pid).getStatus().equalsIgnoreCase("sold")) {
+			session.setAttribute("error", "Product have been sold already!");
+			return "redirect:/viewDetail/" + pid;
+		}
 		Cart cart = cartService.saveCart(uid, pid);
 		if (cart != null) {
 			session.setAttribute("success", "Product is successfully addded to cart!");

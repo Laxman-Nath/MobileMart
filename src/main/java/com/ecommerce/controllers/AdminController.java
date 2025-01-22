@@ -121,10 +121,21 @@ public class AdminController {
 	@GetMapping("admin/viewProducts")
 	public String viewProduct(@RequestParam(required = false, defaultValue = "") String category, Model m,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int pageNo) {
-		Page<Product> products = productService.getAllProducts(category, page, pageNo);
+		Page<Product> pages = productService.getAllProducts(category, page, pageNo);
 		List<Sale> sales = saleService.getAllProductsOnSale();
-		m.addAttribute("products", products);
+
 		m.addAttribute("sales", sales);
+
+		List<Product> products = pages.getContent();
+		m.addAttribute("products", products);
+		m.addAttribute("productsSize", products.size());
+		m.addAttribute("products", products);
+		m.addAttribute("page", pages.getNumber());
+		m.addAttribute("pageSize", pageNo);
+		m.addAttribute("totalElements", pages.getTotalElements());
+		m.addAttribute("totalPages", pages.getTotalPages());
+		m.addAttribute("isFirst", pages.isFirst());
+		m.addAttribute("isLast", pages.isLast());
 		return "admin/viewProducts";
 	}
 
@@ -224,7 +235,7 @@ public class AdminController {
 	@GetMapping("admin/addToSale/{id}")
 	public String addToSale(@PathVariable int id, Model m, HttpSession session) {
 		if (saleService.getProductOnSaleByProductId(id)) {
-			session.setAttribute("saleError", "Product was already added to sale");
+			session.setAttribute("error", "Product was already added to sale");
 			return "redirect:/admin/viewProducts";
 		}
 		Product product = productService.findByProductId(id);
@@ -240,9 +251,9 @@ public class AdminController {
 		Sale sale = saleService.getByProductId(id);
 		if (sale != null) {
 			saleService.deleteByProductId(id);
-			session.setAttribute("saleSuccess", "Product is successfully deleted from sale");
+			session.setAttribute("success", "Product is successfully deleted from sale");
 		} else {
-			session.setAttribute("saleError", "Error deleting product from sale");
+			session.setAttribute("error", "Error deleting product from sale");
 		}
 		return "redirect:/admin/viewProducts";
 	}
@@ -253,9 +264,9 @@ public class AdminController {
 //		sale.setDiscountedPrice(psi.findByProductId(productId).getDiscountedPrice());
 		Sale s = saleService.addProductToSale(sale, productId);
 		if (s != null) {
-			session.setAttribute("saleSuccess", "Product was added to sale");
+			session.setAttribute("success", "Product was added to sale");
 		} else {
-			session.setAttribute("saleError", "Error adding product to sale");
+			session.setAttribute("error", "Error adding product to sale");
 		}
 		return "redirect:/admin/viewProducts";
 	}
@@ -272,7 +283,7 @@ public class AdminController {
 		if (customerService.updateCustomerStatus(id)) {
 			session.setAttribute("success", "Successfully updated!");
 		} else {
-			session.setAttribute("success", "Error updating!");
+			session.setAttribute("error", "Error updating!");
 		}
 		return "redirect:/admin/viewCustomers";
 	}
@@ -472,7 +483,7 @@ public class AdminController {
 			HttpSession session) throws IOException {
 
 		customer.setRole("ROLE_ADMIN");
-		
+
 		if (customerService.addCustomer(customer, image) != null) {
 			session.setAttribute("Success", "Admin is successfully registered!");
 

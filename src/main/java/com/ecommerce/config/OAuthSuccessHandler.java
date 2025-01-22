@@ -56,8 +56,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 					Arrays.asList(new SimpleGrantedAuthority(customer.getRole())));
 		} else {
 			if (customer.getRole().equals("ROLE_ADMIN")) {
-				response.sendRedirect(
-						"/login?accessError=Your%20account%20is%20account%20is%20registered%20as%20admin%20already!%20");
+				response.sendRedirect("/login?accessError=Your%20account%20is%20registered%20as%20admin%20already!%20");
 
 				return;
 			} else {

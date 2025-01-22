@@ -35,7 +35,7 @@
 				<!-- Products Section -->
 				<div class="col-md-10">
 					<div class="card">
-						<div class="card-body bg-white">
+						<div class="card-body bg-white"  style="height:600px;">
 							<h1 class="text-center">Products</h1>
 							<hr />
 							<div class="row">
@@ -44,8 +44,9 @@
 								</th:block>
 								<th:block th:unless="${products.isEmpty()}">
 									<div class="col-md-4 col-sm-6 mb-4"
-										th:each="product:${products}">
-										<div class="card" style="background-color: gray;">
+										th:each="product:${products}" >
+										<div class="card"
+											style="background-color: gray; ">
 
 
 											<div class="card-body text-center products "
@@ -55,7 +56,7 @@
 													alt="Samsung Galaxy S10"
 													style="background-color: lightgray;">
 												<hr />
-												<h3 th:text="${product.getName()}" class="text-white"></h3>
+												<h5 th:text="${product.getName()}" class="text-white"></h5>
 												<div class="review-rating">
 													<th:block
 														th:if="${@reviewServiceImpl.calculateRating(product.id)>0}">

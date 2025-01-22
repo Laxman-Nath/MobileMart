@@ -90,6 +90,40 @@
 				</div>
 			</div>
 		</div>
+		<div class="row mt-2 ">
+
+			<div class="col-md-12 ">
+				<th:block th:if="${productsSize>0}">
+					<nav aria-label="Page navigation example" class="text-center">
+						<ul
+							class="pagination d-flex justify-content-center align-items-center w-100">
+							<li class="page-item" th:classappend="${isFirst} ? 'disabled':''"><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${page-1}}"
+								aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+							</a></li>
+
+							<li th:each="i:${#numbers.sequence(1,totalPages)}"
+								class="page-item" th:classappend="${page+1==i}?'active':''" ]]><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${i-1}}">[[${i}]]</a></li>
+
+							<li class="page-item" th:classappend="${isLast} ? 'disabled':''"><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${page+1}}"
+								aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+							</a></li>
+						</ul>
+					</nav>
+			</div>
+			</th:block>
+		</div>
+
+
+
+
+
+
 	</section>
 </body>
 </html>

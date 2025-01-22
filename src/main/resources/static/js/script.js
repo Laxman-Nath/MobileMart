@@ -282,7 +282,6 @@ $(document).ready(function(event) {
 			}
 		});
 
-		// Trigger state change on page load if there is a pre-selected state
 		const selectedState = $("#state").val();
 		if (selectedState) {
 			$("#state").trigger('change');
@@ -298,7 +297,7 @@ $(document).ready(function(event) {
 			errorElement.text(errorMessage).toggle(!!errorMessage);
 		});
 
-		// Show error when the user clicks (focus) on the input field
+	
 		$(inputSelector).on("focus", function() {
 			const inputValue = $(this).val().trim();
 			const errorMessage = validationFunc(inputValue);
@@ -306,13 +305,13 @@ $(document).ready(function(event) {
 			errorElement.text(errorMessage).show();
 		});
 
-		// Optional: Hide error on blur (when the user leaves the input field)
+		
 		$(inputSelector).on("blur", function() {
 			const inputValue = $(this).val().trim();
 			const errorMessage = validationFunc(inputValue);
 			const errorElement = $(errorSelector);
 			if (!errorMessage) {
-				errorElement.hide(); // Hide error if there's no error message
+				errorElement.hide(); 
 			}
 		});
 	}
@@ -437,7 +436,7 @@ $(document).ready(function(event) {
 	}
 
 	function validatePasswordFields(oldPasswordSelector, newPasswordSelector, reNewPasswordSelector) {
-		// Old Password Validation
+	
 		validateField(oldPasswordSelector, '#old-password-error', function(value) {
 			if (value.trim() === '') {
 				return "Old password cannot be empty.";
@@ -445,24 +444,24 @@ $(document).ready(function(event) {
 			if (value.length < 8) {
 				return "Old password must be at least 8 characters.";
 			}
-			return ""; // No error
+			return ""; 
 		});
 
-		// New Password Validation
+		
 		validateField(newPasswordSelector, '#new-password-error', function(value) {
 			if (value.length < 8) {
 				return "New password must be at least 8 characters.";
 			}
-			return ""; // No error
+			return "";
 		});
 
-		// Confirm New Password Validation
+
 		validateField(reNewPasswordSelector, '#re-new-password-error', function(value) {
 			const newPassword = $(newPasswordSelector).val().trim();
 			if (value !== newPassword) {
 				return "Confirm password does not match the new password.";
 			}
-			return ""; // No error
+			return ""; 
 		});
 	}
 
@@ -471,7 +470,7 @@ $(document).ready(function(event) {
 	$("form").on("submit", function(event) {
 		let error = "";
 		let valid = true;
-		$(".error").text("").hide(); // Clear all error messages
+		$(".error").text("").hide(); 
 
 		$(this).find(":input").each(function() {
 			const input = $(this);
@@ -594,7 +593,7 @@ $(document).ready(function(event) {
 
 
 
-			// Hide error messages if the field is valid
+			
 			if (valid) {
 				inputError.hide();
 			}
@@ -602,15 +601,15 @@ $(document).ready(function(event) {
 
 		if (!valid) {
 			alert(error);
-			event.preventDefault(); // Prevent form submission if validation fails
+			event.preventDefault(); 
 		}
 	});
 
 	//calling update district method
 	updateDistricts();
 
-	// Initialize the districts and validation functions
-	updateDistricts();
+	// Initialize  validation functions
+	
 	validateField("#name", "#name-error", validateName);
 	validateField("#phone", "#phone-error", validateMobileNumber);
 	validateField("input[name='ward']", "#ward-error", validateNumber);
@@ -671,21 +670,7 @@ $(document).ready(function(event) {
 
 
 
-	///////////change pasword //////////////////////////
-	// Function to validate old password via AJAX
 
-	// Function to validate password fields
-
-
-	// Call the function for both Admin and Customer forms
-
-
-
-
-	// Prevent form submission if validation fails
-	//if (!isValid) {
-	//	event.preventDefault();
-	//}
 
 });
 

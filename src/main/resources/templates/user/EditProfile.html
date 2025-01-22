@@ -68,7 +68,7 @@
 													<option value="Karnali Province"
 														th:selected="${customer.state=='Karnali Province'}">Karnali
 														Province</option>
-													<option value="Sudurpashchim Province"
+													<option value="Sudurpaschim Province"
 														th:selected="${customer.state=='Sudurpaschim Province'}">Sudurpashchim
 														Province</option>
 												</select>
@@ -120,12 +120,13 @@
 											value="${customer.password}" th:field="*{password}">
 										<input type="hidden" value="${customer.cpassword}"
 											th:field="*{cpassword}">
+											<input type="hidden" value="${customer.provider}"
+											th:field="*{provider}">
 									</div>
 									<div class="mb-3 text-center">
 										<button class="btn btn-dark btn-lg btn-block w-100"
 											type="submit">Update</button>
 									</div>
-
 								</form>
 							</div>
 						</div>

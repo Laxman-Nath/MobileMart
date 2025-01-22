@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 			order.setStatus("Submitted");
 			order.setIsPaid(o.getIsPaid());
 			order.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
-			if (order.getState().equalsIgnoreCase("Sudurpashchim Province")) {
+			if (order.getState().equalsIgnoreCase("Sudurpaschim Province")) {
 				double totalWeight = order.getOrderItems().stream().mapToDouble(item -> {
 					Object weight = item.getProduct().getWeight();
 					return weight instanceof Number ? ((Number) weight).doubleValue() : 0.0;

@@ -21,59 +21,67 @@
 							</h1>
 							<hr />
 							<div class="row">
-								<th:block th:if="${products.isEmpty()}">
-									<h3 class="text-center text-warning">No Products available</h3>
+								<th:block th:if="${session.error}">
+									<h3 th:text="${session.error}" class="text-danger text-center"></h3>
 								</th:block>
-								<th:block th:unless="${products.isEmpty()}">
-									<div class="col-md-4 col-sm-6 mb-4"
-										th:each="product:${products}">
-										<div class="card" style="background-color: gray;">
+								<th:block th:unless="${session.error}">
 
 
-											<div class="card-body text-center products "
-												style="box-shadow: 2px 2px 10px black; border-radius: 10px;">
+									<th:block th:if="${products.isEmpty()}">
+										<h3 class="text-center text-warning">No Products
+											available</h3>
+									</th:block>
+									<th:block th:unless="${products.isEmpty()}">
+										<div class="col-md-4 col-sm-6 mb-4"
+											th:each="product:${products}">
+											<div class="card" style="background-color: gray;">
 
-												<img th:src="@{'/img/product_img/'+${product.getFile()}}"
-													alt="Samsung Galaxy S10"
-													style="background-color: lightgray;">
-												<hr />
-												<h3 th:text="${product.getName()}" class="text-white"></h3>
-												<div class="review-rating">
-													<th:block
-														th:if="${@reviewServiceImpl.calculateRating(product.id)>0}">
-														<span
-															th:each="star : ${#numbers.sequence(1, @reviewServiceImpl.calculateRating(product.id))}">
-															<i class="fas fa-star text-warning"></i>
-														</span>
-														<span
-															th:each="emptyStar : ${#numbers.sequence(@reviewServiceImpl.calculateRating(product.id)+ 1, 5)}">
-															<i class="fas fa-star text-secondary"></i>
-														</span>
-													</th:block>
-													<th:block
-														th:unless="${@reviewServiceImpl.calculateRating(product.id)>0}">
 
-														<span th:each="emptyStar : ${#numbers.sequence( 1, 5)}">
-															<i class="fas fa-star text-secondary"></i>
-														</span>
-													</th:block>
+												<div class="card-body text-center products "
+													style="box-shadow: 2px 2px 10px black; border-radius: 10px;">
+
+													<img th:src="@{'/img/product_img/'+${product.getFile()}}"
+														alt="Samsung Galaxy S10"
+														style="background-color: lightgray;">
+													<hr />
+													<h3 th:text="${product.getName()}" class="text-white"></h3>
+													<div class="review-rating">
+														<th:block
+															th:if="${@reviewServiceImpl.calculateRating(product.id)>0}">
+															<span
+																th:each="star : ${#numbers.sequence(1, @reviewServiceImpl.calculateRating(product.id))}">
+																<i class="fas fa-star text-warning"></i>
+															</span>
+															<span
+																th:each="emptyStar : ${#numbers.sequence(@reviewServiceImpl.calculateRating(product.id)+ 1, 5)}">
+																<i class="fas fa-star text-secondary"></i>
+															</span>
+														</th:block>
+														<th:block
+															th:unless="${@reviewServiceImpl.calculateRating(product.id)>0}">
+
+															<span th:each="emptyStar : ${#numbers.sequence( 1, 5)}">
+																<i class="fas fa-star text-secondary"></i>
+															</span>
+														</th:block>
+													</div>
+													<div class="price py-2 text-white">
+														<span th:text="'Rs.'+${product.getDiscountedPrice()}"></span>
+														<span class="text-decoration-line-through"
+															th:text="'Rs.'+${product.getPrice()}"></span> <span
+															class=" bg-success"
+															th:text="${product.getDiscountPercent()+'%'}">10%off</span>
+													</div>
+													<a th:href="@{/viewDetail/{id}(id=${product.getId()})}"
+														class="btn btn-primary">View Details</a>
+
 												</div>
-												<div class="price py-2 text-white">
-													<span th:text="'Rs.'+${product.getDiscountedPrice()}"></span>
-													<span class="text-decoration-line-through"
-														th:text="'Rs.'+${product.getPrice()}"></span> <span
-														class=" bg-success"
-														th:text="${product.getDiscountPercent()+'%'}">10%off</span>
-												</div>
-												<a th:href="@{/viewDetail/{id}(id=${product.getId()})}"
-													class="btn btn-primary">View Details</a>
-
 											</div>
+
+
 										</div>
 
-
-									</div>
-
+									</th:block>
 								</th:block>
 							</div>
 

@@ -172,8 +172,9 @@ public class CustomerServiceImpl implements CustomerService {
 		if (customer != null) {
 
 			if (passwordEncoder.matches(password, customer.getPassword())) {
-				customer.setPassword(passwordEncoder.encode(newPassword));
-				customer.setCpassword(passwordEncoder.encode(newPassword));
+				String hashedPasswordString = passwordEncoder.encode(newPassword);
+				customer.setPassword(hashedPasswordString);
+				customer.setCpassword(hashedPasswordString);
 				cd.save(customer);
 				return true;
 			}
@@ -240,7 +241,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer addCustomer(Customer customer) {
 
-		//customer.setProvider("self");
+		// customer.setProvider("self");
 		return this.cd.save(customer);
 	}
 

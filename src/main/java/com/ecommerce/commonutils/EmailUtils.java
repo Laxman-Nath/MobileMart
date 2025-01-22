@@ -28,6 +28,7 @@ public class EmailUtils {
 			helper.setFrom("MobileMart");
 			content = content.replace("[[name]]", customer.getName());
 			if (isOrder) {
+				System.out.println("inside is order");
 				url = url + "/user/verifyOrder?code=" + customer.getCode();
 			} else if (isBill) {
 				url = url + "/sendBill";

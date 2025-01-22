@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -132,6 +133,7 @@ public class HomeController {
 	}
 
 	@GetMapping("/")
+
 	public String home(Model m) {
 		List<Product> latest = this.productService.getLatestProduct();
 		m.addAttribute("latest", latest);
@@ -195,7 +197,7 @@ public class HomeController {
 
 	@GetMapping({ "product", "/user/product" })
 	public String product(Model m, @RequestParam(required = false, defaultValue = "") String category,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size) {
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
 //		System.out.println("Category="+category);
 		List<Category> categories = this.categoryService.findByIsActiveTrue();
 		Page<Product> pages = this.productService.getAllProducts(category, page, size);
@@ -290,23 +292,23 @@ public class HomeController {
 	@GetMapping({ "/searchProduct", "/user/searchProduct" })
 	public String searchProduct(Model m, @RequestParam(required = false, defaultValue = "") String keyword,
 			@RequestParam(required = false, defaultValue = "0") int page,
-			@RequestParam(required = false, defaultValue = "1") int size, HttpSession session) {
+			@RequestParam(required = false, defaultValue = "3") int size, HttpSession session) {
 //		System.out.println("Searching for: " + keyword);
 //		String noSpacesKeyword = keyword.replaceAll("\\s+", "").trim();
 //		System.out.println(noSpacesKeyword);
-
+		m.addAttribute("keyword", keyword);
 		Page<Product> pages = this.productService.searchProduct(keyword, page, size);
 		if (pages.isEmpty()) {
 			session.setAttribute("error",
 					"No products found matching your search criteria. Please try different keywords.");
-			return "/";
+			return "searchproduct";
 		}
 
 		else {
 			List<Product> products = pages.getContent();
 			m.addAttribute("products", products);
 			m.addAttribute("productsSize", products.size());
-			m.addAttribute("keyword", keyword);
+
 			m.addAttribute("page", pages.getNumber());
 			m.addAttribute("pageSize", size);
 			m.addAttribute("totalElements", pages.getTotalElements());
