@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>View Cart</title>
+</head>
+<body>
+	<section style="margin-top: 140px;" th:if="${cartproducts!=null}">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header text-center">
+							<h1>View Cart</h1>
+							<th:block th:if="${session.success}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.success}"></h2>
+								</div>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<div class="text-success text-center">
+									<h2 th:text="${session.error}"></h2>
+								</div>
+							</th:block>
+							<th:block
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
+							</th:block>
+
+						</div>
+						<div class="card-body">
+							<table class="table table-success table-striped">
+								<thead>
+									<tr>
+										<th scope="col">S.N.</th>
+										<th scope="col">Name</th>
+										<th scope="col">Description</th>
+										<th scope="col">Price</th>
+										<th scope="col">Category</th>
+										<th>Quantity</th>
+
+
+										<th scope="col">Image</th>
+										<th scope="col">Action</th>
+
+
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="cartproduct,stat:${cartproducts}">
+
+										<td th:text="${stat.index+1}"></td>
+										<td th:text="${cartproduct.product.name}"></td>
+										<td
+											th:text="${cartproduct.product.getDimension()} +','+ ${cartproduct.product.getColor()} +' ,'+
+					 ${cartproduct.product.getInternal()} + ',' + ${cartproduct.product.getSecurity()} +' ,'
+					+ ${cartproduct.product.getBType()}"></td>
+										<td th:text="${cartproduct.product.discountedPrice}"></td>
+										<td th:text="${cartproduct.product.category}"></td>
+
+										<td><a class="btn-btn-success"
+											th:href="@{'/user/increaseProduct?cid='+${cid}+'&uid='+${uid}+'&pid='+${cartproduct.id}}"><i
+												class="fa fa-plus text-success" aria-hidden="true"></i></a> <span
+											th:text="${'['+cartproduct.quantity+']'}"></span> <a
+											th:href="@{'/user/decreaseProduct?cid='+${cid}+'&uid='+${uid}+'&pid='+${cartproduct.id}}"><i
+												class="fa fa-minus text-danger" aria-hidden="true"></i></a></td>
+
+
+
+
+										<td><img
+											th:src="@{'/img/product_img/'+${cartproduct.product.file}}"
+											alt="product_img" width="50px" height="50px"></td>
+
+
+
+										<td><a
+											th:href="@{'/user/deleteProductFromCart?cid='+${cid}+'&uid='+${uid}+'&pid='+${cartproduct.id}}"
+											class="btn btn-danger"><i class="fa-solid faS-trash"></i>Delete</a>
+									<tr style="font-weight: bold; font-size: 25px;">
+										<td colspan="7">Total Price:</td>
+										<td th:text="'Rs. ' + ${totalprice}"></td>
+									</tr>
+
+
+
+								</tbody>
+								<tfoot>
+									<td colspan="8" class="text-center"><a
+										class="btn btn-success"
+										th:href="@{/user/checkout/{customerId}/{cartId}(customerId=${uid},cartId=${cid})}">Proceed
+											checkout</a></td>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section th:unless="${cartproducts!=null}" style="margin-top:140px;">
+		<div class="text-center">
+			<h1 class="text-success">The verification email has been sent to
+				your email!</h1>
+		</div>
+	</section>
+</body>
+</html>

@@ -10,17 +10,18 @@
 		style="background-image: url('img/register.png'); background-size: cover;">
 		<div class="d-flex justify-content-center align-items-center"
 			style="height: 50%;">
-			<div class="container ">
+			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-md-6">
-						<div class="card p-3 " style="background: linear-gradient(90deg, hsla(197, 14%, 57%, 0.6) 0%, hsla(192, 17%, 94%, 0.6) 100%);box-shadow:4px 4px 12px white;border-radius:10px;">
+						<div class="card p-3 "
+							style="background: linear-gradient(90deg, hsla(197, 14%, 57%, 0.6) 0%, hsla(192, 17%, 94%, 0.6) 100%); box-shadow: 4px 4px 12px white; border-radius: 10px;">
 							<div class="card-header text-center bg-primary">
 								<p class="fs-4 mb-0">Register</p>
-								<th:block th:if="${session.Success}">
-									<p th:text="${session.Success}"></p>
+								<th:block th:if="${session.success}">
+									<p th:text="${session.success}" class="text-success"></p>
 								</th:block>
-								<th:block th:if="${session.Error}">
-									<p th:text="${session.Error}"></p>
+								<th:block th:if="${session.error}">
+									<p th:text="${session.error}" class="text-danger"></p>
 								</th:block>
 
 								<th:block
@@ -34,73 +35,114 @@
 										<div class="col-md-6">
 											<div class="mb-2">
 												<label class="form-label">Full Name</label> <input
-													type="text" name="name" class="form-control">
+													type="text" name="name" class="form-control" id="name"
+													required> <span id="name-error" class="error"></span>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="mb-2">
 												<label class="form-label">Mobile Number</label> <input
-													type="number" name="mnumber" class="form-control" />
+													type="tel" name="mnumber" class="form-control" id="phone"
+													required /> <span id="phone-error" class="error"></span>
 											</div>
 										</div>
 									</div>
 									<div class="mb-2">
 										<label class="form-label">Email</label> <input type="email"
-											name="email" class="form-control" />
+											name="email" class="form-control" id="email" required /> <span
+											id="email-error" class="error"></span>
 									</div>
-									<h6>Address</h6>
+									<h3>Address</h3>
+									<hr />
 									<div class="row mb-2">
 										<div class="col">
 											<div class="mb-2">
-												<label class="form-label">State</label> <input type="text"
-													name="state" class="form-control" />
+												<label class="form-label">State</label> <select id="state"
+													name="state" class="form-control" required
+													onchange="updateDistricts()">
+													<option value="" selected disabled>Select State</option>
+													<option value="Province No. 1">Province No. 1</option>
+													<option value="Province No. 2">Province No. 2</option>
+													<option value="Bagmati Province">Bagmati Province</option>
+													<option value="Gandaki Province">Gandaki Province</option>
+													<option value="Lumbini Province">Lumbini Province</option>
+													<option value="Karnali Province">Karnali Province</option>
+													<option value="Sudurpaschim Province">Sudurpashchim
+														Province</option>
+												</select>
 											</div>
 										</div>
 										<div class="col">
 											<div class="mb-2">
-												<label class="form-label">District</label> <input
-													type="text" name="district" class="form-control" />
+												<label class="form-label">District</label> <select
+													id="district" name="district" class="form-control" required>
+													<option value="" selected disabled>Select District</option>
+												</select>
 											</div>
 										</div>
 									</div>
 									<div class="mb-2">
 										<label class="form-label">Municipality</label> <input
-											type="text" name="muncipility" class="form-control" />
+											id="muncipility" type="text" name="muncipility"
+											class="form-control" required> <span
+											id="muncipility-error" class="error"></span>
 									</div>
 									<div class="row mb-2">
 										<div class="col">
 											<div class="mb-2">
 												<label class="form-label">Ward-no</label> <input
-													type="number" name="ward" class="form-control" />
+													type="number" name="ward" class="form-control" id="ward"
+													required> <span id="ward-error" class="error"></span>
 											</div>
 										</div>
 										<div class="col">
 											<div class="mb-2">
 												<label class="form-label">Tole</label> <input type="text"
-													name="tole" class="form-control" />
+													name="tole" class="form-control" required id="tole">
+												<span id="tole-error" class="error"></span>
 											</div>
 										</div>
 									</div>
+									<hr />
 									<div class="row mb-2">
 										<div class="col">
 											<div class="mb-2">
-												<label class="form-label">Password</label> <input
-													type="password" name="password" class="form-control" />
+												<label class="form-label">Password</label>
+												<div class="input-group">
+													<input type="password" name="password"
+														class="form-control LoginPassword" required /> <span
+														class="input-group-text PasswordIcon"
+														style="cursor: pointer; width: 3rem; text-align: center;">
+														<i class="fas fa-eye"></i>
+													</span>
+												</div>
+												<span id="password-error" class="error"></span>
 											</div>
 										</div>
 										<div class="col">
 											<div class="mb-2">
-												<label class="form-label">Confirm password</label> <input
-													type="password" name="cpassword" class="form-control" />
+
+												<label class="form-label">Confirm password</label>
+												<div class="input-group">
+													<input type="password" name="cpassword"
+														class="form-control LoginPassword" required /><span
+														class="input-group-text PasswordIcon"
+														style="cursor: pointer; width: 3rem; text-align: center;">
+														<i class="fas fa-eye"></i>
+													</span>
+												</div>
+												<span id="cpassword-error" class="error"></span>
 											</div>
 										</div>
 									</div>
 									<div class="mb-2">
 										<label class="form-label">Profile Picture</label><input
-											type="file" name="image" class="form-control">
+											type="file" name="image" class="form-control" id="file">
+										<span id="file-error" class="error"></span>
 									</div>
 									<div class="mb-3 text-center">
-										<button class="btn btn-dark btn-lg btn-block w-100" type="submit">Register</button>
+										<button class="btn btn-dark btn-lg btn-block w-100"
+											type="submit">Register</button>
 									</div>
 									<p class="card-footer text-center" style="color: #393f81;">
 										Already have an account? <a href="login"

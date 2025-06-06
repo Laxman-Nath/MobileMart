@@ -21,16 +21,16 @@
 								<p class="text-danger fw-bold" th:text="${session.error}"></p>
 							</th:block>
 
-							
+
 						</div>
-						<div class="card-body" style="background-color: #FAACA8;
-background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 50%, #ffffff 100%);
-						">
+						<div class="card-body"
+							style="background-color: #FAACA8; background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 50%, #ffffff 100%);">
 							<form action="/admin/addCategory" method="post"
 								enctype="multipart/form-data">
 								<div class="mb-2">
 									<label class="form-label">Title</label> <input type="text"
-										name="name" class="form-control " />
+										name="name" class="form-control " id="categoryname" required />
+									<span class="error" id="categoryname-error"></span>
 								</div>
 								<div class="mb-3">
 									<label>Status</label>
@@ -47,13 +47,14 @@ background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 50%, #ffffff 100%);
 											class="form-check-label" for="flexRadioDefault2">
 											Inactive </label>
 									</div>
-
+									<span class="error" id="status-error"></span>
 								</div>
 								<div class="mb-3">
 									<!-- Image Upload -->
 									<label for="image" class="form-label">Upload Image:</label> <input
-										class="form-control has-feedback" type="file" id="image"
-										name="image" accept="image/*">
+										class="form-control has-feedback" type="file" id="file"
+										name="image" accept="image/*"> <span class="error"
+										id="file-error"></span>
 								</div>
 								<div class="mb-3 mt-2 text-center">
 									<button class="btn btn-dark btn-lg btn-block" type="submit">Register</button>
@@ -75,10 +76,10 @@ background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 50%, #ffffff 100%);
 								<h3 th:text="${session.Deleteerror}"></h3>
 							</th:block>
 							<th:block th:if="${session.EditSuccess}">
-							<h3 th:text="${session.EditSuccess}"></h3>
+								<h3 th:text="${session.EditSuccess}"></h3>
 							</th:block>
 							<th:block th:if="${session.EditError}">
-							<h3 th:text="${session.EditError}"></h3>
+								<h3 th:text="${session.EditError}"></h3>
 							</th:block>
 							<th:block
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
@@ -105,7 +106,9 @@ background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 50%, #ffffff 100%);
 										<td><a
 											th:href="@{/admin/deleteCategory/{id}(id=${category.id})}"
 											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
-											<a th:href="@{/admin/editCategoryForm/{id}(id=${category.id})}" class="btn btn-success"><i
+											<a
+											th:href="@{/admin/editCategoryForm/{id}(id=${category.id})}"
+											class="btn btn-success"><i
 												class="fa-regular fa-pen-to-square"></i>Edit</a></td>
 									</tr>
 

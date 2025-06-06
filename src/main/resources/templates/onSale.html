@@ -3,36 +3,50 @@
 	th:replace="~{base::layout(~{::section})}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>On sale</title>
 </head>
 <body>
 
 	<section class="onsale section">
 		<div class="card">
-			<div class="card-body" style="background: linear-gradient(90deg, hsla(233, 100%, 90%, 1) 0%, hsla(0, 0%, 89%, 1) 100%);">
+			<div class="card-body"
+				style="background: linear-gradient(90deg, hsla(233, 100%, 90%, 1) 0%, hsla(0, 0%, 89%, 1) 100%);">
 				<div class="owl-carousel sale-carousel owl-theme">
 					<div class="item text-center" th:each="sale:${sales}">
-						<img th:src="@{'img/product_img/'+${sale.product.getFile()}}"
+						<img th:src="@{'/img/product_img/'+${sale.product.getFile()}}"
 							height="400px" width="400px">
-							<hr>
+						<hr>
 						<h1 th:text="${sale.product.name}"></h1>
-						<div class="rating text-warning font-size-16">
-							<span><i class="fas fa-star"></i></span> <span><i
-								class="fas fa-star"></i></span> <span><i class="fas fa-star"></i></span>
-							<span><i class="fas fa-star"></i></span> <span><i
-								class="far fa-star"></i></span>
+						<div class="review-rating">
+							<th:block
+								th:if="${@reviewServiceImpl.calculateRating(sale.product.id)>0}">
+								<span
+									th:each="star : ${#numbers.sequence(1, @reviewServiceImpl.calculateRating(sale.product.id))}">
+									<i class="fas fa-star text-warning"></i>
+								</span>
+								<span
+									th:each="emptyStar : ${#numbers.sequence(@reviewServiceImpl.calculateRating(sale.product.id)+ 1, 5)}">
+									<i class="fas fa-star text-secondary"></i>
+								</span>
+							</th:block>
+							<th:block
+								th:unless="${@reviewServiceImpl.calculateRating(sale.product.id)>0}">
+
+								<span th:each="emptyStar : ${#numbers.sequence( 1, 5)}">
+									<i class="fas fa-star text-secondary"></i>
+								</span>
+							</th:block>
 						</div>
-						<div class="price py-2" style="font-size:24px">
+						<div class="price py-2" style="font-size: 24px">
 							<span th:text="'Rs.'+${sale.getDiscountedPrice()}"></span> <span
 								class="text-decoration-line-through"
 								th:text="'Rs.'+${sale.getPrice()}"></span> <span
-								class=" bg-success"
-								th:text="${sale.getDiscountPercent()+'%'}"></span>
-							<br>
-							<span class="text-danger">Valid Upto:</span><span class="text-danger" th:text="${sale.getSaleEndDate()}"></span>
+								class=" bg-success" th:text="${sale.getDiscountPercent()+'%'}"></span>
+							<br> <span class="text-danger">Valid Upto:</span><span
+								class="text-danger" th:text="${sale.getSaleEndDate()}"></span>
 						</div>
 						<a th:href="@{/viewDetail/{id}(id=${sale.getProduct().getId()})}"
-							class="btn btn-primary" style="font-size:24px">View Details</a>
+							class="btn btn-primary" style="font-size: 24px">View Details</a>
 					</div>
 
 				</div>

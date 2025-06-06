@@ -151,4 +151,10 @@ public class CartServiceImpl implements CartService {
 		   return false;
 		
 	}
+
+	@Override
+	public Cart saveCart(Cart cart) {
+		// TODO Auto-generated method stub
+		return this.cartDao.save(cart);
+	}
 }

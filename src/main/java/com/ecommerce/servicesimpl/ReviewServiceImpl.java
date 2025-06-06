@@ -48,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
 		List<Review> reviews = this.productDao.findById(productId).map(Product::getReviews)
 				.orElse(Collections.emptyList());
 		int length = reviews.size();
-		System.out.println("The size is reviews.size" + length);
+//		System.out.println("The size is reviews.size" + length);
 
 		if (length == 0) {
 			return 0;

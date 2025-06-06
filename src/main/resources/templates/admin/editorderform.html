@@ -19,19 +19,19 @@
 						<div class="card-header text-center bg-danger text-white">
 							<h3>Edit Order</h3>
 							<th:block th:if="${session.success}">
-									<p th:text="${session.success}"></p>
-								</th:block>
-								<th:block th:if="${session.error}">
-									<p th:text="${session.error}"></p>
-								</th:block>
+								<p th:text="${session.success}"></p>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<p th:text="${session.error}"></p>
+							</th:block>
 
-								<th:block
-									th:text="${@removeSessionUtils.removeSessionAttribute()}">
-								</th:block>
+							<th:block
+								th:text="${@removeSessionUtils.removeSessionAttribute()}">
+							</th:block>
 						</div>
 						<div class="card-body text-center">
 
-							
+
 
 							<form th:action="@{/admin/updateOrder/{id}(id=${order.id})}"
 								method="post" th:object="${order}">
@@ -41,61 +41,99 @@
 									<label class="form-label" for="name">Customer name</label> <input
 										type="text" th:value="${order.customer.name}" id="name"
 										autocomplete="name" th:field="*{customer.name}"
-										class="form-control">
+										class="form-control" name="name" required> <span
+										id="name-error" class="error"></span>
+								</div>
+
+
+								<div class="row mb-2">
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">State</label> <select id="state"
+												name="state" class="form-control" required
+												th:data-district="${order.district}">
+												<option value="" disabled>Select State</option>
+												<option value="Province No. 1"
+													th:selected="${order.state=='Province No. 1'}">Province
+													No. 1</option>
+												<option value="Province No. 2"
+													th:selected="${order.state=='Province No. 2'}">Province
+													No. 2</option>
+												<option value="Bagmati Province"
+													th:selected="${order.state=='Bagmati Province'}">Bagmati
+													Province</option>
+												<option value="Gandaki Province"
+													th:selected="${order.state=='Gandaki Province'}">Gandaki
+													Province</option>
+												<option value="Lumbini Province"
+													th:selected="${order.state=='Lumbini Province'}">Lumbini
+													Province</option>
+												<option value="Karnali Province"
+													th:selected="${order.state=='Karnali Province'}">Karnali
+													Province</option>
+												<option value="Sudurpaschim Province"
+													th:selected="${order.state=='Sudurpaschim Province'}">Sudurpashchim
+													Province</option>
+											</select>
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-2">
+											<label class="form-label">District</label> <select
+												id="district" name="district" class="form-control" required>
+												<option value="" selected disabled>Select District</option>
+											</select>
+										</div>
+									</div>
 								</div>
 								<div class="row mb-3">
 									<div class="col-md-6">
-										<input type="text" id="shippingCountry" name="shippingCountry"
-											class="form-control" th:value="Nepal" placeholder="Country"
-											th:field="*{shippingCountry}" readonly>
+										<input type="text" id="muncipility" name="muncipility"
+											class="form-control" th:value="${order.customer.muncipility}"
+											th:field="*{muncipility}" placeholder="Muncipility" required>
+										<span id="municipolity-error" class="error"></span>
 									</div>
 									<div class="col-md-6">
-										<input type="text" id="shippingState" name="shippingState"
-											class="form-control" placeholder="State"
-											th:value="${order.customer.state}"
-											th:field="*{shippingState}" required>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<input type="text" id="shippingDistrict"
-											name="shippingDistrict" class="form-control"
-											placeholder="District" th:value="${order.customer.district}"
-											th:field="*{shippingDistrict}" required>
-									</div>
-									<div class="col-md-6">
-										<input type="text" id="shippingMuncipility"
-											name="shippingMuncipility" class="form-control"
-											th:value="${order.customer.muncipility}"
-											th:field="*{shippingMuncipility}" placeholder="Muncipility"
-											required>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<input type="number" id="shippingWard" name="shippingWard"
+										<input type="number" id="ward" name="ward"
 											class="form-control" placeholder="Ward"
-											th:value="${order.customer.ward}" th:field="*{shippingWard}"
-											required>
+											th:value="${order.customer.ward}" th:field="*{ward}" required>
+										<span id="ward-error" class="error"></span>
+									</div>
+								</div>
+
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="mb-3">
+											<input type="text" id="tole" name="tole" class="form-control"
+												placeholder="Tole" th:value="${order.customer.tole}"
+												th:field="*{tole}" required> <span id="tole-error"
+												class="error"></span>
+										</div>
 									</div>
 									<div class="col-md-6">
-										<input type="text" id="shippingTole" name="shippingTole"
-											class="form-control" placeholder="Tole"
-											th:value="${order.customer.tole}" th:field="*{shippingTole}"
-											required>
+										<div class="mb-3">
+											<label for="paid">Paid:</label> <input type="radio" id="paid"
+												name="isPaid" value="true"
+												th:checked="${order.isPaid == true}" /> Yes <input
+												type="radio" id="notPaid" name="isPaid" value="false"
+												th:checked="${order.isPaid == false}" /> No
+										</div>
 									</div>
+
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="date">Placed Date</label> <input
 										type="text" th:value="${order.placedDate}" id="date"
 										autocomplete="date" th:field="*{placedDate}"
-										class="form-control">
+										class="form-control" required>
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="email">Customer Email</label> <input
 										type="email" th:value="${order.customer.email}" id="email"
 										autocomplete="email" th:field="*{customer.email}"
-										class="form-control">
+										class="form-control"> <span id="email-error"
+										class="error"></span>
 								</div>
 								<div class="mb-3">
 									<label class="form-label" for="status">Status</label> <select
@@ -217,57 +255,4 @@
 </html>
 
 
-<!--$(document)
-			.ready(
-					function() {
-						$(document)
-								.on(
-										'click',
-										'.delete-btn',
-										function() {
-											var itemId = $(this)
-													.data('item-id');
-											var orderId = $(this).data(
-													'order-id');
-											var title = $(this).attr('title');
-											var url, method, confirmMessage;
 
-											
-											if (confirm(confirmMessage)) {
-												$
-														.ajax({
-															url : url,
-															method : method,
-															contentType : 'application/json',
-															headers : {
-																'X-CSRF-TOKEN' : $(
-																		'meta[name="csrf-token"]')
-																		.attr(
-																				'content')
-															},
-															data : JSON
-																	.stringify({
-																		orderId : orderId
-																	}),
-															success : function(
-																	response) {
-																alert('Action successfully completed: '
-																		+ response.message);
-																window.location.href = '/admin/editorder/'
-																		+ orderId; // Redirect to the order edit page
-															},
-															error : function(
-																	xhr,
-																	status,
-																	error) {
-																console
-																		.error(
-																				'Error:',
-																				error);
-																alert('An error occurred while trying to process the request.');
-															}
-														});
-											}
-										});
-					});
-	-->

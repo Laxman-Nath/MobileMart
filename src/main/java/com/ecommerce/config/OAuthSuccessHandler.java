@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,9 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 	@Autowired
 	private DownloadImageUtils downloadImageUtils;
 
+	@Autowired
+	private AuthenticationFailureHandler authenticationFailureHandler;
+
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -50,8 +55,23 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 			token = new UsernamePasswordAuthenticationToken(customer.getEmail(), null,
 					Arrays.asList(new SimpleGrantedAuthority(customer.getRole())));
 		} else {
-			token = new UsernamePasswordAuthenticationToken(customer.getEmail(), null,
-					Arrays.asList(new SimpleGrantedAuthority(customer.getRole())));
+			if (customer.getRole().equals("ROLE_ADMIN")) {
+				response.sendRedirect("/login?accessError=Your%20account%20is%20registered%20as%20admin%20already!%20");
+
+				return;
+			} else {
+				token = new UsernamePasswordAuthenticationToken(customer.getEmail(), null,
+						Arrays.asList(new SimpleGrantedAuthority(customer.getRole())));
+			}
+		}
+
+		if (!customer.isEnable()) {
+			log.warn("Account is locked for email: {}", email);
+
+			response.sendRedirect(
+					"/login?lockedError=Your%20account%20is%20locked!&details=Please%20contact%20support%20for%20more%20information");
+
+			return;
 		}
 
 		SecurityContextHolder.getContext().setAuthentication(token);

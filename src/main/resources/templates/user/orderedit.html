@@ -6,8 +6,7 @@
 <title>Edit Order</title>
 
 
-<style>
-</style>
+
 </head>
 <body>
 	<section style="margin-top: 140px;">
@@ -17,234 +16,199 @@
 					<div class="card">
 						<div class="card-header text-center bg-danger text-white">
 							<h3>Edit Order</h3>
+							<th:block th:if="${session.success}">
+								<h3 class="text-success" th:text="${session.success}"></h3>
+							</th:block>
+							<th:block th:if="${session.error}">
+								<h3 class="text-danger" th:text="${session.error}"></h3>
+							</th:block>
+							<th:block
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
-						<div class="card-body text-center">
+					</div>
+					<div class="card-body text-center">
 
-							<div th:if="${message}" class="alert alert-success" role="alert">
-								<p th:text="${message}"></p>
-							</div>
-							<div th:if="${error}" class="alert alert-danger" role="alert">
-								<p th:text="${error}"></p>
-							</div>
-
-							<form th:action="@{/user/updateOrder/{id}(id=${order.id})}"
-								method="post" th:object="${order}">
-								<input type="hidden" th:value="${order.invoiceNumber}"
-									th:field="*{invoiceNumber}"> <input type="hidden"
-									th:field="*{status}" name="status" th:value="${order.status}">
-								<div class="mb-3">
-									<label class="form-label" for="name">Customer name</label> <input
-										type="text" th:value="${order.customer.name}" id="name"
-										autocomplete="name" th:field="*{customer.name}"
-										class="form-control">
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Country</label> <input type="text"
-											id="shippingCountry" name="shippingCountry"
-											class="form-control" th:value="Nepal" placeholder="Country"
-											readonly>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">State</label> <input type="text"
-											id="shippingState" name="shippingState" class="form-control"
-											placeholder="State" th:value="${order.shippingState}"
-											th:field="*{shippingState}" required>
-									</div>
-								</div>
-
-								<div class=" row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">District</label> <input type="text"
-											id="shippingDistrict" name="shippingDistrict"
-											class="form-control" placeholder="District"
-											th:value="${order.shippingDistrict}"
-											th:field="*{shippingDistrict}" required>
-									</div>
-									<div class="col-md-6">
-										<label class="form-label">Muncipility/Gaupalika</label> <input
-											type="text" id="shippingMuncipility"
-											name="shippingMuncipility" class="form-control"
-											th:value="${order.shippingMuncipility}"
-											placeholder="Muncipility" th:field="*{shippingMuncipility}"
-											required>
-									</div>
-								</div>
-
-								<div class=" row mb-3">
-									<div class="col-md-6">
-										<label class="form-label">Ward</label> <input type="number"
-											id="shippingWard" name="shippingWard" class="form-control"
-											placeholder="Ward" th:field="*{shippingWard}"
-											th:value="${order.shippingWard}" required>
-									</div>
-
-									<div class="col-md-6">
-										<label class="form-label">Tole</label> <input type="text"
-											id="shippingTole" name="shippingTole" class="form-control"
-											placeholder="Tole" th:field="*{shippingTole}"
-											th:value="${order.shippingTole}" required>
-									</div>
-								</div>
-
-								<div class="mb-3">
-									<label class="form-label" for="date">Placed Date</label> <input
-										type="text" th:value="${order.placedDate}" id="date"
-										autocomplete="date" th:field="*{placedDate}"
-										class="form-control" readonly>
-								</div>
-								<div class="mb-3">
-									<label class="form-label" for="email">Customer Email</label> <input
-										type="email" th:value="${order.customer.email}" id="email"
-										autocomplete="email" th:field="*{customer.email}"
-										class="form-control">
-								</div>
-
-								<div class="form-group">
-									<label for="payment">Payment Method:</label> <select
-										class="form-control" id="payment" th:field="*{paymentMethod}"
-										required>
-										<option value="esewa"
-											th:selected="${order.paymentMethod=='esewa'}">eSewa</option>
-										<option value="cod"
-											th:selected="${order.paymentMethod=='cod'}">Cash on
-											Delivery</option>
-									</select>
-								</div>
-								<div class="mb-3">
-									<h3 class="text-center ">Products</h3>
-									<table class="table table-success table-striped">
-										<thead>
-											<tr>
-												<th scope="col">S.N.</th>
-												<th scope="col">Product Name</th>
-												<th scope="col">Quantity</th>
-												<th scope="col">Price</th>
-
-
-
-
-											</tr>
-										</thead>
-										<tbody>
-											<tr th:each="item,stat:${items}">
-
-												<td th:text="${stat.index+1}"></td>
-												<td th:text="${item.product.name}"></td>
-												<td>
-
-													<button type="button"
-														class="btn btn-danger btn-sm delete-btn"
-														th:data-item-id="${item.id}"
-														th:data-order-id="${order.id}" title="add">
-														<i class="fa fa-plus" aria-hidden="true"></i>
-													</button> <span th:text=" '['+${item.quantity}+']'"
-													style="font-size: 20px;"></span>
-													<button type="button"
-														class="btn btn-success btn-sm border-none delete-btn"
-														th:data-item-id="${item.id}"
-														th:data-order-id="${order.id}" title="subtract">
-														<i class="fa fa-minus" aria-hidden="true"></i>
-													</button> <input type="hidden"
-													th:field="*{orderItems[__${stat.index}__].id}"> <input
-													type="hidden"
-													th:field="*{orderItems[__${stat.index}__].quantity}"
-													class="form-control"> <input type="hidden"
-													th:field="*{orderItems[__${stat.index}__].product}"
-													class="form.control"> <input type="hidden"
-													th:field="*{orderItems[__${stat.index}__].order}"
-													class="form.control"> <input type="hidden"
-													th:field="*{orderItems[__${stat.index}__].price}"
-													class="form.control">
-												</td>
-
-												<td th:text="${item.price}"></td>
-
-
-
-
-
-
-
-											</tr>
-
-
-										</tbody>
-									</table>
-
-								</div>
-
-								<button type="submit" class="btn btn-danger">Save
-									Changes</button>
-							</form>
+						<div th:if="${message}" class="alert alert-success" role="alert">
+							<p th:text="${message}"></p>
 						</div>
+						<div th:if="${error}" class="alert alert-danger" role="alert">
+							<p th:text="${error}"></p>
+						</div>
+
+						<form
+							th:action="@{/user/updateOrder/{orderId}/{customerId}(orderId=${order.id},customerId=${customerId})}"
+							method="post" th:object="${order}">
+							<input type="hidden" th:value="${order.invoiceNumber}"
+								th:field="*{invoiceNumber}"> <input type="hidden"
+								th:field="*{status}" name="status" th:value="${order.status}">
+							<div class="mb-3">
+								<label class="form-label" for="name">Customer name</label> <input
+									type="text" th:value="${order.customer.name}" id="name"
+									autocomplete="name" th:field="*{customer.name}"
+									class="form-control" readonly>
+							</div>
+							<div class="row mb-2 text-center">
+								<div class="col">
+									<div class="mb-2 text-center">
+										<label class="form-label">State</label> <select id="state"
+											name="state" class="form-control" required
+											th:data-district="${order.district}">
+											<option value="" disabled>Select State</option>
+											<option th:selected="${order.state=='Province No. 1'}"
+												value="Province No. 1">Province No. 1</option>
+											<option th:selected="${order.state=='Province No. 2'}"
+												value="Province No. 2">Province No. 2</option>
+											<option th:selected="${order.state=='Bagmati Province'}"
+												value="Bagmati Province">Bagmati Province</option>
+											<option th:selected="${order.state=='Gandaki Province'}"
+												value="Gandaki Province">Gandaki Province</option>
+											<option th:selected="${order.state=='Lumbini Province'}"
+												value="Lumbini Province">Lumbini Province</option>
+											<option th:selected="${order.state=='Karnali Province'}"
+												value="Karnali Province">Karnali Province</option>
+											<option th:selected="${order.state=='Sudurpaschim Province'}"
+												value="Sudurpaschim Province">Sudurpashchim
+												Province</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<div class="mb-2 text-center">
+										<label class="form-label">District</label> <select
+											id="district" name="district" class="form-control" required>
+
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<input type="text" id="muncipility" name="muncipility"
+										class="form-control" th:value="${order.muncipility}"
+										th:field="*{muncipility}" placeholder="Muncipility" required>
+									<span id="muncipility-error" class="error"></span>
+								</div>
+								<div class="col-md-6">
+									<input type="number" id="ward" name="ward" class="form-control"
+										placeholder="Ward" th:value="${order.ward}" th:field="*{ward}"
+										required> <span id="ward-error" class="error"></span>
+								</div>
+							</div>
+
+
+							<div class="mb-3">
+								<input type="text" id="tole" name="tole" class="form-control"
+									placeholder="Tole" th:value="${order.tole}" th:field="*{tole}"
+									required> <span id="tole-error" class="error"></span>
+							</div>
+
+
+							<div class="mb-3">
+								<label class="form-label" for="date">Placed Date</label> <input
+									type="text" th:value="${order.placedDate}" id="date"
+									autocomplete="date" th:field="*{placedDate}"
+									class="form-control" readonly>
+
+							</div>
+							<div class="mb-3">
+								<label class="form-label" for="email">Customer Email</label> <input
+									type="email" th:value="${order.customer.email}" id="email"
+									autocomplete="email" th:field="*{customer.email}"
+									class="form-control" readonly>
+							</div>
+
+							<div class="form-group">
+								<label for="payment">Payment Method:</label> <select
+									class="form-control" id="payment" th:field="*{paymentMethod}"
+									required>
+									<option value="esewa"
+										th:selected="${order.paymentMethod=='esewa'}">eSewa</option>
+									<option value="cod" th:selected="${order.paymentMethod=='cod'}">Cash
+										on Delivery</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<h3 class="text-center ">Products</h3>
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Product Name</th>
+											<th scope="col">Quantity</th>
+											<th scope="col">Price</th>
+
+
+
+
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="item,stat:${items}">
+
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${item.product.name}"></td>
+											<td>
+
+												<button type="button"
+													class="btn btn-danger btn-sm delete-btn"
+													th:data-item-id="${item.id}" th:data-order-id="${order.id}"
+													th:data-customer-id="${order.customer.id}" title="add">
+													<i class="fa fa-plus" aria-hidden="true"></i>
+												</button> <span th:text=" '['+${item.quantity}+']'"
+												style="font-size: 20px;"></span>
+												<button type="button"
+													class="btn btn-success btn-sm border-none delete-btn"
+													th:data-item-id="${item.id}" th:data-order-id="${order.id}"
+													th:data-customer-id="${order.customer.id}" title="subtract">
+													<i class="fa fa-minus" aria-hidden="true"></i>
+												</button> <input type="hidden"
+												th:field="*{orderItems[__${stat.index}__].id}"> <input
+												type="hidden"
+												th:field="*{orderItems[__${stat.index}__].quantity}"
+												class="form-control"> <input type="hidden"
+												th:field="*{orderItems[__${stat.index}__].product}"
+												class="form.control"> <input type="hidden"
+												th:field="*{orderItems[__${stat.index}__].order}"
+												class="form.control"> <input type="hidden"
+												th:field="*{orderItems[__${stat.index}__].price}"
+												class="form.control">
+											</td>
+
+											<td th:text="${item.price}"></td>
+
+
+
+
+
+
+
+										</tr>
+
+
+									</tbody>
+								</table>
+
+							</div>
+
+							<button type="submit" class="btn btn-danger">Save
+								Changes</button>
+						</form>
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 	</section>
 
 
 </body>
 
-
+<script>
+	$(document).ready(function() {
+		updateDistricts();
+	})
+</script>
 
 
 
 </html>
-
-
-<!--$(document)
-			.ready(
-					function() {
-						$(document)
-								.on(
-										'click',
-										'.delete-btn',
-										function() {
-											var itemId = $(this)
-													.data('item-id');
-											var orderId = $(this).data(
-													'order-id');
-											var title = $(this).attr('title');
-											var url, method, confirmMessage;
-
-											
-											if (confirm(confirmMessage)) {
-												$
-														.ajax({
-															url : url,
-															method : method,
-															contentType : 'application/json',
-															headers : {
-																'X-CSRF-TOKEN' : $(
-																		'meta[name="csrf-token"]')
-																		.attr(
-																				'content')
-															},
-															data : JSON
-																	.stringify({
-																		orderId : orderId
-																	}),
-															success : function(
-																	response) {
-																alert('Action successfully completed: '
-																		+ response.message);
-																window.location.href = '/admin/editorder/'
-																		+ orderId; // Redirect to the order edit page
-															},
-															error : function(
-																	xhr,
-																	status,
-																	error) {
-																console
-																		.error(
-																				'Error:',
-																				error);
-																alert('An error occurred while trying to process the request.');
-															}
-														});
-											}
-										});
-					});
-	-->

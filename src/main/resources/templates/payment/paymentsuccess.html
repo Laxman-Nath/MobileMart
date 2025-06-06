@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Payment Success</title>
+</head>
+<body class="bg-light">
+	<section class="section">
+
+		<div class="container mt-5">
+			<div class="card shadow-sm">
+
+				<div class="card-header text-white bg-primary text-center">
+					<h2>Payment Completed</h2>
+				</div>
+
+
+				<div class="card-body">
+					<p>Dear [[${order.customer.name}]],</p>
+
+					<p>Thank you for your recent purchase! We are pleased to inform
+						you that your payment has been successfully processed. Your order
+						is now confirmed and will be shipped soon.</p>
+
+					<p>
+						<strong>Order Details:</strong>
+					</p>
+					<ul>
+						<li><strong>Order Number:</strong> [[${order.id}]]</li>
+						<li><strong>Amount Paid:</strong> [[${order.totalPrice}]]</li>
+					</ul>
+
+					<p>Your product will be dispatched shortly, and you can expect
+						delivery within the next [5 days]. You will receive a
+						notification with tracking details once your order has been
+						shipped.</p>
+
+					<p>
+						<strong>Important:</strong> Your bill/invoice has been sent to
+						your email address. Please check your inbox for a copy of the
+						invoice.
+					</p>
+
+					<p>If you have any questions or need further assistance, please
+						do not hesitate to contact our customer service team at [Support
+						Email:nathlaxman242@gmail.com or 9805759293].</p>
+
+					<p>Thank you for choosing [Your Company Name]! We appreciate
+						your business.</p>
+
+
+
+
+					<p>
+						Best regards,<br> The [MobileMart] Team
+					</p>
+				</div>
+
+
+				<div class="card-footer text-center text-muted">
+					<p>&copy; [[${date}]] [MobileMart]. All Rights Reserved.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
