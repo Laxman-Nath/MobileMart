@@ -33,19 +33,21 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 			Authentication authentication) throws IOException, ServletException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //		System.out.println("Email="+userDetails.getUsername());
-		Customer customer = this.customerServiceImpl.findByEmail(userDetails.getUsername());
+		Customer customer = this.customerServiceImpl.findByEmailAndProviderNotGoogle(userDetails.getUsername());
+//		request.getSession().invalidate();
 		if (customer != null) {
 			customerServiceImpl.resetFailedAttempt(customer);
 			customerServiceImpl.unlockAccount(customer);
 			logger.info("User {} logged in successfully.", userDetails.getUsername());
 		}
-		String redirectString = "/";
+		String redirectString = "";
 		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
 			redirectString = "/admin/";
 		} else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
 			redirectString = "/user/";
 		}
 		response.sendRedirect(redirectString);
+//		request.getRequestDispatcher(redirectString).forward(request, response);
 
 	}
 

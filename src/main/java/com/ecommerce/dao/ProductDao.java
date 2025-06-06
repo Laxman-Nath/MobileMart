@@ -16,7 +16,7 @@ import com.ecommerce.models.Product;
 public interface ProductDao extends JpaRepository<Product, Integer> {
 	Boolean existsByName(String name);
 
-	Page<Product> findByCategory(String category,Pageable pageable);
+	Page<Product> findByCategory(String category, Pageable pageable);
 
 	@Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
 			+ "LOWER(p.dimension) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "

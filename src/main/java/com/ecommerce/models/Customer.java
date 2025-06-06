@@ -1,5 +1,6 @@
 package com.ecommerce.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,11 +46,11 @@ public class Customer {
 	private Date lockedTime;
 	private String code;
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-	private List<Cart> carts;
+	private List<Cart> carts=new ArrayList<>();
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-	private List<Order> orders;
+	private List<Order> orders=new ArrayList<>();
 	private String provider;
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Product> products;
+	private List<Product> products=new ArrayList<>();
 
 }

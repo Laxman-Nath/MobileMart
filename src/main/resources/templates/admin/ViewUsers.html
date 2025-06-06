@@ -6,62 +6,72 @@
 <title>View Customers</title>
 </head>
 <body>
-	<section style="margin-top:100px;">
+	<section style="margin-top: 100px;">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="card" style="background-color: #08AEEA;
-background-image: linear-gradient(0deg, #08AEEA 0%, #2AF598 100%);
-					">
+					<div class="card"
+						style="background-color: #08AEEA; background-image: linear-gradient(0deg, #08AEEA 0%, #2AF598 100%);">
 						<div class="card-header text-center">
 							<h1>Customer details</h1>
 							<th:block th:if="${session.success}">
 								<h3 class="text-success" th:text="${session.success}"></h3>
 							</th:block>
-							
+
 
 							<th:block
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N.</th>
-										<th scope="col">Name</th>
-										<th scope="col">Address</th>
-										<th scope="col">Status</th>
+							<th:block th:if="${customers.isEmpty()}">
+								<h3 class="text-center text-warning">No customers available</h3>
+							</th:block>
+							<th:block th:unless="${customers.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Name</th>
+											<th scope="col">Address</th>
+											<th scope="col">Status</th>
 
-										<th scope="col">Email</th>
-										<th scope="col">Profile</th>
-										<th scope="col">Action</th>
-
-
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="c,stat:${customers}">
-
-										<td th:text="${stat.index+1}"></td>
-										<td th:text="${c.name}"></td>
-										<td th:text="${c.district}"></td>
-										<td th:text="${c.isEnable}"></td>
-										<td th:text="${c.email}"></td>
-										
-										<td><img th:src="@{'/img/product_img/'+${c.file}}"
-											alt="product_img" width="50px" height="50px"></td>
-										
-										
-										<td><a
-											th:href="@{/admin/updateCustomerStatus/{id}(id=${c.id})}"
-											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Change</a>
-											</td>
+											<th scope="col">Email</th>
+											<th scope="col">Profile</th>
+											<th scope="col">Lock/Unlock user</th>
 
 
-									</tr>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="c,stat:${customers}">
 
-								</tbody>
-							</table>
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${c.name}"></td>
+											<td th:text="${c.district}"></td>
+											<td th:text="${c.isEnable}"></td>
+											<td th:text="${c.email}"></td>
+
+											<td><img th:src="@{'/img/profile_img/'+${c.file}}"
+												alt="user_img" width="50px" height="50px"></td>
+
+
+											<td><a
+												th:href="@{/admin/updateCustomerStatus/{id}(id=${c.id})}"
+												th:classappend="${c.isEnable ? 'bg-danger' : 'bg-success'}"
+												class="btn"> <th:block th:if="${c.isEnable}">
+												Block user
+												</th:block> <th:block th:unless="${c.isEnable}">
+												
+												Unblock user
+												</th:block>
+											</a></td>
+
+
+										</tr>
+
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>

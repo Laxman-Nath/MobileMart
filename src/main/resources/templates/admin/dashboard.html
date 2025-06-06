@@ -6,27 +6,17 @@
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
-
-<!--  Bootstrap cdn -->
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 	integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-<!--  custom css -->
 <link href="/css/style.css" rel="stylesheet" />
-
-<!-- Owl carousel cdn -->
-
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
 <title>Dashboard</title>
 </head>
 
@@ -44,37 +34,53 @@
 			<div class="list-group list-group-flush my-3">
 				<a href="#"
 					class="list-group-item list-group-item-action bg-transparent second-text active"><i
-					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a href="category"
+					class="fas fa-tachometer-alt me-2"></i>Dashboard</a> <a
+					href="/admin/category"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
-					<i class="fa-solid fa-square-plus me-2"></i>Category
-				</a> <a href="addProduct"
+					<i class="fa-solid fa-layer-group"></i>Category
+				</a> <a href="/admin/addProduct"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold"><i
 					class="fa-solid fa-square-plus me-2"></i>Add Product</a>
 				<div class="dropdown">
 					<a href="#"
 						class="list-group-item list-group-item-action bg-transparent second-text fw-bold dropdown-toggle"
 						id="reportDropdown" role="button" data-bs-toggle="dropdown"
-						aria-expanded="false"> <i class="fas fa-paperclip me-2"></i>Reports
+						aria-expanded="false"> <i class="fa-solid fa-file me-2"></i>Reports
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="reportDropdown">
-						<li><a class="dropdown-item" href="orderReport">Orders</a></li>
-						<li><a class="dropdown-item" href="generateBill">Bill</a></li>
-						<li><a class="dropdown-item" href="Product">Products</a></li>
+						<li><a class="dropdown-item" href="/admin/orderReport">Orders</a></li>
+
 					</ul>
 				</div>
-				<a href="viewProducts"
+				<a href="/admin/viewProducts"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-list-ul me-2"></i>View Products
-				</a>  <a href="viewCustomers"
+				</a> <a href="/admin/viewCustomers"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-circle-user "></i> Customers
-				</a> <a href="addAdmin"
+				</a> <a href="/admin/addAdmin"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-circle-user "></i> Add Admin
-				</a> <a href="showorders"
-					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
-					<i class="fa-regular fa-rectangle-list "></i> Orders
-				</a> <a href="viewReviews"
+				</a>
+				<div class="dropdown">
+					<a href="#"
+						class="list-group-item list-group-item-action bg-transparent second-text fw-bold dropdown-toggle"
+						id="reportDropdown" role="button" data-bs-toggle="dropdown"
+						aria-expanded="false"> <i class="fa-solid fa-table-list me-2"></i>Orders
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="ordersDropdown">
+						<li><a class="dropdown-item"
+							href="/admin/getAllSubmittedOrders">Submitted</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/getAllShippedOrders">Shipped</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/getAllDeliveredOrders">Delivered</a></li>
+						<li><a class="dropdown-item" href="/admin/showorders">Verified</a></li>
+						<li><a class="dropdown-item"
+							href="/admin/showunverifiedorders">Unverified</a></li>
+					</ul>
+				</div>
+				<a href="/admin/viewReviews"
 					class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
 					<i class="fa-solid fa-star"></i> Reviews
 				</a> <a href="/logout"
@@ -127,7 +133,7 @@
 						<div
 							class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2">720</h3>
+								<h3 class="fs-2">[[${totalProducts}]]</h3>
 								<p class="fs-5">Products</p>
 							</div>
 							<i
@@ -139,7 +145,7 @@
 						<div
 							class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2">4920</h3>
+								<h3 class="fs-2">[[${totalSales}]]</h3>
 								<p class="fs-5">Sales</p>
 							</div>
 							<i
@@ -151,7 +157,7 @@
 						<div
 							class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2">3899</h3>
+								<h3 class="fs-2">[[${deliveredProducts}]]</h3>
 								<p class="fs-5">Delivery</p>
 							</div>
 							<i
@@ -163,8 +169,8 @@
 						<div
 							class="p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded">
 							<div>
-								<h3 class="fs-2">%25</h3>
-								<p class="fs-5">Increase</p>
+								<h3 class="fs-2">[[${NumberOfCustomers}]]</h3>
+								<p class="fs-5">Customer</p>
 							</div>
 							<i
 								class="fas fa-chart-line fs-1 primary-text border rounded-full secondary-bg p-3"></i>
@@ -177,20 +183,30 @@
 
 		</div>
 	</div>
-	<!-- Bootstrap js -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-		crossorigin="anonymous"></script>
-
-
-	<!-- jquery cdn -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!-- Owl Carousel cdn -->
+
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-	<!-- custom js -->
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.2/sockjs.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+
 	<script src="/js/script.js" type="text/javascript"></script>
+
+
+
+
+
+
+
 
 </body>
 

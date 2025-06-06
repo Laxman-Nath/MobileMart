@@ -6,9 +6,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.ecommerce.models.Cart;
 
-public interface CartDao extends JpaRepository<Cart,Integer>{
-Cart findByCustomerId(int customerId);
-Cart findByIdAndCustomerIdAndIsCheckedFalse(int cartId,int customerId);
-Cart findByCustomerIdAndIsCheckedFalse(int customerId);
+public interface CartDao extends JpaRepository<Cart, Integer> {
+	Cart findByCustomerId(int customerId);
+
+	Cart findByIdAndCustomerIdAndIsCheckedFalse(int cartId, int customerId);
+
+	Cart findByCustomerIdAndIsCheckedFalse(int customerId);
 
 }

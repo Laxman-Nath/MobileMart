@@ -32,12 +32,12 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String invoiceNumber;
-	private String shippingCountry;
-	private String shippingState;
-	private String shippingDistrict;
-	private String shippingMuncipility;
-	private String shippingWard;
-	private String shippingTole;
+
+	private String state;
+	private String district;
+	private String muncipility;
+	private String ward;
+	private String tole;
 	private String paymentMethod;
 	private LocalDateTime placedDate;
 	private double totalPrice;
@@ -50,5 +50,14 @@ public class Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems;
 	private boolean isVerified;
+	private Boolean isPaid;
+
+//	public boolean getIsPaid() {
+//		return isPaid;
+//	}
+//
+//	public void setPaid(boolean isPaid) {
+//		this.isPaid = isPaid;
+//	}
 
 }

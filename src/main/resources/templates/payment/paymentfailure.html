@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Payment Failure</title>
+</head>
+<body class="bg-light">
+<section class="section">
+<div class="container mt-5">
+        <div class="card shadow-sm">
+
+            <div class="card-header text-white bg-danger text-center">
+                <h2>Payment Failed</h2>
+            </div>
+
+           
+            <div class="card-body">
+                <p>Dear [[${order.customer.name}]],</p>
+
+                <p>We regret to inform you that your recent payment attempt was unsuccessful. Please review the details below to understand what went wrong:</p>
+
+                <p><strong>Order Details:</strong></p>
+                <ul>
+                    <li><strong>Order Number:</strong> [[${order.id}]]</li>
+                    <li><strong>Amount:</strong> [[${order.totalPrice}]]</li>
+                  
+                </ul>
+
+                <p><strong>What to do next:</strong></p>
+                <ul>
+                    <li>Check your payment details and ensure your payment method is valid.</li>
+                    <li>Make sure there are sufficient funds or credit available in your account.</li>
+                    <li>If you’re still facing issues, please try a different payment method.</li>
+                </ul>
+
+                
+
+               
+
+                <p>If the issue persists, please contact our customer support team at [Support Email:nathlaxman242@gmail.com or 9805759293] for further assistance.</p>
+
+                <p>We apologize for the inconvenience and appreciate your understanding.</p>
+
+                <p>Best regards,<br>
+                The [MobileMart] Team</p>
+            </div>
+
+
+            <div class="card-footer text-center text-muted">
+                <p>&copy; [[${date}]] [MobileMart]. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

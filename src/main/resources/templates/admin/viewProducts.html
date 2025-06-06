@@ -3,7 +3,7 @@
 	th:replace="~{admin/dashboard::layout(~{::section})}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>View Products</title>
 </head>
 <body>
 	<section style="margin-top: 100px;">
@@ -13,89 +13,117 @@
 					<div class="card">
 						<div class="card-header text-center">
 							<h1>Product details</h1>
-							<th:block th:if="${session.ProductEditError}">
-								<h3 class="text-danger" th:text="${session.ProductEditError}"></h3>
+							<th:block th:if="${session.error}">
+								<h3 class="text-danger" th:text="${session.error}"></h3>
 							</th:block>
-							<th:block th:if="${session.ProductEditSuccess}">
-								<h3 class="text-success" th:text="${session.ProductEditSuccess}"></h3>
+							<th:block th:if="${session.success}">
+								<h3 class="text-success" th:text="${session.success}"></h3>
 							</th:block>
-							<th:block th:if="${session.deleteProductError}">
-								<h3 class="text-danger" th:text="${session.deleteProductError}"></h3>
-							</th:block>
-							<th:block th:if="${session.deleteProductSuccess}">
-								<h3 class="text-success"
-									th:text="${session.deleteProductSuccess}"></h3>
-							</th:block>
-							<th:block th:if="${session.saleSuccess}">
-								<h3 class="text-danger" th:text="${session.saleSuccess}"></h3>
-							</th:block>
-							<th:block th:if="${session.saleError}">
-								<h3 class="text-success" th:text="${session.saleError}"></h3>
-							</th:block>
+
 
 							<th:block
 								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N.</th>
-										<th scope="col">Name</th>
-										<th scope="col">Description</th>
-										<th scope="col">Status</th>
-										<th scope="col">Category</th>
-										<th scope="col">Policy</th>
-										<th scope="col">Price</th>
+							<th:block th:if="${products.isEmpty()}">
+								<h3 class="text-center text-warning">No products available</h3>
+							</th:block>
+							<th:block th:unless="${products.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Name</th>
+											<th scope="col">Description</th>
+											<th scope="col">Status</th>
+											<th scope="col">Category</th>
+											<th scope="col">Policy</th>
+											<th scope="col">Price</th>
 
-										<th scope="col">Quantity</th>
-										<th scope="col">Image</th>
-										<th scope="col">Sale</th>
-										<th scope="col">Action</th>
+											<th scope="col">Quantity</th>
+											<th scope="col">Image</th>
+											<th scope="col">Sale</th>
+											<th scope="col">Action</th>
 
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="product,stat:${products}">
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="product,stat:${products}">
 
-										<td th:text="${stat.index+1}"></td>
-										<td th:text="${product.name}"></td>
-										<td
-											th:text="${product.getDimension()} +','+ ${product.getColor()} +' ,'+
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${product.name}"></td>
+											<td
+												th:text="${product.getDimension()} +','+ ${product.getColor()} +' ,'+
 					 ${product.getInternal()} + ',' + ${product.getSecurity()} +' ,'
 					+ ${product.getBType()}"></td>
-										<td th:text="${product.status}"></td>
-										<td th:text="${product.category}"></td>
-										<td th:text="${product.policy}"></td>
-										<td th:text="${product.price}"></td>
+											<td th:text="${product.status}"></td>
+											<td th:text="${product.category}"></td>
+											<td th:text="${product.policy}"></td>
+											<td th:text="${product.price}"></td>
 
-										<td th:text="${product.quantity}"></td>
-										<td><img th:src="@{'/img/product_img/'+${product.file}}"
-											alt="product_img" width="50px" height="50px"></td>
-										<td><a
-											th:href="@{/admin/addToSale/{id}(id=${product.id})}"
-											th:if="${product.getSale() == null}" class="btn btn-success">Add
-												to Sale</a> <a
-											th:href="@{/admin/removeFromSale/{id}(id=${product.id})}"
-											th:unless="${product.getSale() == null}"
-											class="btn btn-danger">Remove from Sale</a>
-										<td><a
-											th:href="@{/admin/deleteProduct/{id}(id=${product.id})}"
-											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
-											<a th:href="@{/admin/editProductForm/{id}(id=${product.id})}"
-											class="btn btn-success"><i
-												class="fa-regular fa-pen-to-square"></i>Edit</a></td>
+											<td th:text="${product.quantity}"></td>
+											<td><img th:src="@{'/img/product_img/'+${product.file}}"
+												alt="product_img" width="50px" height="50px"></td>
+											<td><a
+												th:href="@{/admin/addToSale/{id}(id=${product.id})}"
+												th:if="${product.getSale() == null}" class="btn btn-success">Add
+													to Sale</a> <a
+												th:href="@{/admin/removeFromSale/{id}(id=${product.id})}"
+												th:unless="${product.getSale() == null}"
+												class="btn btn-danger">Remove from Sale</a>
+											<td><a
+												th:href="@{/admin/deleteProduct/{id}(id=${product.id})}"
+												class="btn btn-danger"><i class="fa-solid fa-trash"></i>Delete</a>
+												<a
+												th:href="@{/admin/editProductForm/{id}(id=${product.id})}"
+												class="btn btn-success"><i
+													class="fa-regular fa-pen-to-square"></i>Edit</a></td>
 
 
-									</tr>
+										</tr>
 
-								</tbody>
-							</table>
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<div class="row mt-2 ">
+
+			<div class="col-md-12 ">
+				<th:block th:if="${productsSize>0}">
+					<nav aria-label="Page navigation example" class="text-center">
+						<ul
+							class="pagination d-flex justify-content-center align-items-center w-100">
+							<li class="page-item" th:classappend="${isFirst} ? 'disabled':''"><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${page-1}}"
+								aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+							</a></li>
+
+							<li th:each="i:${#numbers.sequence(1,totalPages)}"
+								class="page-item" th:classappend="${page+1==i}?'active':''" ]]><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${i-1}}">[[${i}]]</a></li>
+
+							<li class="page-item" th:classappend="${isLast} ? 'disabled':''"><a
+								class="page-link"
+								th:href="@{'/admin/viewProducts?page='+${page+1}}"
+								aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+							</a></li>
+						</ul>
+					</nav>
+			</div>
+			</th:block>
+		</div>
+
+
+
+
+
+
 	</section>
 </body>
 </html>

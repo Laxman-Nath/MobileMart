@@ -179,24 +179,24 @@
 
 									</div>
 
-									<div class="row">
-										<div class="col-md-4 text-success text-center">
+									<div class=" d-flex  flex-wrap justify-content-center gap-5 align-items-center">
+										<div class=" text-success text-center">
 											<i class="fas fa-money-bill-wave fa-2x"></i>
 											<p>Cash on Delivery</p>
 										</div>
-										<div class="col-md-4 text-warning text-center">
-											<i class="fas fa-undo-alt fa-2x"></i>
-											<p>Cash on Delivery</p>
+										<div class=" text-warning text-center">
+											<i class="fa-solid fa-mobile fa-2x"></i>
+											<p>E-payment</p>
 										</div>
-										<div class="col-md-4 text-danger text-center">
+										<div class=" text-danger text-center">
 											<i class="fas fa-truck-moving fa-2x"></i>
-											<p>Cash on Delivery</p>
+											<p>Delivery</p>
 										</div>
 
 									</div>
 
-									<div class="row">
-										<div class="col-md-4">
+									<div class="d-flex  flex-wrap justify-content-center gap-5 align-items-center">
+										<div class="text-center" >
 											
 
 											
@@ -205,14 +205,14 @@
 													Reviews</a>
 											
 										</div>
-										<div class="col-md-8 text-center">
+										<div class=" text-center">
 											<th:block th:if="${loggedUser==null}">
 												<a href="/login" class="btn btn-danger text-center ">Add
 													to Cart</a>
 											</th:block>
 											<th:block th:unless="${loggedUser==null}">
 												<a
-													th:href="@{'/addtocart?pid='+${product.id}+'&uid='+${loggedUser.id}}"
+													th:href="@{'/user/addtocart?pid='+${product.id}+'&uid='+${loggedUser.id}}"
 													class="btn btn-danger text-center ">Add to Cart</a>
 
 											</th:block>
@@ -220,9 +220,9 @@
 												th:if="${loggedUser!=null && cart!=null && !isEmpty}">
 
 												<a
-													th:href="@{'/viewcart?cid='+${cart.id}+'&uid='+${loggedUser.id}}"
+													th:href="@{'/user/viewcart?cid='+${cart.id}+'&uid='+${loggedUser.id}}"
 													class="btn btn-success text-center  "
-													style="margin-left: 120px;">View Cart</a>
+													>View Cart</a>
 
 											</th:block>
 										</div>

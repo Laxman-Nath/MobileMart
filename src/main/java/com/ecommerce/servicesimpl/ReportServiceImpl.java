@@ -1,11 +1,10 @@
 package com.ecommerce.servicesimpl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,9 +45,11 @@ public class ReportServiceImpl implements ReportService {
 		PrintWriter writer = response.getWriter();
 		writer.println("OrderId,CustomerName,Order date,Total Amount");
 		for (Order order : orders) {
-			writer.println(order.getId() + "," + order.getCustomer().getName() + "," + order.getPlacedDate() + ","
-					+ order.getTotalPrice());
-			totalCost += order.getTotalPrice();
+			if (order.getStatus().equals("Delivered") || order.getStatus().equals("Shipped")) {
+				writer.println(order.getId() + "," + order.getCustomer().getName() + "," + order.getPlacedDate() + ","
+						+ order.getTotalPrice());
+				totalCost += order.getTotalPrice();
+			}
 		}
 		writer.println("TotalSales,,,\"" + totalCost + "\"");
 		writer.flush();
@@ -95,7 +96,7 @@ public class ReportServiceImpl implements ReportService {
 		table.addCell("Quantity");
 		table.addCell("Unit price");
 		table.addCell("Description");
-		table.addCell("Total price");
+		table.addCell("Total price including shipping cost");
 
 		for (OrderItem item : orderItems) {
 			table.addCell(Integer.toString(item.getQuantity()));
@@ -103,13 +104,15 @@ public class ReportServiceImpl implements ReportService {
 			table.addCell(item.getProduct().getDimension() + "," + item.getProduct().getColor() + ","
 					+ item.getProduct().getInternal() + "," + item.getProduct().getSecurity() + ","
 					+ item.getProduct().getBType());
-			table.addCell(Double.toString(item.getPrice()));
+			table.addCell(Double.toString(item.getPrice() + order.getShippingCost()));
 
 		}
 
 		document.add(table);
 
-		Paragraph total = new Paragraph("Total amount due: Rs." + order.getTotalPrice(), boldFont);
+		String totalAmount = "Total amount due : Rs." + (order.getTotalPrice() + order.getShippingCost())
+				+ " (including Rs." + order.getShippingCost() + " for shipping)";
+		Paragraph total = new Paragraph(totalAmount, boldFont);
 		total.setAlignment(Element.ALIGN_CENTER);
 		Paragraph message = new Paragraph("\n Thank you for purchase!");
 		message.setAlignment(Element.ALIGN_CENTER);

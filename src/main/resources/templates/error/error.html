@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Error</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+
+<body class="bg-light">
+	<div class="container mt-5">
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="alert alert-danger text-center">
+					<h2>Error</h2>
+					<p th:if="${status == 403}" class="lead">You do not have
+						authority to view this page.</p>
+					<p th:if="${status == 404}" class="lead">The page you are
+						looking for could not be found.</p>
+					<p th:if="${status != 403 and status != 404}" class="lead">An
+						unexpected error occurred. Please try again later.</p>
+				</div>
+				<div class="text-center">
+					<th:block th:if="${role=='ROLE_USER'}">
+						<a href="/user/" class="btn btn-primary">Go
+							to Home Page</a>
+					</th:block>
+					<th:block th:if="${role=='ROLE_ADMIN'}">
+						<a href="/admin/" class="btn btn-primary">Go
+							to Home Page</a>
+					</th:block>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

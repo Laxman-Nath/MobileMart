@@ -21,56 +21,98 @@
 							</th:block>
 
 							<th:block
-								th:text="${@commonServiceImpl.removeSessionAttribute()}"></th:block>
+								th:text="${@removeSessionUtils.removeSessionAttribute()}"></th:block>
 						</div>
 						<div class="card-body">
-							<table class="table table-success table-striped">
-								<thead>
-									<tr>
-										<th scope="col">S.N.</th>
-										<th scope="col">Order Id</th>
-										<th scope="col">Order details</th>
-										<th scope="col">Placed Date</th>
-										<th scope="col">Status</th>
-										<th scope="col">Email</th>
-										<th scope="col">Customer profile</th>
-										<th scope="col">Action</th>
+							<th:block th:if="${orders.isEmpty()}">
+								<h3 class="text-center text-warning">No orders available</h3>
+							</th:block>
+							<th:block th:unless="${orders.isEmpty()}">
+								<table class="table table-success table-striped">
+									<thead>
+										<tr>
+											<th scope="col">S.N.</th>
+											<th scope="col">Order Id</th>
+											<th scope="col">Order details</th>
+											<th scope="col">Placed Date</th>
+											<th scope="col">Status</th>
+											<th scope="col">Email</th>
+											<th scope="col">Customer profile</th>
+											<th scope="col">Action</th>
 
 
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="o,stat:${orders}">
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="o,stat:${orders}">
 
-										<td th:text="${stat.index+1}"></td>
-										<td th:text="${o.id}"></td>
-										<td><a class="btn btn-success" th:href="@{/admin/vieworderdetails/{id}(id=${o.id})}">View Details</a></td>
-										<td th:text="${o.placedDate}"></td>
-										<td th:text="${o.status}"></td>
-										<td th:text="${o.customer.email}"></td>
-										
-										<td><img th:src="@{'/img/product_img/'+${o.customer.file}}"
-											alt="product_img" width="50px" height="50px"></td>
-										
-										
-										<td><a
-											th:href="@{/admin/editorder/{id}(id=${o.id})}"
-											class="btn btn-danger"><i class="fa-solid fa-trash"></i>Edit</a>
-											</td>
+											<td th:text="${stat.index+1}"></td>
+											<td th:text="${o.id}"></td>
+											<td><a class="btn btn-success"
+												th:href="@{/admin/vieworderdetails/{id}(id=${o.id})}">View
+													Details</a></td>
+											<td th:text="${o.placedDate}"></td>
+											<td th:text="${o.status}"></td>
+											<td th:text="${o.customer.email}"></td>
+
+											<td><img
+												th:src="@{'/img/profile_img/'+${o.customer.file}}"
+												alt="product_img" width="50px" height="50px"></td>
 
 
-									</tr>
-									
+											<td><a th:href="@{/admin/editorder/{id}(id=${o.id})}"
+												class="btn btn-danger"><i
+													class="fa-solid fa-pen-to-square"></i>Edit</a></td>
+
+
+										</tr>
 									<tfoot>
-									<tr>
-									<td colspan="8" class="text-center"><a
-											th:href="@{/admin/showorders}"
-											class="btn btn-danger">Verified orders</a></td>
-									</tr>
+										<tr>
+											<td colspan="8" class="text-center">
+												<!-- Pagination Section -->
+												<div class="row mt-2">
+													<div class="col-md-12">
+														<th:block th:if="${orderssize > 0}">
+															<nav aria-label="Page navigation example"
+																class="text-center">
+																<ul
+																	class="pagination d-flex justify-content-center align-items-center w-100">
+																	<!-- Previous Button -->
+																	<li class="page-item"
+																		th:classappend="${isFirst} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${page - 1}}"
+																		aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+																	</a></li>
+
+																	<!-- Page Number Buttons -->
+																	<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+																		class="page-item"
+																		th:classappend="${page + 1 == i} ? 'active' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${i - 1}}"
+																		th:text="${i}"></a></li>
+
+																	<!-- Next Button -->
+																	<li class="page-item"
+																		th:classappend="${isLast} ? 'disabled' : ''"><a
+																		class="page-link"
+																		th:href="@{'/admin/showunverifiedorders?pageNo=' + ${page + 1}}"
+																		aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+																	</a></li>
+																</ul>
+															</nav>
+														</th:block>
+													</div>
+												</div>
+											</td>
+										</tr>
+
 									</tfoot>
 
-								</tbody>
-							</table>
+									</tbody>
+								</table>
+							</th:block>
 						</div>
 					</div>
 				</div>
